@@ -1,46 +1,8 @@
 {% extends '../base.usuarios.html' %}
 
 {% block usuario %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="container-fluid">
-    <h1>unidad</h1>
+    <h1>oficina</h1>
     <div class="text-center">
         <h2>{{ usuario.unidad.nombre }}</h2>
     </div>
@@ -100,7 +62,7 @@
                     {% if pedido.aprobado_unidad == None %}
                     <div class="row">
                         <div class="col-6">
-                            <a href="{% url 'autorizar_pedido' pedido.id %}" class="btn btn-success btn-sm">
+                            <a href="{% url 'autorizar_pedido_oficina' pedido.id %}" class="btn btn-success btn-sm">
                                 <i class="fas fa-check"></i>
                             </a>
                         </div>

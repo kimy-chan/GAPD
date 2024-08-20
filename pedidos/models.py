@@ -20,6 +20,7 @@ class Pedido(models.Model):
     usuario=models.ForeignKey(Usuario , on_delete=models.RESTRICT , blank= False, null=False)
     material= models.ForeignKey(Materiales, on_delete=models.RESTRICT,  blank= False, null=False)
     aprobado_unidad = models.BooleanField( blank= True, null=True) 
+    aprobado_oficina = models.BooleanField( blank= True, null=True) 
     aprobado_almacen = models.BooleanField( blank= True, null=True) 
     estado_pedido_almacen = models.CharField(blank=False, null=False, default='Pendiente')
     estado_de_pedido=models.CharField(blank=False, null=False, default='pendiente')

@@ -44,28 +44,34 @@ def crear_entidades_por_defecto(sender, **kwargs):
 
     
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    ENCARGADO=[
-        (True,'Encargado'),
-        (False,'Personal')
+    CARGO_ROLE_CHOICES=[
+        ('Encargado_unidad','Encargado unidad'),
+        ('Encargado_oficina','Encargado oficina'),
+        ('Usuario','Usuario'),
     ]
     ROLES_CHOICES=[
         ('Administrador','Administrador'),
         ('Super_administrador','Super administrador'),
         ('Axuliar','Axuliar'),
-        ('Personal','Personal')
+        ('Usuario','Usuario')
     ]
     username= models.CharField(max_length=150, unique=True, blank=False, null=False, verbose_name='Usuario')
     password = models.CharField(max_length=128, blank=False, null=False, verbose_name='Contraseña')
     email=models.EmailField(max_length=255, blank=True, null=True)
     item = models.CharField(max_length=100, blank=True, null=True)
     is_staff= models.CharField(default=True)#desactivar usuario
-    encargado=models.BooleanField(blank=False, null=False, choices=ENCARGADO, default=False, verbose_name='Jefe  de la secretaria' ) 
+
+    cargo=models.CharField(blank=False, null=False, choices=CARGO_ROLE_CHOICES, default='Usuario', verbose_name='Encargado de unidad' ) 
+
     crear = models.BooleanField(default=False,verbose_name='Crear material')
     editar= models.BooleanField(default=False,verbose_name='editar material')
     eliminar=models.BooleanField(default=False,verbose_name='Eliminar material')
     rol=models.CharField(max_length=250, choices=ROLES_CHOICES, default='Personal')
+
     unidad= models.ForeignKey(Unidad, on_delete=models.RESTRICT,blank=True, null=True)
+
     oficina= models.ForeignKey(Oficinas, on_delete=models.RESTRICT,blank=True, null=True)
+
     persona = models.ForeignKey(Persona, on_delete=models.RESTRICT)
 
     es_habilitado=models.BooleanField(default=True)

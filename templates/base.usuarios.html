@@ -57,13 +57,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">Material en general</a>
                     </li>
-
-                    {% if usuario.encargado %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar_pedidos_oficina' usuario.id %}">Pedidos oficina</a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'listar_pedidos_unidad' usuario.id %}">Pedidos unidad</a>
                     </li>
-                    {% endif %}
+
+
 
                     {% if usuario.oficina.nombre == "Almacenes" %}
                     <li class="nav-item">

@@ -219,16 +219,10 @@ def todos_mis_pedidos(request):
     return render(request, 'pedidos/mis_pedidos.html', context)
 
 def listar_pedidos_unidad(request, id_usuario):
-
     usuario = get_object_or_404(Usuario, pk=id_usuario)
-
-    # Verifica si el usuario tiene permiso
-    if not usuario.encargado:
-        return JsonResponse({"mensaje": "No tienes permiso"}, status=403)
-
-    # Filtra los pedidos por la unidad del usuario
     pedidos_unidad = Pedido.objects.filter(
-        usuario__unidad=usuario.unidad
+        usuario__unidad=usuario.unidad,
+        aprobado_oficina=True
     ).order_by('numero_pedido')
 
 
@@ -246,15 +240,41 @@ def listar_pedidos_unidad(request, id_usuario):
 
     return render(request, 'pedidos/usuarios.pedidos.html', context)
 
-def listar_pedidos_por_codigo(request, numero):
+def listar_pedidos_oficina(request, id_usuario):
+    usuario = get_object_or_404(Usuario, pk=id_usuario)
+    pedidos_unidad = Pedido.objects.filter(
+        usuario__oficina=usuario.oficina
+    ).order_by('numero_pedido')
+
+    pedidos_unicos = {}
+    for pedido in pedidos_unidad:
+        if pedido.numero_pedido not in pedidos_unicos:
+            pedidos_unicos[pedido.numero_pedido] = pedido
+
+    pedidos_unicos_list = list(pedidos_unicos.values())
+
+
+    context = {
+        'data': pedidos_unicos_list
+    }
+
+    return render(request, 'pedidos/usuarios.pedidos.oficina.html', context)
+
+def listar_pedidos_por_codigo(request, numero):#listado por unidad
     pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
         'data': pedido
     }
     return render(request, 'pedidos/listar_pedidos_unidad.html', context)
+
+def listar_pedidos_por_codigo_oficina(request, numero): #listado por oficina
+    pedido= Pedido.objects.filter(numero_pedido=numero)
+    context = {
+        'data': pedido
+    }
+    return render(request, 'pedidos/listar_pedidos_oficina.html', context)
     
 def autorizar_pedidos(request, id_pedido):#autoria el pedido de cada unidad
-    print('hola')
     id_usuario= request.user.id
     pedido = get_object_or_404(Pedido,pk=id_pedido)
     numero=pedido.numero_pedido
@@ -265,6 +285,20 @@ def autorizar_pedidos(request, id_pedido):#autoria el pedido de cada unidad
     pedido.save()
     url = reverse('pedido_numero', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
+
+def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada unidad
+
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
+    numero=pedido.numero_pedido
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+    autorizacion_pedido.save()
+    pedido.aprobado_oficina= True
+    pedido.save()
+    url = reverse('pedido_numero', kwargs={'numero': numero})
+    return redirect(f"{url}?success=Pedido autorizado correctamente")
+
 def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos el lamacen
     pedido = get_object_or_404(Pedido,pk=id_pedido)
     usuario = get_object_or_404(Usuario, pk= id_usuario)
@@ -312,10 +346,13 @@ def imprecion_solicitud(request,numero):
 def generate_pdf(request, numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
+    autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
+    user_autorizacion = f"{autorizacion[0].usuario.persona.nombre} { autorizacion[0].usuario.persona.apellidos }" 
 
     context = {
         'data': pedido,
-        'usuario_pedido':user_pedido
+        'usuario_pedido':user_pedido,
+        'user_autorizacion':user_autorizacion
     }
     html_string = render_to_string('imprimir/solicitud.html', context)
     response = HttpResponse(content_type='application/pdf')
