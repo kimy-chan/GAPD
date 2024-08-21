@@ -15,6 +15,6 @@ urlpatterns = [
     path('oficinas/<int:id_unidad>',oficinas_listar, name='oficinas'),
     path('crear_oficinas',crear_oficinas, name='crear_oficinas'),
     path('Crear_unidad_secretaria', Crear_unidad_secretaria, name='Crear_unidad_secretaria'),
-        path('mi_perfil/<int:id_usuario>', mi_perfil, name='mi_perfil'),
-             path('buscar/cuenta/<str:email>', buscar_cuenta, name='buscar_cuenta')
+    path('mi_perfil/<int:id_usuario>', mi_perfil, name='mi_perfil'),
+    path('buscar/cuenta/<str:email>', buscar_cuenta, name='buscar_cuenta')
 ]

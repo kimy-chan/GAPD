@@ -31,10 +31,12 @@
                 <td>{{cuentas.unidad.nombre}}</td>
                 <td>{{cuentas.oficina.nombre}}</td>
                 <td>{{cuentas.username}}</td>
-                {% if cuentas.encargado %}
-                <td>Encargado</td>
+                {% if cuentas.cargo == "Encargado_oficina" %}
+                <td>Encargado oficina</td>
+                {% elif cuentas.cargo == "Encargado_unidad" %}
+                <td>Encargado Unidad</td>
                 {% else %}
-                <td>Personal</td>
+                <td>{{cuentas.cargo}}</td>
                 {% endif %}
 
                 <td>{{cuentas.rol}}</td>

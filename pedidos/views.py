@@ -117,20 +117,38 @@ def cambiar_estado_pedido(request):
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
 
 #------------------------------
-def listar_pedidos(request):
-    listando_pedidos = Pedido.objects.filter(aprobado_unidad=True).distinct('usuario')
-    context={
-       'data':listando_pedidos
+def listar_pedidos_usuarios_almacen(request):
+ 
+    pedidos_unidad = Pedido.objects.filter(
+        aprobado_oficina=True,
+        aprobado_unidad=True
+    ).order_by('numero_pedido')
+    pedidos_unicos = {}
+    for pedido in pedidos_unidad:
+        if pedido.numero_pedido not in pedidos_unicos:
+            pedidos_unicos[pedido.numero_pedido] = pedido
+
+    pedidos_unicos_list = list(pedidos_unicos.values())
+
+
+    context = {
+        'data': pedidos_unicos_list
     }
+
     return render(request, 'pedidos/listar_pedido.html', context)
 
-def listando_pedido_almacen(request, id_usuario):
-    pedido = Pedido.objects.filter(aprobado_unidad=True, usuario=id_usuario) 
-    pedido = paginador_general(request, pedido)      
+    
+
+
+
+def listando_pedido_almacen(request, numero):
+    pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
         'data': pedido
-        }
-    return render(request, 'pedidos/lintando.pedidos.almacen.html', context)
+    }
+    return render(request, 'pedidos/listando.pedidos.almacen.html', context)
+
+
 
 def lista_pedido_por_id(request, id_pedido):
     pedido=get_object_or_404(Pedido, pk= id_pedido)
@@ -191,7 +209,7 @@ def mostrar_informacion_pedidio_aprobaciones(request,id_pedido):
             'unidad':aprobacion.usuario.unidad.nombre,
             'aprobacion':aprobacion.estado_autorizacion,
             'nombre':aprobacion.usuario.persona.nombre + " " + aprobacion.usuario.persona.apellidos ,
-            'oficina':aprobacion.usuario.oficina.nombre,
+            'oficina':aprobacion.usuario.cargo,
             'fecha': aprobacion.fecha_de_autorizacion.strftime('%Y-%m-%d') if aprobacion.fecha_de_autorizacion else None
             }
             data.append(informacion)
@@ -224,8 +242,6 @@ def listar_pedidos_unidad(request, id_usuario):
         usuario__unidad=usuario.unidad,
         aprobado_oficina=True
     ).order_by('numero_pedido')
-
-
     pedidos_unicos = {}
     for pedido in pedidos_unidad:
         if pedido.numero_pedido not in pedidos_unicos:

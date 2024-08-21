@@ -15,6 +15,7 @@
                 <th>Material</th>
                 <th>Cantidad de pedido</th>
                 <th>Cantidad de pedido 2</th>
+                <th>Fecha</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -28,7 +29,7 @@
 
                 <td>{{ pedido.cantidad_pedida }} {{ pedido.unidad_manejo }}</td>
 
-                {% if pedido.aprobado_unidad == false %}
+                {% if pedido.aprobado_oficina == false %}
                 <td>
                     {{ pedido.sub_cantidad_pedida }}
                     <div class="form-container">
@@ -56,10 +57,15 @@
                     </div>
                 </td>
                 {% else %}
-                <td></td>
+                <td>{{ pedido.sub_cantidad_pedida }} </td>
                 {% endif %}
+
+
+                <td>{{ pedido.fecha_pedido|date:"Y-m-d H:i:s" }}</td>
+
                 <td>
-                    {% if pedido.aprobado_unidad == None %}
+
+                    {% if pedido.aprobado_oficina == None %}
                     <div class="row">
                         <div class="col-6">
                             <a href="{% url 'autorizar_pedido_oficina' pedido.id %}" class="btn btn-success btn-sm">
@@ -72,11 +78,7 @@
                             </a>
                         </div>
                     </div>
-                    {% elif pedido.aprobado_unidad %}
-                    <a href="{% url 'imprimir' pedido.id %}" class="btn btn-danger btn-sm">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                    {% elif pedido.aprobado_unidad == False %}
+                    {% elif pedido.aprobado_oficina == False %}
                     <button class="btn btn-danger btn-sm" disabled>
                         <i class="fas fa-times"></i> Rechazado
                     </button>
