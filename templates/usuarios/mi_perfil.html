@@ -33,10 +33,13 @@
             <div class="profile-item">
                 <span class="profile-label">Cargo:</span>
                 <span class="profile-value">
-                    {% if user.encargado %}
-                    Encargado
+                    {% if user.cargo == "Encargado_unidad" %}
+                    Encargado unidad
+                    {% elif user.cargo == "Encargado_oficina" %}
+                    Encargado oficina
                     {% else %}
-                    Personal
+                    {{ user.cargo }}
+
                     {% endif %}
                 </span>
             </div>

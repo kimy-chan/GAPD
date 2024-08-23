@@ -103,6 +103,39 @@ def generar_numero_unico():
     return random.randint(1000, 9999)
 
 def cambiar_estado_pedido(request):
+    id_usuario= request.user.id
+    usuario = get_object_or_404(Usuario, pk=id_usuario)
+
+    if usuario.cargo == 'Encargado_unidad':
+        if request.method == 'GET':
+            ids = request.GET.getlist('id')
+            numero = generar_numero_unico()
+            for id in ids:
+                pedido= get_object_or_404(Pedido, pk=id)
+                pedido.estado_de_pedido='realizado'
+                pedido.numero_pedido=numero
+                pedido.aprobado_oficina= True
+                pedido.aprobado_unidad = True
+                pedido.save()
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido.save()
+            return JsonResponse({'status': 'success', 'ids': ids})
+        
+    if usuario.cargo == 'Encargado_oficina':
+        if request.method == 'GET':
+            ids = request.GET.getlist('id')
+            numero = generar_numero_unico()
+            for id in ids:
+                pedido= get_object_or_404(Pedido, pk=id)
+                pedido.estado_de_pedido='realizado'
+                pedido.numero_pedido=numero
+                pedido.aprobado_oficina= True
+                pedido.save()
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido.save()
+            return JsonResponse({'status': 'success', 'ids': ids})
+    
     if request.method == 'GET':
         ids = request.GET.getlist('id')
         numero = generar_numero_unico()
@@ -307,13 +340,15 @@ def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada uni
     id_usuario= request.user.id
     pedido = get_object_or_404(Pedido,pk=id_pedido)
     numero=pedido.numero_pedido
+    
     usuario = get_object_or_404(Usuario, pk= id_usuario)
     autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
     autorizacion_pedido.save()
     pedido.aprobado_oficina= True
     pedido.save()
-    url = reverse('pedido_numero', kwargs={'numero': numero})
+    url = reverse('pedido_numero_oficina', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
+   
 
 def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos el lamacen
     pedido = get_object_or_404(Pedido,pk=id_pedido)

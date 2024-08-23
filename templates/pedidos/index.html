@@ -235,6 +235,7 @@
 
                 if (result.data.data) {
                     document.getElementById("mensaje").innerHTML = result.data.data
+                    result
                 } else if (result.data.error) {
                     document.getElementById("mensaje").innerHTML = result.data.error
                 }

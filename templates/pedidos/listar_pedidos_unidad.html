@@ -94,7 +94,7 @@
                     </div>
                 </td>
                 {% else %}
-                <td></td>
+                <td>{{ pedido.sub_cantidad_pedida }} </td>
                 {% endif %}
                 <td>
                     {% if pedido.aprobado_unidad == None %}
@@ -110,10 +110,6 @@
                             </a>
                         </div>
                     </div>
-                    {% elif pedido.aprobado_unidad %}
-                    <a href="{% url 'imprimir' pedido.id %}" class="btn btn-danger btn-sm">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
                     {% elif pedido.aprobado_unidad == False %}
                     <button class="btn btn-danger btn-sm" disabled>
                         <i class="fas fa-times"></i> Rechazado
