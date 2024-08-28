@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from datetime import datetime
 
+from .utils.enviar_notificacion import enviar_notificacion_pedido
 
 from .models import Pedido, Autorizacion_pedido
 
@@ -120,6 +121,7 @@ def cambiar_estado_pedido(request):
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
+                enviar_notificacion_pedido(pedido)
             return JsonResponse({'status': 'success', 'ids': ids})
         
     if usuario.cargo == 'Encargado_oficina':
@@ -134,6 +136,7 @@ def cambiar_estado_pedido(request):
                 pedido.save()
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
+                enviar_notificacion_pedido(pedido)
             return JsonResponse({'status': 'success', 'ids': ids})
     
     if request.method == 'GET':
@@ -143,7 +146,8 @@ def cambiar_estado_pedido(request):
             pedido= get_object_or_404(Pedido, pk=id)
             pedido.estado_de_pedido='realizado'
             pedido.numero_pedido=numero
-            pedido.save()    
+            pedido.save()
+            enviar_notificacion_pedido(pedido)    
         return JsonResponse({'status': 'success', 'ids': ids})
     
     # Si la solicitud no es GET, retorna un error

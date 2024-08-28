@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'persona',
     'proveedor',
     'materiales',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -76,7 +78,17 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'almacenes.wsgi.application'
+
+
+ASGI_APPLICATION = 'almacenes.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 
 # Database
@@ -142,6 +154,7 @@ AUTH_USER_MODEL='usuarios.Usuario'#modificacion de la tabla user
 
 
 LOGIN_REDIRECT_URL = '/'
+
 
 """EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
