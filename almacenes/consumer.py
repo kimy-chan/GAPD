@@ -4,7 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class NotificacionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # Unirse a un grupo de notificaciones
+      
         await self.channel_layer.group_add(
             'notificaciones',
             self.channel_name
@@ -19,7 +19,6 @@ class NotificacionConsumer(AsyncWebsocketConsumer):
         )
 
     async def enviar_pedido(self, event):
-       
         await self.send(text_data=json.dumps({
             'type': 'pedido',
             'pedido': event['pedido']
