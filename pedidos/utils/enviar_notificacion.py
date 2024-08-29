@@ -9,8 +9,8 @@ def enviar_notificacion_pedido(pedido):
         {
             'type': 'enviar_pedido',
             'pedido': {
-                'nombre': pedido.usuario.persona.nombre,
-                #'codigo': pedido.codigo,
+                'nombre': f"{pedido.usuario.persona.nombre }  {pedido.usuario.persona.apellidos}",
+                'codigo': pedido.numero_pedido,
                 'cantidad_pedida': pedido.cantidad_pedida,
                
             }
