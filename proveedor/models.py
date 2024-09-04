@@ -7,6 +7,7 @@ class Proveedor(models.Model):
     nit = models.CharField(max_length=20)
     telefono = models.CharField(max_length=20)
     correo = models.EmailField(max_length=255)
+    descripcion= models.TextField( null=True)
     pais = models.CharField(max_length=100)
     direccion = models.CharField(max_length=100)
     fecha_creacion= models.DateTimeField(auto_now_add=True)
