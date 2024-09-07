@@ -101,7 +101,8 @@ def realizar_pedido(request):
            return JsonResponse({"error":"Ocurrio un error al realiza el pedido"})
            
 def generar_numero_unico():
-    return random.randint(1000, 9999)
+    pedidos = Pedido.objects.count()
+    return pedidos
 
 def cambiar_estado_pedido(request):
     id_usuario= request.user.id
@@ -274,9 +275,9 @@ def todos_mis_pedidos(request):
     return render(request, 'pedidos/mis_pedidos.html', context)
 
 def listar_pedidos_unidad(request, id_usuario):
-    usuario = get_object_or_404(Usuario, pk=id_usuario)
+    usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
     pedidos_unidad = Pedido.objects.filter(
-        usuario__unidad=usuario.unidad,
+        #usuario__unidad=usuario.unidad,
         aprobado_oficina=True
     ).order_by('numero_pedido')
     pedidos_unicos = {}
@@ -285,8 +286,7 @@ def listar_pedidos_unidad(request, id_usuario):
             pedidos_unicos[pedido.numero_pedido] = pedido
 
     pedidos_unicos_list = list(pedidos_unicos.values())
-
-
+    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list)
     context = {
         'data': pedidos_unicos_list
     }
@@ -305,7 +305,7 @@ def listar_pedidos_oficina(request, id_usuario):
             pedidos_unicos[pedido.numero_pedido] = pedido
 
     pedidos_unicos_list = list(pedidos_unicos.values())
-
+    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list)
 
     context = {
         'data': pedidos_unicos_list

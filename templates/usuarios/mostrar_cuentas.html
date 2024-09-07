@@ -13,8 +13,9 @@
     <table class="table table-striped mt-4">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">Nombre Completo</th>
                 <th scope="col">C.I</th>
+                <th scope="col">Nombre Completo</th>
+
                 <th scope="col">unidad</th>
                 <th scope="col">oficina</th>
                 <th scope="col">Usuario</th>
@@ -26,19 +27,19 @@
         <tbody>
             {%for cuentas in data %}
             <tr>
-                <td>{{cuentas.persona.nombre}} {{cuentas.persona.apellidos}}</td>
                 <td>{{cuentas.persona.cedula_identidad}}</td>
+                <td>{{cuentas.persona.nombre}} {{cuentas.persona.apellidos}}</td>
+
                 <td>{{cuentas.unidad.nombre}}</td>
                 <td>{{cuentas.oficina.nombre}}</td>
                 <td>{{cuentas.username}}</td>
                 {% if cuentas.cargo == "Encargado_oficina" %}
-                <td>Encargado oficina</td>
+                <td>Encargado de la Oficina</td>
                 {% elif cuentas.cargo == "Encargado_unidad" %}
-                <td>Encargado Unidad</td>
+                <td>Inmediato Superior</td>
                 {% else %}
-                <td>{{cuentas.cargo}}</td>
+                <td>Personal de la Oficina</td>
                 {% endif %}
-
                 <td>{{cuentas.rol}}</td>
 
 

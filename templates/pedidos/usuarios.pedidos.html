@@ -47,6 +47,7 @@
         <thead>
             <tr>
                 <th>Codigo</th>
+                <th>C.I</th>
                 <th>Nombre completo</th>
                 <th>Oficina</th>
                 <th>Fecha</th>
@@ -57,7 +58,8 @@
         <tbody>
             {% for pedido in data %}
             <tr>
-                <td>{{ pedido.material.codigo }}</td>
+                <td>{{ pedido.numero_pedido}}</td>
+                <td>{{ pedido.usuario.persona.cedula_identidad }}</td>
                 <td>{{ pedido.usuario.persona.nombre }} {{ pedido.usuario.persona.apellidos }}</td>
                 <td>{{ pedido.usuario.oficina.nombre }}</td>
 

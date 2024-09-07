@@ -19,10 +19,8 @@
                 </label>
                 {{ form_usuario.item}}
                 {{form_usuario.item.errors}}
-                <label for="{{ form_usuario.cargi.id_for_label }}"> {{form_usuario.cargo.label}}
-                </label>
-                {{ form_usuario.cargo}}
-                {{form_usuario.cargo.errors}}
+
+
                 <label for="{{ form_usuario.username.id_for_label }}"> {{ form_usuario.username.label}}: </label>
                 {{ form_usuario.username }}
                 {{form_usuario.username.errors}}
@@ -42,7 +40,7 @@
                     </div>
                     <div class="col-12 pt-3 text-center ">
                         <button onclick="listar_unidades()" type="button" class="btn btn-primary btn-sm">
-                            Actulizar
+                            Actualizar
                         </button>
                         <button onclick="Listar_secretarias()" type="button" class="btn btn-success btn-sm"
                             data-toggle="modal" data-target="#modalUnidad">
@@ -91,8 +89,6 @@
                 </label>
                 {{ form_usuario.cargo}}
                 {{form_usuario.encargado_unidad.errors}}
-
-
             </div>
 
             <div class="text-center mt-3">

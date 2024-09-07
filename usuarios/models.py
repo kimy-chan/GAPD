@@ -45,14 +45,14 @@ def crear_entidades_por_defecto(sender, **kwargs):
     
 class Usuario(AbstractBaseUser, PermissionsMixin):
     CARGO_ROLE_CHOICES=[
-        ('Encargado_unidad','Encargado unidad'),
-        ('Encargado_oficina','Encargado oficina'),
-        ('Usuario','Usuario'),
+        ('Encargado_unidad','Inmedianto Superior'),
+        ('Encargado_oficina','Responsable de la oficina'),
+        ('Usuario','Personal de la oficina'),
     ]
     ROLES_CHOICES=[
         ('Administrador','Administrador'),
         ('Super_administrador','Super administrador'),
-        ('Axuliar','Axuliar'),
+        ('Auxiliar1','Auxiliar de Almacen'),
         ('Usuario','Usuario')
     ]
     username= models.CharField(max_length=150, unique=True, blank=False, null=False, verbose_name='Usuario')
