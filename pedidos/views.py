@@ -167,7 +167,7 @@ def listar_pedidos_usuarios_almacen(request):
             pedidos_unicos[pedido.numero_pedido] = pedido
 
     pedidos_unicos_list = list(pedidos_unicos.values())
-
+    pedidos_unicos_list=paginador_general(request, pedidos_unicos_list)
 
     context = {
         'data': pedidos_unicos_list
@@ -194,7 +194,9 @@ def lista_pedido_por_id(request, id_pedido):
         'id':pedido.id,
         'codigo':pedido.material.codigo,
         'nombre': pedido.material.nombre,
-        'cantidad': pedido.cantidad_pedida
+        'cantidad': pedido.cantidad_pedida,
+        'subcantidad': pedido.sub_cantidad_pedida,
+        'material':pedido.material.id
         
     }
     return JsonResponse({'data':data})
@@ -206,8 +208,29 @@ def realizar_entrega(request):
         if not cantidad_entregada:
             return JsonResponse({'error':'Campo obligatorio'})
         pedido = get_object_or_404(Pedido,pk= id)
+        if(pedido.cantidad_entrega > 0):
+                return JsonResponse({'data':f'Este pedido ya fue realizada'})
+        if(pedido.sub_cantidad_pedida > 0):
+        
+            if int(cantidad_entregada) < 1:
+                return JsonResponse({'data':'Cantidad minima es: 1'})
+            elif int(cantidad_entregada) > pedido.sub_cantidad_pedida:
+                return JsonResponse({'data':f'Cantidad maxima es:{pedido.sub_cantidad_pedida}'})
+        
+            cantidad_pedida = pedido.sub_cantidad_pedida - int(cantidad_entregada)
+            total_stock = pedido.material.stock
+            nuevo_stock = total_stock + cantidad_pedida
+            pedido.fecha_entrega_salida = datetime.now()
+            pedido.cantidad_entrega = cantidad_entregada
+            pedido.estado_pedido_almacen ='Completada'
+            pedido.material.stock = nuevo_stock
+            pedido.save()
+            pedido.material.save()
+            return JsonResponse({'data':'Enviado'})
+        
+
         if int(cantidad_entregada) < 1:
-             return JsonResponse({'data':'Cantidad minima es: 1'})
+            return JsonResponse({'data':'Cantidad minima es: 1'})
         elif int(cantidad_entregada) > pedido.cantidad_pedida:
             return JsonResponse({'data':f'Cantidad maxima es:{pedido.cantidad_pedida}'})
         
@@ -361,8 +384,7 @@ def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos 
     autorizacion_pedido.save()
     pedido.aprobado_almacen= True
     pedido.save()
-    return redirect(f"{reverse('informacion_pedido', kwargs={'id_usuario': id_usuario})}?success=Pedido autorizado correctamente")
-
+    return redirect('informacion_pedido', pedido.numero_pedido)
 
 
 
@@ -402,8 +424,7 @@ def generate_pdf(request, numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
-    user_autorizacion = f"{autorizacion[0].usuario.persona.nombre} { autorizacion[0].usuario.persona.apellidos }" 
-
+    user_autorizacion = f"{autorizacion[0].usuario.persona.nombre} { autorizacion[0].usuario.persona.apellidos }"   
     context = {
         'data': pedido,
         'usuario_pedido':user_pedido,
@@ -421,7 +442,6 @@ def generate_pdf(request, numero):
 
 
 def sub_pedido(request):
-    print(request.POST)
     pedido= request.POST['pedido']
     sub_pedido= request.POST['sub_pedido']
     material= request.POST['material']
@@ -437,6 +457,31 @@ def sub_pedido(request):
     
 
 
+    pedido.sub_cantidad_pedida= sub_pedido
+
+    cantidad_p= pedido.cantidad_pedida
+    
+    material_existente.stock += cantidad_p
+    stock= material_existente.stock - int(sub_pedido)
+    material_existente.stock=stock
+    material_existente.save()
+    pedido.save()
+    return JsonResponse({'data':'guardado'})
+
+def sub_pedido_almacen(request):
+    pedido = request.GET.get('id_pedido')
+    sub_pedido = request.GET.get('cantidad')
+    
+    material= request.GET.get('material')
+    material_existente= get_object_or_404(Materiales, pk=material)
+    if not sub_pedido:
+          return JsonResponse({'data':'Ingrese un valor'})
+    if int(sub_pedido) <= 0:
+        return JsonResponse({'data':'No se puede asignar material menor a 0'})
+    if int(sub_pedido) > material_existente.stock:
+        return JsonResponse({'data':'No se puede asignar material mayor al stock'})
+    pedido = get_object_or_404(Pedido, pk= pedido)
+    
     pedido.sub_cantidad_pedida= sub_pedido
 
     cantidad_p= pedido.cantidad_pedida

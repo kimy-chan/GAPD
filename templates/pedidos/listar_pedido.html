@@ -9,16 +9,17 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>Codigo</th>
                     <th>Nombre completo</th>
                     <th>Unidad</th>
                     <th>Fecha</th>
-
                     <th>Informacion</th>
                 </tr>
             </thead>
             <tbody>
                 {% for pedido in data %}
                 <tr>
+                    <td>{{ pedido.numero_pedido}}</td>
                     <td> {{ pedido.usuario.persona.nombre }} {{ pedido.usuario.persona.apellidos}} </td>
                     <td>{{ pedido.usuario.unidad.nombre}}</td>
                     <td>{{ pedido.fecha_pedido}}</td>
@@ -30,7 +31,7 @@
             </tbody>
         </table>
     </div>
-
+    {% include 'paginador/paginador.html' %}
 </div>
 
 {% endblock index %}

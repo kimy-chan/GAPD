@@ -40,7 +40,7 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Producto</th>
-                            <th>Descripción</th>
+
                             <th>Cantidad de Pedido</th>
                             <th>Cantidad de Entrega</th>
                             <th>Estado de Entrega</th>
@@ -52,7 +52,7 @@
                         {% for pedido in data %}
                         <tr>
                             <td>{{ pedido.material.nombre }}</td>
-                            <td>{{ pedido.descripcion }}</td>
+
                             <td>{{ pedido.cantidad_pedida }}</td>
                             <td>{{ pedido.cantidad_entrega }}</td>
                             <td>{{ pedido.estado_pedido_almacen }}</td>
@@ -65,7 +65,7 @@
                             </td>
                             <td>
                                 {% if pedido.estado_pedido_almacen == "Completada" %}
-                                <a href="{% url 'imprimir' pedido.id %}" class="btn btn-danger btn-sm">PDF</a>
+                                Entregado
                                 {% elif pedido.aprobado_almacen %}
                                 <button onclick="listar_pedido_id('{{ pedido.id }}')" type="button"
                                     class="btn btn-primary btn-sm" data-toggle="modal" data-target="#example_entrega">
@@ -88,7 +88,11 @@
             </div>
         </div>
     </div>
-
+    <div class="text-center mb-3">
+        <a href="{% url 'imprimir' data.0.numero_pedido %}" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimir
+        </a>
+    </div>
     <!-- Paginador -->
     <div class="row justify-content-center mt-4">
         {% include 'paginador/paginador.html' %}
@@ -125,10 +129,24 @@
                             <label for="product_quantity">Cantidad:</label>
                             <p id="cantidad" class="form-control-plaintext"></p>
                         </div>
+                        <div class="form-group">
+                            <label for="product_quantity">Sub cantidad:</label>
+
+                            <p id="subCantidad" class="form-control-plaintext"></p>
+                            <input id="id_pedido" type="number" hidden class="form-control">
+                            <input id="sub_cantidad_pedida" type="number" value="0" class="form-control">
+                            <input id="material_id" type="number" hidden>
+                            <span id="mensaje_sub"></span>
+                            <br>
+                            <button id="sub_cantidad_button" class="btn btn-warning btn-sm" type="submit">Modificar
+                                cantidad</button>
+
+                        </div>
 
                         <!-- Campo para ingresar la cantidad entregada -->
                         <div class="form-group">
                             <label for="id_entrega">Ingrese la cantidad entregada:</label>
+
                             <input type="number" id="id_entrega" name="cantidad_entregada" class="form-control"
                                 required>
                         </div>
@@ -150,10 +168,15 @@
         axios.get(`lista_pedido_por_id/${id}`)
             .then((result) => {
                 if (result.data.data) {
+                    console.log(result.data.data);
+
                     document.getElementById('pedido_id').value = result.data.data.id;
+                    document.getElementById('material_id').value = result.data.data.material;
+
                     document.getElementById('producto').innerHTML = result.data.data.nombre
                     document.getElementById('codigo').innerHTML = result.data.data.codigo
                     document.getElementById('cantidad').innerHTML = result.data.data.cantidad
+                    document.getElementById('subCantidad').innerHTML = result.data.data.subcantidad
                     document.getElementById('id').innerHTML = result.data.data.id
                 }
 
@@ -178,6 +201,43 @@
                 alert(e)
             })
     })
+
+
+    document.getElementById('sub_cantidad_button').addEventListener("click", (e) => {
+
+        e.preventDefault();
+        const id_pedido = document.getElementById('pedido_id').value;
+
+        const material = document.getElementById('material_id').value;
+
+        const cantidad = document.getElementById(`sub_cantidad_pedida`).value;
+
+
+        const params = new URLSearchParams({
+            id_pedido: id_pedido,
+            cantidad: cantidad,
+            material: material
+        }).toString();
+        const url = `{% url 'sub_pedido_almacen' %}?${params}`;
+
+        axios.get(url)
+            .then((result) => {
+                if (result.data.data) {
+                    document.getElementById('mensaje_sub').innerHTML = result.data.data
+                    listar_pedido_id(id_pedido)
+                }
+
+
+            })
+            .catch((err) => {
+
+            });
+
+
+    })
+
+
+
 </script>
 <script src="{% static 'js/alertas.js' %}"></script>
 
