@@ -1,25 +1,29 @@
-document.getElementById('guardar_secretaria').addEventListener('click', (e) => {
-    e.preventDefault()
-    const form = document.getElementById('form_secretaria')
 
-    axios.post('crear_secretaria_listar', form)
+document.getElementById('guardar_secretaria').addEventListener('click', (e) => {
+    e.preventDefault();
+    const form = document.getElementById('form_secretaria');
+    const formData = new FormData(form);
+
+    axios.post(crearSecretariaUrl, formData)
         .then((resultado) => {
             if (resultado.data.error) {
-                document.getElementById('error').innerHTML = resultado.data.error
+                document.getElementById('error').innerHTML = resultado.data.error;
             } else if (resultado.data.data) {
-                document.getElementById('error').innerHTML = ''
-                Listar_secretaria()
+                document.getElementById('error').innerHTML = '';
+                Listar_secretaria();
             }
         })
         .catch((e) => {
-            alert('error de servidor')
-        })
-})
+            alert('Error de servidor');
+        });
+});
 
 function Listar_secretaria() {
-    axios.get('crear_secretaria_listar',)
+    axios.get('crear_secretaria_listar')
         .then((respuesta) => {
             if (respuesta.data.data) {
+                console.log(respuesta.data.data);
+
                 const tbody = document.getElementById('tbody_table');
                 tbody.innerHTML = '';
                 respuesta.data.data.forEach(element => {

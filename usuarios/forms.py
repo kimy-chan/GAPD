@@ -42,4 +42,20 @@ class Usuario_formulario(forms.ModelForm):
         if(password != confirmar_password):
             self.add_error('confirmar_password', 'Las contraseñas no son iguales')
 
+class Usuario_formulario_actulizar(forms.ModelForm):
+    class Meta:
+        model=Usuario
+        fields=['oficina','email','cargo', 'item','rol','crear','editar','eliminar','unidad']
+        widgets={
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'item': forms.TextInput(attrs={'class': 'form-control'}),
+            
+            'cargo':forms.Select(attrs={'class': 'form-control'}),
+            'crear': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+             'editar': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+              'eliminar': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+              'rol':forms.Select(attrs={'class': 'form-control'})
+             
+        }
         
+       

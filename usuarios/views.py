@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth import authenticate, logout, login
 from django.db import IntegrityError
-from .forms import Usuario_formulario
+from .forms import Usuario_formulario, Usuario_formulario_actulizar
 
 
 
@@ -33,12 +33,11 @@ def actulizar_cuenta_usuario(request, id_usuario, id_persona):
     usuario= get_object_or_404(Usuario, pk=id_usuario)
     persona = get_object_or_404(Persona,pk=id_persona)
     formulario_persona= Formulario_persona(request.POST or None, instance=persona)
-    usuario_formulario= Usuario_formulario(request.POST or None, instance=usuario)
+    usuario_formulario= Usuario_formulario_actulizar(request.POST or None, instance=usuario)
     if request.method=='POST':
         if formulario_persona.is_valid() and usuario_formulario.is_valid():
             formulario_persona.save()
             usuario= usuario_formulario.save(commit=False)
-            usuario.set_password(usuario_formulario.cleaned_data['password'])
             usuario.persona=persona
             usuario.save()
             return redirect('listando_usuarios')
@@ -48,7 +47,7 @@ def actulizar_cuenta_usuario(request, id_usuario, id_persona):
         'form_persona':formulario_persona,
         'form_usuario':usuario_formulario
     }
-
+    print("hola")
     return render(request, 'usuarios/actulizar_cuenta_formulario.html', context)
 
     
@@ -125,6 +124,8 @@ def crear_unidad_listar(request):
         unidad= list(Unidad.objects.all().values())
         return JsonResponse({'data':unidad})
     
+    
+
 
 def oficinas_listar(request, id_unidad):
     oficinas= list(Oficinas.objects.filter(unidad=id_unidad).values())
