@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import crear_categoria, crear_material, listado_material,informacion_material, softDelete, editar_material, inprimir
+from .views import crear_categoria,eliminar_categoria,actualizar_categoria,listar_categoria_id ,crear_material, listado_material,informacion_material, softDelete, editar_material, inprimir
 urlpatterns = [
     path('crear_categoria', crear_categoria, name='crear_categoria'),
       path('crear_material', crear_material, name='crear_material'), 
@@ -9,5 +9,8 @@ urlpatterns = [
      path('eliminar/<int:id_material>/<int:id_categoria>',softDelete, name='eliminar' ),
       path('editar_material/<int:id_material>',editar_material, name='editar_material' ),
 
-      path('imprimi/<int:id>', inprimir, name='imprimir' )
+      path('imprimi/<int:id>', inprimir, name='imprimir' ),
+           path('eliminar/<int:id>', eliminar_categoria, name='eliminar_categoria' ),
+         path('listar_categoria_id/<int:id>', listar_categoria_id, name='listar_categoria_id' ),
+              path('actualizar_categoria', actualizar_categoria, name='actualizar_categoria' )
 ]

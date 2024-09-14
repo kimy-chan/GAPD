@@ -111,7 +111,7 @@
             e.preventDefault();
             const email = document.getElementById('email').value;
             if (!email) {
-                return document.getElementById('mensaje').innerHTML = 'Ingrese su email'
+                return document.getElementById('mensaje').innerHTML = 'Ingrese su email';
             }
             axios.get(`buscar/cuenta/${email}`)
                 .then((result) => {
@@ -137,13 +137,12 @@
                                 </thead>
                                 <tbody>`;
 
-                        // Agregar filas a la tabla
                         result.data.data.forEach(element => {
                             tableHtml += `
                                 <tr>
                                     <td>${element.nombres}</td>
                                     <td>${element.username}</td>
-                                    <td><button class="btn btn-secondary btn-sm select-btn" data-id="${element.id}">Seleccionar</button></td>
+                                    <td><button class="btn btn-secondary btn-sm select-btn" data-id="${element.id}"  data-email="${element.email}">Seleccionar</button></td>
                                 </tr>`;
                         });
 
@@ -159,14 +158,33 @@
                 });
         });
 
-        // Delegar el evento click a los botones de seleccionar
         document.addEventListener('click', (e) => {
             if (e.target && e.target.matches('.select-btn')) {
+                console.log(e.target);
+
+                const email = e.target.getAttribute('data-email');
                 const id = e.target.getAttribute('data-id');
-                console.log('Seleccionado:', id);
-                // Aquí puedes añadir la lógica para manejar la selección del usuario
+                if (email && id) {
+                    console.log('Enviando correos a:', email);
+                    enviar_correos(email, id);
+                } else {
+                    console.log('No se encontró el correo electrónico');
+                }
             }
         });
+
+        function enviar_correos(email, id_usuario) {
+
+            var url = baseUrl.replace('0', email, id_usuario);
+            axios.get(url)
+                .then((result) => {
+                    console.log(result);
+
+                })
+                .catch((e) => {
+                    alert(e)
+                })
+        }
     </script>
 </body>
 

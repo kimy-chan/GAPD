@@ -1,5 +1,5 @@
 from django.urls import path, include 
-from .views  import login_sistema,mi_perfil,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
+from .views  import login_sistema,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
 urlpatterns = [
 
     path("", login_sistema, name="login"),
@@ -19,5 +19,7 @@ urlpatterns = [
     path('crear_oficinas',crear_oficinas, name='crear_oficinas'),
     path('Crear_unidad_secretaria', Crear_unidad_secretaria, name='Crear_unidad_secretaria'),
     path('mi_perfil/<int:id_usuario>', mi_perfil, name='mi_perfil'),
-    path('buscar/cuenta/<str:email>', buscar_cuenta, name='buscar_cuenta')
+    path('buscar/cuenta/<str:email>', buscar_cuenta, name='buscar_cuenta'),
+       path('enviar_correos/<str:email>/<int:id_usuario>', enviar_correos, name='enviar_correos'),
+              path('cambiar_contrasena/<int:id_usuario>', cambiar_contrasena, name='cambiar_contrasena')
 ]

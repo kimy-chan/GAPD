@@ -4,6 +4,7 @@ from django.db import models
 class Categoria(models.Model):
     codigo_clasificacion = models.CharField(max_length=100, unique=True , blank=False, null=False, error_messages={'unique':'El codigo de la categoria ya existe'})
     nombre= models.CharField(max_length=200, blank=False, unique=True, null=False, error_messages={'unique':'El nombre de la categoria ya existe'})
+    es_habilitado=models.BooleanField(default=True)
     fecha_creacion= models.DateField(auto_now_add=True)
 
     def __str__(self) -> str:

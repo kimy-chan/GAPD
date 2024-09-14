@@ -1,7 +1,12 @@
 from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth import authenticate, logout, login
 from django.db import IntegrityError
+from django.urls import reverse
 from .forms import Usuario_formulario, Usuario_formulario_actulizar
+from django.template.loader import get_template
+
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 
 
 
@@ -194,9 +199,42 @@ def buscar_cuenta(request, email):
         data={
             'id':cuenta.id,
             'nombres': cuenta.persona.nombre + cuenta.persona.nombre,
-            'username':cuenta.username
+            'username':cuenta.username,
+            'email':cuenta.email
         }
         cuentasEncontradas.append(data)
     if len(cuentasEncontradas) == 0:
          return  JsonResponse({'mensaje':'Cuenta no encontra'})
     return  JsonResponse({'data':cuentasEncontradas})
+
+
+def cambiar_contrasena(request, id):
+    print(id)
+    pass
+
+def enviar_correos(request, email):
+    
+    reset_link = request.build_absolute_uri(reverse('reset_password', args=[id]))
+    template = get_template('usuarios/correos.html')
+    context = {
+        'user_name': 'Nombre del Usuario',  # Aquí deberías obtener el nombre del usuario
+        'reset_link': 'https://example.com/reset-password',  # Aquí debes generar el enlace de restablecimiento real
+    }
+    content = template.render(context)
+    
+   
+    email_conf = EmailMultiAlternatives(
+        subject='Recuperación de Contraseña',
+        body='Este es el cuerpo en texto plano (opcional)',
+        from_email=settings.EMAIL_HOST_USER,
+        to=[email]
+    )
+    
+    email_conf.attach_alternative(content, "text/html")
+    
+    try:
+        email_conf.send()
+        return JsonResponse({'data': True})
+    except Exception as e:
+        print(f'Error al enviar el correo: {e}')
+        return JsonResponse({'data': False})

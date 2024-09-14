@@ -22,7 +22,7 @@ def crear_categoria(request):
             return JsonResponse({'errores':errors})
     else:
         formulario= Formulario_categoria()  
-    categorias = Categoria.objects.all().order_by('-fecha_creacion')
+    categorias = Categoria.objects.filter(es_habilitado=True ).order_by('-fecha_creacion')
     context={
         'form':formulario,
         'categorias':categorias
@@ -112,3 +112,27 @@ def inprimir(request, id):
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
     pisa_status = pisa.CreatePDF(html, dest=response)
     return response
+
+def listar_categoria_id(request, id):
+    categoria= get_object_or_404(Categoria, pk=id)
+    data={
+        'nombre':categoria.nombre,
+        'id':categoria.id
+    }
+    return JsonResponse(data)
+
+def actualizar_categoria(request):
+    id=request.POST['id']
+    nombre=request.POST['nombre']
+    if not  nombre  or not id:
+        return JsonResponse({'error':'Ingrese los campos'})
+    categoria= get_object_or_404(Categoria, pk=id)
+    categoria.nombre =nombre
+    categoria.save()
+    return JsonResponse({'data':True})
+def eliminar_categoria(request, id):
+    categoria= get_object_or_404(Categoria, pk=id)
+    categoria.es_habilitado=False
+    categoria.save()
+    return redirect('crear_categoria')
+

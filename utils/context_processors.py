@@ -3,7 +3,7 @@ from usuarios.models import Usuario
 from django.shortcuts import redirect
 
 def listado_categorias_sidebar(request):
-    categoria= Categoria.objects.all()
+    categoria= Categoria.objects.filter(es_habilitado=True)
     return  {'listado_categoria':categoria}
 
 def user_datos(request):
