@@ -160,8 +160,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'juanchocllu.tel20ch@tecba.edu.bo'
-EMAIL_HOST_PASSWORD = 'oqmf hnki oxkv evzd'
+EMAIL_HOST_USER = 'zaida.araca89@gmail.com'
+EMAIL_HOST_PASSWORD = 'ekot dfno eems jams'
 
 
 #ALLOWED_HOSTS = ['tudominio.com']
