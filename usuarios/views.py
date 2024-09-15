@@ -208,20 +208,39 @@ def buscar_cuenta(request, email):
     return  JsonResponse({'data':cuentasEncontradas})
 
 
-def cambiar_contrasena(request, id):
-    print(id)
-    pass
+def cambiar_contrasena(request, id_usuario):
+    user = get_object_or_404(Usuario, pk=id_usuario)
+    if request.method =='POST':
+        passw = request.POST['password']
+        newPass= request.POST['confirm_password']
+        if passw != newPass:
+            mensaje='Las contrasena no son iguales'
+            return render(request, 'usuarios/recetear.contrasena.html', {'mensaje':mensaje, 'id':id_usuario})
+        elif not passw or not newPass:
+            mensaje='Los campos son obligatorios'
+            return render(request, 'usuarios/recetear.contrasena.html',{'mensaje':mensaje, 'id':id_usuario})
+     
+        user.set_password(passw)
+        user.save()
+        return redirect('/')
+    else:
+        context={
+        'id':id_usuario
+        }
+        return render(request, 'usuarios/recetear.contrasena.html', context)
 
-def enviar_correos(request, email):
-    
-    reset_link = request.build_absolute_uri(reverse('reset_password', args=[id]))
+def enviar_correos(request, id_usuario):
+    user = get_object_or_404(Usuario, pk= id_usuario)
+    email = user.email
+    reset_link = request.build_absolute_uri(reverse('cambiar_contrasena', args=[user.id]))
+    print(reset_link)
     template = get_template('usuarios/correos.html')
+
     context = {
-        'user_name': 'Nombre del Usuario',  # Aquí deberías obtener el nombre del usuario
-        'reset_link': 'https://example.com/reset-password',  # Aquí debes generar el enlace de restablecimiento real
+        'user_name': user.persona.nombre +' '+ user.persona.apellidos , 
+        'reset_link': reset_link, 
     }
     content = template.render(context)
-    
    
     email_conf = EmailMultiAlternatives(
         subject='Recuperación de Contraseña',
@@ -234,7 +253,7 @@ def enviar_correos(request, email):
     
     try:
         email_conf.send()
-        return JsonResponse({'data': True})
+        return JsonResponse({'data': True, 'mensaje':'Correo enviado'})
     except Exception as e:
         print(f'Error al enviar el correo: {e}')
         return JsonResponse({'data': False})

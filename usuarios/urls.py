@@ -20,6 +20,6 @@ urlpatterns = [
     path('Crear_unidad_secretaria', Crear_unidad_secretaria, name='Crear_unidad_secretaria'),
     path('mi_perfil/<int:id_usuario>', mi_perfil, name='mi_perfil'),
     path('buscar/cuenta/<str:email>', buscar_cuenta, name='buscar_cuenta'),
-       path('enviar_correos/<str:email>/<int:id_usuario>', enviar_correos, name='enviar_correos'),
+       path('enviar_correos/<int:id_usuario>', enviar_correos, name='enviar_correos'),
               path('cambiar_contrasena/<int:id_usuario>', cambiar_contrasena, name='cambiar_contrasena')
 ]

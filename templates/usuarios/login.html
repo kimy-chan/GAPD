@@ -166,19 +166,22 @@
                 const id = e.target.getAttribute('data-id');
                 if (email && id) {
                     console.log('Enviando correos a:', email);
-                    enviar_correos(email, id);
+                    enviar_correos(id);
                 } else {
                     console.log('No se encontró el correo electrónico');
                 }
             }
         });
 
-        function enviar_correos(email, id_usuario) {
-
-            var url = baseUrl.replace('0', email, id_usuario);
+        function enviar_correos(id_usuario) {
+            var baseUrl = "{% url 'enviar_correos' 0 %}";
+            var url = baseUrl.replace('0', id_usuario);
             axios.get(url)
                 .then((result) => {
-                    console.log(result);
+                    if (result.data) {
+                        document.getElementById('mensaje').innerHTML = result.data.mensaje
+                    }
+
 
                 })
                 .catch((e) => {

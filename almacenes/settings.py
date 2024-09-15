@@ -162,3 +162,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'juanchocllu.tel20ch@tecba.edu.bo'
 EMAIL_HOST_PASSWORD = 'oqmf hnki oxkv evzd'
+
+
+#ALLOWED_HOSTS = ['tudominio.com']

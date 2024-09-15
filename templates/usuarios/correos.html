@@ -61,11 +61,11 @@
 <body>
     <div class="container">
         <h1>Recuperación de Contraseña</h1>
-        <p>Hola ,</p>
+        <p>Hola {{ user_name }},</p>
         <p>Hemos recibido una solicitud para restablecer tu contraseña. Si no solicitaste este cambio, por favor ignora
             este correo.</p>
         <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
-        <p><a href="" class="button">Restablecer Contraseña</a></p>
+        <p><a href="{{ reset_link }}" class="button">Restablecer Contraseña</a></p>
 
         <p>Gracias,<br>El equipo de soporte</p>
         <div class="footer">
