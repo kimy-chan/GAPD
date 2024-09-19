@@ -1,12 +1,12 @@
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from .forms import Formulario_categoria,Formulario_materiales
+from .forms import Formulario_categoria,Formulario_materiales,Form_infomacion_material
 from django.http import JsonResponse
 from django.http import HttpResponse
 
 
 from django.template.loader import get_template
-from .models import Categoria, Materiales
+from .models import Categoria, Materiales, Informacion_material
 
 # Create your views here.
 
@@ -32,22 +32,32 @@ def crear_categoria(request):
 def crear_material(request):
     if(request.method=='POST'):
         formulario= Formulario_materiales(request.POST)
-        if(formulario.is_valid()):
+        formulario_info_material= Form_infomacion_material(request.POST)
+        if(formulario.is_valid() and formulario_info_material.is_valid()):
             codigo= formulario.cleaned_data['codigo']
             codigo_paquete= formulario.cleaned_data['codigo_paquete']
             categoria= formulario.cleaned_data['categoria']
-            material= formulario.save()
+            cantidad_paquete= formulario_info_material.cleaned_data['cantidad_paquete']
+            cantidad_paquete_unidad= formulario_info_material.cleaned_data['cantidad_paquete_unidad']
+            material= formulario.save(commit=False)
             material.codigo_paquete= f"{categoria.codigo_clasificacion}-{codigo_paquete }"
-            material.codigo=f"{material.codigo_paquete}-{codigo} "
+            material.codigo=f"{material.codigo_paquete}-{codigo}"
+            material.stock= cantidad_paquete * cantidad_paquete_unidad
             material.save()
-            material.calcular_total_paquetes()
-            material.calcular_precio_total()
+            info_material= formulario_info_material.save(commit=False)
+            info_material.material= material
+            info_material.save()
+            info_material.calcular_total_cantidad()
+            info_material.calcular_precio_total()
         else:
             formulario= Formulario_materiales(request.POST)
+            formulario_info_material= Form_infomacion_material(request.POST)
     else: 
         formulario= Formulario_materiales()
+        formulario_info_material= Form_infomacion_material()
     context={
-        'form':formulario
+        'form':formulario,
+        'form_info':formulario_info_material
     }
     return render(request, 'materiales/formulario.material.html', context)
 
@@ -82,8 +92,6 @@ def editar_material(request, id_material):
             material.codigo_paquete= f"{categoria.codigo_clasificacion}-{antiguo_codigo_paquete[1]}"
             material.codigo=f"{material.codigo_paquete}-{codigo_antiguo[2]} "
             material.save()
-            material.calcular_total_paquetes()
-            material.calcular_precio_total()
             return HttpResponse('actulizado')
     
     context={
@@ -136,3 +144,24 @@ def eliminar_categoria(request, id):
     categoria.save()
     return redirect('crear_categoria')
 
+def anadir_nuevo_cantidad(request):
+    cantidad_unidad= request.POST['cantidadUnidad']
+    cantidad_paquete= request.POST['cantidadPaquete']
+    precio_paquete= request.POST['precioPaquete']
+    id_material=request.POST['materialId']
+    precio_unidad=request.POST['precio_unidad']
+    if not cantidad_unidad or not cantidad_paquete or not id_material:
+        return JsonResponse({'data':'Campos obligatorios'})
+    totalCantidad = int(cantidad_unidad) * int(cantidad_paquete)
+    material=get_object_or_404(Materiales, pk = id_material)
+  
+    stock = material.stock
+    material.stock= int(stock) + totalCantidad
+    
+    info_mat = Informacion_material.objects.create(cantidad_paquete= int(cantidad_paquete), cantidad_paquete_unidad= int(cantidad_unidad), precio_unidad=float(precio_unidad),precio_paquete=float(precio_paquete),material= material)
+    info_mat.calcular_total_cantidad()
+    info_mat.calcular_precio_total()
+    material.save()
+    info_mat.save()
+
+    return JsonResponse({'data':True})

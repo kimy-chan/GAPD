@@ -15,6 +15,13 @@
                 {{field.errors}}
             </div>
             {% endfor%}
+            {%for field in form_info %}
+            <div class="col-6">
+                <label for="exampleFormControlInput1" class="form-label">{{field.label}}</label>
+                {{field}}
+                {{field.errors}}
+            </div>
+            {% endfor%}
         </div>
         <div class="text-center mt-3">
             <button class="btn btn-success">Guardar</button>

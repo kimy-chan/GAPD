@@ -1,28 +1,25 @@
 from django import forms
-from .models import Categoria, Materiales
+from .models import Categoria, Materiales, Informacion_material
 
 class Formulario_materiales(forms.ModelForm):
     class Meta:
         model=Materiales
-        fields = ['nombre', 'codigo','codigo_paquete' , 'marca', 'cantidad_paquete', 'cantidad_paquete_unidad', 'precio_paquete','precio_unidad',  'tamaño', 'color', 'unidad_medida', 'material', 'categoria']
+        fields = ['nombre', 'codigo','codigo_paquete' , 'marca',   'tamaño', 'color', 'unidad_medida', 'material', 'categoria']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control',}),
             'codigo': forms.TextInput(attrs={'class': 'form-control'}),
             'marca': forms.TextInput(attrs={'class': 'form-control'}),
-            'cantidad_paquete': forms.TextInput(attrs={'class': 'form-control'}),
+           
             'tamaño': forms.TextInput(attrs={'class': 'form-control'}),
             'color': forms.TextInput(attrs={'class': 'form-control'}),
             'unidad_medida': forms.TextInput(attrs={'class': 'form-control'}),
             'material': forms.TextInput(attrs={'class': 'form-control'}),
             'codigo_paquete': forms.TextInput(attrs={'class': 'form-control'}),
-            'cantidad_paquete_unidad': forms.TextInput(attrs={'class': 'form-control'}),
-            'precio_paquete': forms.TextInput(attrs={'class': 'form-control'}),
-            'precio_unidad': forms.TextInput(attrs={'class': 'form-control'})
         }
      
     def __init__(self, *args, **kwargs):#mostrando en un select todas las categorias disponibles
         super(Formulario_materiales,self).__init__(*args, **kwargs)
-        categorias_disponibles = [(categoria.id, categoria.nombre) for categoria in Categoria.objects.all()]#consultado a la base de datos     
+        categorias_disponibles = [(categoria.id, categoria.nombre) for categoria in Categoria.objects.filter(es_habilitado=True)]#consultado a la base de datos     
         self.fields['categoria'].widget = forms.Select(choices=categorias_disponibles, attrs={'class': 'form-select'})
         self.fields['categoria'].widget.attrs.update({'class': 'form-select'})
 
@@ -40,4 +37,13 @@ class Formulario_categoria(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-        
+class Form_infomacion_material(forms.ModelForm):
+    class Meta:
+        model= Informacion_material
+        fields= ['cantidad_paquete', 'precio_unidad','cantidad_paquete_unidad' , 'precio_paquete']
+        widgets = {
+            'cantidad_paquete': forms.TextInput(attrs={'class': 'form-control',}),
+            'cantidad_paquete_unidad': forms.TextInput(attrs={'class': 'form-control'}),
+            'precio_paquete': forms.TextInput(attrs={'class': 'form-control'}),
+            'precio_unidad': forms.TextInput(attrs={'class': 'form-control'}),
+        }
