@@ -40,7 +40,33 @@ def crear_entidades_por_defecto(sender, **kwargs):
         unidad, created = Unidad.objects.get_or_create(nombre='Financiera', secretaria=secretaria)
         Oficinas.objects.get_or_create(nombre='Ninguna', unidad=unidad)
         Oficinas.objects.get_or_create(nombre='Almacenes', unidad=unidad)
+        Oficinas.objects.get_or_create(nombre='Sistemas', unidad=unidad)
       
+
+
+
+@receiver(post_migrate)
+def crearUsuarioPorDefecto(sender, **kwargs):
+    if sender.name == 'usuarios':
+        if not Usuario.objects.exists():
+            persona = Persona.objects.create(cedula_identidad='0000000', nombre='Test', apellidos='test')
+            unidad = Unidad.objects.filter(nombre='Financiera').first()
+            oficina = Oficinas.objects.filter(nombre='Sistemas').first()
+            if unidad and oficina:  
+                usuario = Usuario(
+                    username='superadmin',
+                    email='superadmin@gmail.com',
+                    cargo='Encargado_oficina',
+                    crear=False,
+                    editar=False,
+                    eliminar=False,
+                    unidad=unidad,
+                    oficina=oficina,
+                    persona=persona,
+                    rol='Super_administrador'
+                )
+                usuario.set_password('superadmin')  
+                usuario.save()  
 
     
 class Usuario(AbstractBaseUser, PermissionsMixin):

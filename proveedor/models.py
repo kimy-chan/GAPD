@@ -13,7 +13,7 @@ class Proveedor(models.Model):
     fecha_creacion= models.DateTimeField(auto_now_add=True)
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
     es_habilitado=models.BooleanField(default=True)
-
+    
     def __str__(self) -> str:
         return f"{self.id} {self.empresa}, {self.nit}, {self.telefono}, {self.correo}, {self.pais}, {self.direccion}, {self.fecha_creacion}"
     

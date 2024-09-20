@@ -77,6 +77,13 @@
                         <a class="nav-link" href="{% url 'administracion' %}">ir almacen</a>
                     </li>
                     {% endif %}
+
+                    {% if usuario.rol == "Super_administrador" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'administracion' %}">Administracion</a>
+                    </li>
+                    {% endif %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
                     </li>
