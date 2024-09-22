@@ -46,3 +46,4 @@ class  Informacion_material(models.Model):
     def calcular_precio_total(self):
         self.total_precio= self.precio_paquete * self.precio_unidad
         self.save()
+

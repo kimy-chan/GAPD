@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'daphne',
     'persona',
+    'logs',
     'proveedor',
     'materiales',
     'pedidos',

@@ -23,5 +23,6 @@ urlpatterns = [
     path('material/' ,include('materiales.urls')),#urls materiales
     path('', include('pedidos.urls')),
     path('', include('usuarios.urls')),
-    path('',include('administracion.urls') )
+    path('',include('administracion.urls') ),
+    path('',include('logs.urls') )
 ]

@@ -1,0 +1,39 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block index %}
+
+<div class="container table-responsive">
+    <h2 class="my-4">Registro de Actividades</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Usuario</th>
+                <th scope="col">Acción</th>
+                <th scope="col">Detalle</th>
+                <th scope="col">Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in data %}
+            <tr>
+                <td>{{ log.user }}</td>
+                <td>{{ log.accion }}</td>
+                <td>{{ log.detalle }}</td>
+                <td>{{ log.fecha|date:"d-m-Y H:i:s" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No hay registros disponibles.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% include 'paginador/paginador.html' %}
+</div>
+
+{% endblock index %}
+
+{% block js %}
+<!-- Include necessary JS files here, if any -->
+{% endblock js %}

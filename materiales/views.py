@@ -1,5 +1,7 @@
 
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+
+from logs.views import crear_log_sistema
 from .forms import Formulario_categoria,Formulario_materiales,Form_infomacion_material
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -8,13 +10,14 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from .models import Categoria, Materiales, Informacion_material
 
-# Create your views here.
 
 def crear_categoria(request):    
     if(request.method == 'POST'):
         formulario= Formulario_categoria(request.POST)
         if formulario.is_valid():
-            formulario.save()
+            categoria=formulario.save()
+            detalle=f'Se ha creado una nueva categoría: {categoria.nombre}'
+            crear_log_sistema(request.user.username,'Creación de categoría', detalle ,'Categoria')
             return JsonResponse({'data':True})
         else:
             formulario= Formulario_categoria(request.POST)
@@ -49,6 +52,8 @@ def crear_material(request):
             info_material.save()
             info_material.calcular_total_cantidad()
             info_material.calcular_precio_total()
+            detalle=f'Se ha creado una nuevo material: {material.nombre} con el codigo {material.codigo}'
+            crear_log_sistema(request.user.username,'Creación de Materiales', detalle ,'Materiales')
         else:
             formulario= Formulario_materiales(request.POST)
             formulario_info_material= Form_infomacion_material(request.POST)
@@ -92,6 +97,9 @@ def editar_material(request, id_material):
             material.codigo_paquete= f"{categoria.codigo_clasificacion}-{antiguo_codigo_paquete[1]}"
             material.codigo=f"{material.codigo_paquete}-{codigo_antiguo[2]} "
             material.save()
+          
+            detalle = f'Se ha editado el material con el código: {material.codigo}'
+            crear_log_sistema(request.user.username,'Edicion de Materiales', detalle ,'Materiales')
             return HttpResponse('actulizado')
     
     context={
@@ -106,6 +114,8 @@ def softDelete(request, id_material, id_categoria): #elimina el material
     categoria = get_object_or_404(Categoria, pk= id_categoria)
     material.es_habilitado= False
     material.save()
+    detalle = f'Se ha eliminado el material con el código: {material.codigo}'
+    crear_log_sistema(request.user.username,'Eliminacion de Materiales', detalle ,'Materiales')
     return  redirect("categorias_por_id", id_categoria=categoria.id)
 
 
@@ -135,13 +145,18 @@ def actualizar_categoria(request):
     if not  nombre  or not id:
         return JsonResponse({'error':'Ingrese los campos'})
     categoria= get_object_or_404(Categoria, pk=id)
+    nombre_anterior= categoria.nombre
     categoria.nombre =nombre
     categoria.save()
+    detalle=f"Se ha editado la categoría: {nombre_anterior} a {categoria.nombre}"
+    crear_log_sistema(request.user.username,'Edicion de categoría', detalle ,'Categoria')
     return JsonResponse({'data':True})
 def eliminar_categoria(request, id):
     categoria= get_object_or_404(Categoria, pk=id)
     categoria.es_habilitado=False
     categoria.save()
+    detalle=f"Se ha Elimando la categoría: {categoria.nombre}"
+    crear_log_sistema(request.user.username,'Eliminacion de la categoría', detalle ,'Categoria')
     return redirect('crear_categoria')
 
 def anadir_nuevo_cantidad(request):
@@ -163,5 +178,6 @@ def anadir_nuevo_cantidad(request):
     info_mat.calcular_precio_total()
     material.save()
     info_mat.save()
-
+    detalle = f'Se registro una nueva cantidad al material con el código: {material.codigo}'
+    crear_log_sistema(request.user.username,'Adición de Cantidades', detalle ,'Materiales')
     return JsonResponse({'data':True})

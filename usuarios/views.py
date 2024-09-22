@@ -2,6 +2,8 @@ from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth import authenticate, logout, login
 from django.db import IntegrityError
 from django.urls import reverse
+
+from logs.views import crear_log_sistema
 from .forms import Usuario_formulario, Usuario_formulario_actulizar
 from django.template.loader import get_template
 
@@ -67,7 +69,8 @@ def creando_usuario(request):
             usuario.set_password(formulario_u.cleaned_data['password'])
             usuario.persona=persona
             usuario.save()
-          
+            detalle=f'Se ha creado una nuevo usuario: {usuario.username}'
+            crear_log_sistema(request.user.username,'Creación de Usuarios', detalle ,'Usuario')
         else:
             formulario_u= Usuario_formulario(request.POST)
             formulario_p = Formulario_persona(request.POST)
@@ -169,18 +172,24 @@ def soft_delete(request, id):
     usuario= get_object_or_404(Usuario, pk=id)
     usuario.es_habilitado=False
     usuario.save()
+    detalle=f'Se ha eliminado el usuario: {usuario.username}'
+    crear_log_sistema(request.user.username,'Eliminacion de Usuarios', detalle ,'Usuario')
     return redirect('listando_usuarios')
 
 def desactivar_cuenta(request, id):
     usuario= get_object_or_404(Usuario, pk=id)
     usuario.es_activo= False
     usuario.save()
+    detalle=f'Se ha desactivado el usuario: {usuario.username}'
+    crear_log_sistema(request.user.username,'desactivacion de Usuario', detalle ,'Usuario')
     return redirect('listando_usuarios')
 
 def activar_cuenta(request, id):
     usuario= get_object_or_404(Usuario, pk=id)
     usuario.es_activo= True
     usuario.save()
+    detalle = f'El usuario {usuario.username} ha sido activado exitosamente.'
+    crear_log_sistema(request.user.username, 'Activación de Usuario', detalle, 'Usuario')
     return redirect('listando_usuarios')
 
 def logout_view(request):
@@ -222,6 +231,8 @@ def cambiar_contrasena(request, id_usuario):
      
         user.set_password(passw)
         user.save()
+        detalle = f'El usuario {user.username} ha sido canbiado su contraseña exitosamente.'
+        crear_log_sistema(request.user.username, 'Cambio de contraseña', detalle, 'Usuario')
         return redirect('/')
     else:
         context={
