@@ -54,7 +54,8 @@ def actulizar_cuenta_usuario(request, id_usuario, id_persona):
         'form_persona':formulario_persona,
         'form_usuario':usuario_formulario
     }
-    print("hola")
+    detalle=f'Se ha editado el usuario: {usuario.username}'
+    crear_log_sistema(request.user.username,'Edicion de Usuario', detalle ,'Usuario')
     return render(request, 'usuarios/actulizar_cuenta_formulario.html', context)
 
     
