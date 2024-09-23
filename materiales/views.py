@@ -1,4 +1,5 @@
 
+from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 
 from logs.views import crear_log_sistema
@@ -9,6 +10,7 @@ from django.http import HttpResponse
 
 from django.template.loader import get_template
 from .models import Categoria, Materiales, Informacion_material
+from django.contrib import messages
 
 
 def crear_categoria(request):    
@@ -37,32 +39,39 @@ def crear_material(request):
         formulario= Formulario_materiales(request.POST)
         formulario_info_material= Form_infomacion_material(request.POST)
         if(formulario.is_valid() and formulario_info_material.is_valid()):
-            codigo= formulario.cleaned_data['codigo']
-            codigo_paquete= formulario.cleaned_data['codigo_paquete']
-            categoria= formulario.cleaned_data['categoria']
-            cantidad_paquete= formulario_info_material.cleaned_data['cantidad_paquete']
-            cantidad_paquete_unidad= formulario_info_material.cleaned_data['cantidad_paquete_unidad']
-            material= formulario.save(commit=False)
-            material.codigo_paquete= f"{categoria.codigo_clasificacion}-{codigo_paquete }"
-            material.codigo=f"{material.codigo_paquete}-{codigo}"
-            material.stock= cantidad_paquete * cantidad_paquete_unidad
-            material.save()
-            info_material= formulario_info_material.save(commit=False)
-            info_material.material= material
-            info_material.save()
-            info_material.calcular_total_cantidad()
-            info_material.calcular_precio_total()
-            detalle=f'Se ha creado una nuevo material: {material.nombre} con el codigo {material.codigo}'
-            crear_log_sistema(request.user.username,'Creación de Materiales', detalle ,'Materiales')
-        else:
-            formulario= Formulario_materiales(request.POST)
-            formulario_info_material= Form_infomacion_material(request.POST)
+           try:
+                codigo= formulario.cleaned_data['codigo']
+                codigo_paquete= formulario.cleaned_data['codigo_paquete']
+                categoria= formulario.cleaned_data['categoria']
+                cantidad_paquete= formulario_info_material.cleaned_data['cantidad_paquete']
+                cantidad_paquete_unidad= formulario_info_material.cleaned_data['cantidad_paquete_unidad']
+                material= formulario.save(commit=False)
+                material.codigo_paquete= f"{categoria.codigo_clasificacion}-{codigo_paquete }"
+                material.codigo=f"{material.codigo_paquete}-{codigo}"
+                material.stock= cantidad_paquete * cantidad_paquete_unidad
+                material.save()
+                info_material= formulario_info_material.save(commit=False)
+                info_material.material= material
+                info_material.save()
+                info_material.calcular_total_cantidad()
+                info_material.calcular_precio_total()
+                detalle=f'Se ha creado una nuevo material: {material.nombre} con el codigo {material.codigo}'
+                crear_log_sistema(request.user.username,'Registrado', detalle ,'Materiales')
+                messages.success(request, 'Material creado exitosamente.')
+                return redirect('crear_material')
+           except IntegrityError as e:
+                if 'codigo_paquete' in str(e):
+                    messages.error(request, 'El código de paquete ya existe.')
+                else:
+                    messages.error(request, 'El código de material ya existe.')
+          
     else: 
         formulario= Formulario_materiales()
         formulario_info_material= Form_infomacion_material()
     context={
         'form':formulario,
-        'form_info':formulario_info_material
+        'form_info':formulario_info_material,
+      
     }
     return render(request, 'materiales/formulario.material.html', context)
 
@@ -97,10 +106,10 @@ def editar_material(request, id_material):
             material.codigo_paquete= f"{categoria.codigo_clasificacion}-{antiguo_codigo_paquete[1]}"
             material.codigo=f"{material.codigo_paquete}-{codigo_antiguo[2]} "
             material.save()
-          
             detalle = f'Se ha editado el material con el código: {material.codigo}'
-            crear_log_sistema(request.user.username,'Edicion de Materiales', detalle ,'Materiales')
-            return HttpResponse('actulizado')
+            crear_log_sistema(request.user.username,'Edicion', detalle ,'Materiales')
+            messages.success(request, 'Material Editado exitosamente.')
+            return redirect('editar_material', material.id)
     
     context={
         'form':formulario_material,
@@ -115,7 +124,7 @@ def softDelete(request, id_material, id_categoria): #elimina el material
     material.es_habilitado= False
     material.save()
     detalle = f'Se ha eliminado el material con el código: {material.codigo}'
-    crear_log_sistema(request.user.username,'Eliminacion de Materiales', detalle ,'Materiales')
+    crear_log_sistema(request.user.username,'Eliminacion', detalle ,'Materiales')
     return  redirect("categorias_por_id", id_categoria=categoria.id)
 
 
@@ -144,19 +153,25 @@ def actualizar_categoria(request):
     nombre=request.POST['nombre']
     if not  nombre  or not id:
         return JsonResponse({'error':'Ingrese los campos'})
-    categoria= get_object_or_404(Categoria, pk=id)
-    nombre_anterior= categoria.nombre
-    categoria.nombre =nombre
-    categoria.save()
-    detalle=f"Se ha editado la categoría: {nombre_anterior} a {categoria.nombre}"
-    crear_log_sistema(request.user.username,'Edicion de categoría', detalle ,'Categoria')
-    return JsonResponse({'data':True})
+    try:
+        categoria= get_object_or_404(Categoria, pk=id)
+        nombre_anterior= categoria.nombre
+        categoria.nombre =nombre
+        categoria.save()
+        detalle=f"Se ha editado la categoría: {nombre_anterior} a {categoria.nombre}"
+        crear_log_sistema(request.user.username,'Edicion', detalle ,'Categoria')
+        return JsonResponse({'data':True})
+    except IntegrityError as e:
+        return JsonResponse({'error': 'La categoria ya existe'})
+
+
+
 def eliminar_categoria(request, id):
     categoria= get_object_or_404(Categoria, pk=id)
     categoria.es_habilitado=False
     categoria.save()
     detalle=f"Se ha Elimando la categoría: {categoria.nombre}"
-    crear_log_sistema(request.user.username,'Eliminacion de la categoría', detalle ,'Categoria')
+    crear_log_sistema(request.user.username,'Eliminacion', detalle ,'Categoria')
     return redirect('crear_categoria')
 
 def anadir_nuevo_cantidad(request):
@@ -179,5 +194,5 @@ def anadir_nuevo_cantidad(request):
     material.save()
     info_mat.save()
     detalle = f'Se registro una nueva cantidad al material con el código: {material.codigo}'
-    crear_log_sistema(request.user.username,'Adición de Cantidades', detalle ,'Materiales')
+    crear_log_sistema(request.user.username,'Registro', detalle ,'Materiales')
     return JsonResponse({'data':True})
