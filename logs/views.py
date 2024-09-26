@@ -14,7 +14,8 @@ def crear_log_sistema(user, accion, detalle, modelo):
 
 def log_materiales(request):
     logs = Logs_sistema.objects.filter(modelo='Materiales')
-    logs= paginador_general(request, logs)
+    pagina_actual = request.GET.get('page', 10)
+    logs= paginador_general(request, logs, pagina_actual)
     context={
         'data':logs
     }
@@ -22,7 +23,8 @@ def log_materiales(request):
 
 def log_categorias(request):
     logs = Logs_sistema.objects.filter(modelo='Categoria')
-    logs= paginador_general(request, logs)
+    pagina_actual = request.GET.get('page', 10)
+    logs= paginador_general(request, logs, pagina_actual)
     context={
         'data':logs
     }
@@ -30,7 +32,8 @@ def log_categorias(request):
 
 def log_usuarios(request):
     logs = Logs_sistema.objects.filter(modelo='Usuario')
-    logs= paginador_general(request, logs)
+    pagina_actual = request.GET.get('page', 10)
+    logs= paginador_general(request, logs, pagina_actual)
     context={
         'data':logs
     }

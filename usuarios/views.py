@@ -160,8 +160,9 @@ def crear_oficinas(request):
 
 
 def listando_usuarios(request):
+    pagina_actual = request.GET.get('page', 10)
     listado_cuentas_usuarios = Usuario.objects.select_related('persona').filter(es_habilitado=True)
-    listado_cuentas_usuarios = paginador_general(request, listado_cuentas_usuarios)
+    listado_cuentas_usuarios = paginador_general(request, listado_cuentas_usuarios, pagina_actual)
     print(listado_cuentas_usuarios)
     context={
         'data':listado_cuentas_usuarios,

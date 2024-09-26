@@ -7,8 +7,9 @@ from django.contrib.auth.decorators import login_required
 from  utils.paginador import paginador_general
 
 def listar_proveedores(request):
+    pagina_actual = request.GET.get('page', 10)
     listar_proveedores = Proveedor.objects.select_related('persona').filter(es_habilitado=True)
-    listar_proveedores= paginador_general(request, listar_proveedores)
+    listar_proveedores= paginador_general(request, listar_proveedores, pagina_actual)
 
     return render(request, 'proveedor/index.html',{'data':listar_proveedores})
 

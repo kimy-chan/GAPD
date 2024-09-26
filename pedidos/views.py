@@ -19,7 +19,7 @@ from .models import Pedido, Autorizacion_pedido
 
 def index(request):
    
-
+    pagina_actual = request.GET.get('page', 10)
     pedido_pendiente= lista_pedidos_por_estado(request,'pendiente')
     nombre_categoria='materiales'
     if (request.method == 'POST'):
@@ -27,7 +27,7 @@ def index(request):
         if not id_categoria:
             return redirect('index')
         productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria, es_habilitado=True)
-        productos_categoria= paginador_general(request,productos_categoria)
+        productos_categoria= paginador_general(request,productos_categoria, pagina_actual)
         if productos_categoria and productos_categoria[0].categoria.nombre:
             nombre_categoria = productos_categoria[0].categoria.nombre
         else:
@@ -36,7 +36,7 @@ def index(request):
 
     else:
         productos_categoria= Materiales.objects.select_related('categoria').filter(es_habilitado=True)
-        productos_categoria= paginador_general(request, productos_categoria)
+        productos_categoria= paginador_general(request, productos_categoria, pagina_actual)
        
 
     context ={
@@ -51,6 +51,7 @@ def index(request):
 
 
 def buscador(request):
+    
     nombre_categoria = 'materiales'
     data_buscador = request.GET.get('buscador','')
     producto  = Materiales.objects.select_related('categoria').filter(Q(nombre__icontains=data_buscador) | Q(codigo__icontains=data_buscador) |  Q(marca__icontains=data_buscador), es_habilitado= True)
@@ -156,7 +157,7 @@ def cambiar_estado_pedido(request):
 
 #------------------------------
 def listar_pedidos_usuarios_almacen(request):
- 
+    pagina_actual = request.GET.get('page', 10)
     pedidos_unidad = Pedido.objects.filter(
         aprobado_oficina=True,
         aprobado_unidad=True
@@ -167,7 +168,7 @@ def listar_pedidos_usuarios_almacen(request):
             pedidos_unicos[pedido.numero_pedido] = pedido
 
     pedidos_unicos_list = list(pedidos_unicos.values())
-    pedidos_unicos_list=paginador_general(request, pedidos_unicos_list)
+    pedidos_unicos_list=paginador_general(request, pedidos_unicos_list, pagina_actual)
 
     context = {
         'data': pedidos_unicos_list
@@ -247,8 +248,9 @@ def realizar_entrega(request):
 
 
 def mis_pedidos(request): #muestra los pedidos de cada unidad o secretaria
+    pagina_actual = request.GET.get('page', 10)
     pedidos= lista_pedidos_por_estado(request, 'realizado')
-    pedidos= paginador_general(request, pedidos)
+    pedidos= paginador_general(request, pedidos, pagina_actual)
     context={
         'data':pedidos,
         'title':'Mis pedidos'   
@@ -298,6 +300,7 @@ def todos_mis_pedidos(request):
     return render(request, 'pedidos/mis_pedidos.html', context)
 
 def listar_pedidos_unidad(request, id_usuario):
+    pagina_actual = request.GET.get('page', 10)
     usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
     pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
@@ -309,7 +312,7 @@ def listar_pedidos_unidad(request, id_usuario):
             pedidos_unicos[pedido.numero_pedido] = pedido
 
     pedidos_unicos_list = list(pedidos_unicos.values())
-    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list)
+    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
     context = {
         'data': pedidos_unicos_list
     }
@@ -317,6 +320,7 @@ def listar_pedidos_unidad(request, id_usuario):
     return render(request, 'pedidos/usuarios.pedidos.html', context)
 
 def listar_pedidos_oficina(request, id_usuario):
+    pagina_actual = request.GET.get('page', 10)
     usuario = get_object_or_404(Usuario, pk=id_usuario)
     pedidos_unidad = Pedido.objects.filter(
         usuario__oficina=usuario.oficina
@@ -328,7 +332,7 @@ def listar_pedidos_oficina(request, id_usuario):
             pedidos_unicos[pedido.numero_pedido] = pedido
 
     pedidos_unicos_list = list(pedidos_unicos.values())
-    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list)
+    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
 
     context = {
         'data': pedidos_unicos_list

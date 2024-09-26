@@ -10,6 +10,16 @@
         </div>
     </div>
 
+    <form action="{% url 'listando_usuarios' %}" method="GET">
+        <select id="num" name="page">
+            <option name="page" value="10">10</option>
+            <option name="page" value="20">20</option>
+            <option name="page" value="50">50</option>
+            <option name="page" value="100">100</option>
+            <option name="page" value="200">200</option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+    </form>
     <table class="table table-striped mt-4 small"> <!-- Añadido class="small" -->
         <thead class="thead-dark">
             <tr>

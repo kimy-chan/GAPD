@@ -81,7 +81,8 @@ def listado_material(request, id_categoria):#lista todos los material por catego
     nombre_categoria = Categoria.objects.get(pk=id_categoria)#trae el nombre de la categoria para el sud titulo
     context={
         'data':listar_productos_categoria,
-        'nombre_categoria':nombre_categoria
+        'nombre_categoria':nombre_categoria,
+        'id_categoria':id_categoria
     }
     return render(request, 'materiales/listar_material.html', context)
 
