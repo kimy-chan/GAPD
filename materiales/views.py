@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 
 from logs.views import crear_log_sistema
+from utils.paginador import paginador_general
 from .forms import Formulario_categoria,Formulario_materiales,Form_infomacion_material
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -77,8 +78,11 @@ def crear_material(request):
 
 
 def listado_material(request, id_categoria):#lista todos los material por categoria
+    pagina_actual = request.GET.get('limit', 10)
     listar_productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria,es_habilitado=True)
+    listar_productos_categoria=paginador_general(request, listar_productos_categoria, pagina_actual)
     nombre_categoria = Categoria.objects.get(pk=id_categoria)#trae el nombre de la categoria para el sud titulo
+
     context={
         'data':listar_productos_categoria,
         'nombre_categoria':nombre_categoria,

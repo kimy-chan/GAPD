@@ -21,8 +21,16 @@
             <div class="text-center">
                 <h3>Lista de {{ categoria }}</h3>
             </div>
+            <div class="mb-lg-4 text-end">
+                <form class="d-flex justify-content-end" role="search" action="{% url 'buscar' %}" method="GET">
+                    <input class="form-control me-2" type="search" name="buscador" value="{{ request.GET.buscador }}"
+                        placeholder="Buscar materiales" aria-label="Buscar">
+                    <button class="btn btn-outline-primary btn-sm" type="submit">Buscar</button>
+                </form>
+            </div>
+
             <form action="{% url 'index' %}" method="GET">
-                <select id="num" name="page">
+                <select id="num" name="limit">
                     <option name="page" value="10">10</option>
                     <option name="page" value="20">20</option>
                     <option name="page" value="50">50</option>
@@ -81,7 +89,6 @@
 
 
 
-
 <!-- Modal -->
 <div class="modal fade" id="pedidoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -90,10 +97,10 @@
                 <h5 class="modal-title" id="modalLabel">Detalles del Pedido y Aprobación</h5>
             </div>
             <div class="modal-body">
-                <form id="pedido_formulario" action="{% url 'realizar_pedido' %}" method="POST">
+                <form id="pedido_formulario">
                     {% csrf_token %}
                     <!-- Detalles del Pedido -->
-                    <legend class="text-muted">Informaciion del material</legend>
+                    <legend class="text-muted">Informacion del material</legend>
                     <div class="form-group">
                         <label for="productos" class="font-weight-bold">Material</label>
                         <ul id="productos" class="list-group">
@@ -110,11 +117,12 @@
                         <input type="text" id="id" name="id_material" class="form-control mb-2" hidden>
                         <div class="form-group">
                             <label for="campoNumero" class="font-weight-bold">Cantidad</label>
-                            <input type="number" class="form-control" id="campoNumero" name="cantidad_pedido" value="1">
+                            <input type="number" class="form-control" id="campoNumero" name="cantidad_pedido" value="1"
+                                required>
                         </div>
                     </fieldset>
                     <div class="text-center mt-4">
-                        <button id="enviar" type="submit" class="btn btn-success">Enviar</button>
+                        <button id="enviar" type="button" class="btn btn-success">Enviar</button>
                     </div>
 
                     <div class="text-center mt-4">
@@ -122,7 +130,6 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
@@ -170,7 +177,8 @@
                     <td>{{ pedido.cantidad_entrega }}</td>
                     <td>{{ pedido.fecha_pedido|date:"m/d/y" }}</td>
                     <td>
-                        <a href="{% url 'eliminar_mi_pedido' pedido.id %}" class='btn btn-danger btn-sm'>Cancelar
+                        <a href="{% url 'eliminar_mi_pedido_carrito' pedido.id %}"
+                            class='btn btn-danger btn-sm'>Cancelar
                             pedido</a>
                     </td>
                 </tr>
@@ -195,6 +203,12 @@
 <script src="{% static 'js/alertas.js' %}"></script>
 
 <script>
+    $('#pedidoModal').on('shown.bs.modal', function () {
+        document.getElementById("mensaje").innerHTML = '';
+        document.getElementById("campoNumero").value = 1; // Limpia el mensaje
+    });
+
+
     document.getElementById('realizarPedidoBtn').addEventListener('click', function (e) {
         e.preventDefault()
         var ids = [];
@@ -237,15 +251,12 @@
     document.getElementById('enviar').addEventListener("click", (e) => {
         e.preventDefault()
         const formulario = document.getElementById('pedido_formulario')
-        console.log(formulario);
-
+        document.getElementById("mensaje").innerHTML = ''
         axios.post("realizar_pedido", formulario)
             .then((result) => {
-                console.log(result);
-
                 if (result.data.data) {
                     document.getElementById("mensaje").innerHTML = result.data.data
-                    result
+
                 } else if (result.data.error) {
                     document.getElementById("mensaje").innerHTML = result.data.error
                 }

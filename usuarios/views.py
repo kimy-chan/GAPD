@@ -30,6 +30,8 @@ def login_sistema(request):
         user = authenticate(username=username, password=password)
         if user is not None and user.es_activo and user.es_habilitado:
                 login(request, user)
+                if user.username =='superadmin': 
+                    return  redirect('administracion')
                 return redirect('index')
         else:
             return render(request, 'usuarios/login.html', {'error_message': 'Credenciales inválidas'})

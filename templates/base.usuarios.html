@@ -88,11 +88,7 @@
                         <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search" action="{% url 'buscar' %}" method="GET">
-                    <input class="form-control me-2" type="search" name="buscador" value="{{ request.GET.buscador }}"
-                        placeholder="Buscar materiales" aria-label="Buscar">
-                    <button class="btn btn-outline-primary" type="submit">Buscar</button>
-                </form>
+
             </div>
         </div>
     </nav>

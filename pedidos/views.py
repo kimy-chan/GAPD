@@ -17,9 +17,10 @@ from .utils.enviar_notificacion import enviar_notificacion_pedido
 
 from .models import Pedido, Autorizacion_pedido
 
+@login_required
 def index(request):
    
-    pagina_actual = request.GET.get('page', 10)
+    pagina_actual = request.GET.get('limit', 10)
     pedido_pendiente= lista_pedidos_por_estado(request,'pendiente')
     nombre_categoria='materiales'
     if (request.method == 'POST'):
@@ -49,13 +50,13 @@ def index(request):
    
 
 
-
+@login_required
 def buscador(request):
-    
+    limit = request.GET.get('limit', 10)
     nombre_categoria = 'materiales'
     data_buscador = request.GET.get('buscador','')
     producto  = Materiales.objects.select_related('categoria').filter(Q(nombre__icontains=data_buscador) | Q(codigo__icontains=data_buscador) |  Q(marca__icontains=data_buscador), es_habilitado= True)
-    producto = paginador_general(request, producto)
+    producto = paginador_general(request, producto, limit)
     context={
         'data':producto,
         'categoria':nombre_categoria
@@ -73,6 +74,7 @@ def listar_info_material(request,id_material):
     return JsonResponse({"data":data})
 #------------------------------
 
+@login_required
 def realizar_pedido(request):
     id_usuario= request.user.id
     if request.method =='POST':
@@ -104,7 +106,7 @@ def realizar_pedido(request):
 def generar_numero_unico():
     pedidos = Pedido.objects.count()
     return pedidos
-
+@login_required
 def cambiar_estado_pedido(request):
     id_usuario= request.user.id
     usuario = get_object_or_404(Usuario, pk=id_usuario)
@@ -156,6 +158,7 @@ def cambiar_estado_pedido(request):
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
 
 #------------------------------
+@login_required
 def listar_pedidos_usuarios_almacen(request):
     pagina_actual = request.GET.get('page', 10)
     pedidos_unidad = Pedido.objects.filter(
@@ -179,7 +182,7 @@ def listar_pedidos_usuarios_almacen(request):
     
 
 
-
+@login_required
 def listando_pedido_almacen(request, numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
@@ -188,7 +191,7 @@ def listando_pedido_almacen(request, numero):
     return render(request, 'pedidos/listando.pedidos.almacen.html', context)
 
 
-
+@login_required
 def lista_pedido_por_id(request, id_pedido):
     pedido=get_object_or_404(Pedido, pk= id_pedido)
     data ={
@@ -202,6 +205,7 @@ def lista_pedido_por_id(request, id_pedido):
     }
     return JsonResponse({'data':data})
 
+@login_required
 def realizar_entrega(request):
     if request.method == 'POST':
         id= request.POST['pedido_id']
@@ -246,7 +250,7 @@ def realizar_entrega(request):
         pedido.material.save()
         return JsonResponse({'data':'Enviado'})
 
-
+@login_required
 def mis_pedidos(request): #muestra los pedidos de cada unidad o secretaria
     pagina_actual = request.GET.get('page', 10)
     pedidos= lista_pedidos_por_estado(request, 'realizado')
@@ -257,11 +261,13 @@ def mis_pedidos(request): #muestra los pedidos de cada unidad o secretaria
     }
     return render(request, 'pedidos/mis_pedidos.html', context)
 
+@login_required
 def lista_pedidos_por_estado(request,estado):
     id_usuario= request.user.id
     pedidos= Pedido.objects.select_related('usuario').filter(usuario_id=id_usuario, estado_de_pedido=estado).order_by('-fecha_pedido')
     return pedidos
 
+@login_required
 def mostrar_informacion_pedidio_aprobaciones(request,id_pedido):
     if request.method == 'GET':
         data=[]
@@ -279,16 +285,34 @@ def mostrar_informacion_pedidio_aprobaciones(request,id_pedido):
         print(data)
         return JsonResponse({'data':data})
 
+@login_required
 def eliminar_mi_pedido(request, id_pedido):
     pedido= get_object_or_404(Pedido, pk=id_pedido)
+    cantidad=pedido.cantidad_pedida
+    stock= pedido.material.stock
+    nuevo_stock= stock + cantidad
+    print(nuevo_stock)
     pedido_autorizado = Autorizacion_pedido.objects.filter(pedido=pedido)
     for p in pedido_autorizado:
         if p.estado_autorizacion == True:
             return redirect(f"{reverse('mis_pedidos')}?error=Este pedido ha sido aprobado y no se puede cancelar")
         continue
+    pedido.material.stock= nuevo_stock
+    pedido.material.save()
     pedido.delete()
     return redirect(f"{reverse('mis_pedidos')}?success=Pedido cancelado correctamente")
+@login_required
+def eliminar_mi_pedido_carrito(request, id_pedido):
+    pedido= get_object_or_404(Pedido, pk=id_pedido)
+    cantidad=pedido.cantidad_pedida
+    stock= pedido.material.stock
+    nuevo_stock= stock + cantidad
+    pedido.material.stock= nuevo_stock
+    pedido.material.save()
+    pedido.delete()
+    return redirect(f"{reverse('index')}?success=Pedido cancelado correctamente")
 
+@login_required
 def todos_mis_pedidos(request):
     id_usuario= request.user.id
     print(id_usuario)
@@ -299,6 +323,7 @@ def todos_mis_pedidos(request):
     }
     return render(request, 'pedidos/mis_pedidos.html', context)
 
+@login_required
 def listar_pedidos_unidad(request, id_usuario):
     pagina_actual = request.GET.get('page', 10)
     usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
@@ -319,6 +344,7 @@ def listar_pedidos_unidad(request, id_usuario):
 
     return render(request, 'pedidos/usuarios.pedidos.html', context)
 
+@login_required
 def listar_pedidos_oficina(request, id_usuario):
     pagina_actual = request.GET.get('page', 10)
     usuario = get_object_or_404(Usuario, pk=id_usuario)
@@ -340,6 +366,7 @@ def listar_pedidos_oficina(request, id_usuario):
 
     return render(request, 'pedidos/usuarios.pedidos.oficina.html', context)
 
+@login_required
 def listar_pedidos_por_codigo(request, numero):#listado por unidad
     pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
@@ -347,13 +374,15 @@ def listar_pedidos_por_codigo(request, numero):#listado por unidad
     }
     return render(request, 'pedidos/listar_pedidos_unidad.html', context)
 
+@login_required
 def listar_pedidos_por_codigo_oficina(request, numero): #listado por oficina
     pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
         'data': pedido
     }
     return render(request, 'pedidos/listar_pedidos_oficina.html', context)
-    
+
+@login_required
 def autorizar_pedidos(request, id_pedido):#autoria el pedido de cada unidad
     id_usuario= request.user.id
     pedido = get_object_or_404(Pedido,pk=id_pedido)
@@ -366,6 +395,7 @@ def autorizar_pedidos(request, id_pedido):#autoria el pedido de cada unidad
     url = reverse('pedido_numero', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
 
+@login_required
 def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada unidad
 
     id_usuario= request.user.id
@@ -380,7 +410,7 @@ def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada uni
     url = reverse('pedido_numero_oficina', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
    
-
+@login_required
 def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos el lamacen
     pedido = get_object_or_404(Pedido,pk=id_pedido)
     usuario = get_object_or_404(Usuario, pk= id_usuario)
@@ -391,7 +421,7 @@ def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos 
     return redirect('informacion_pedido', pedido.numero_pedido)
 
 
-
+@login_required
 def rechazar_pedido_unidad(request, id_pedido):
     id_usuario= request.user.id
     pedido = get_object_or_404(Pedido,pk=id_pedido)
@@ -406,7 +436,7 @@ def rechazar_pedido_unidad(request, id_pedido):
 
 
 
-
+@login_required
 def imprecion_solicitud(request,numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
@@ -422,8 +452,7 @@ def imprecion_solicitud(request,numero):
 
 
 
-
-
+@login_required
 def generate_pdf(request, numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
@@ -444,7 +473,7 @@ def generate_pdf(request, numero):
 
 
 
-
+@login_required
 def sub_pedido(request):
     pedido= request.POST['pedido']
     sub_pedido= request.POST['sub_pedido']
@@ -471,7 +500,7 @@ def sub_pedido(request):
     material_existente.save()
     pedido.save()
     return JsonResponse({'data':'guardado'})
-
+@login_required
 def sub_pedido_almacen(request):
     pedido = request.GET.get('id_pedido')
     sub_pedido = request.GET.get('cantidad')
