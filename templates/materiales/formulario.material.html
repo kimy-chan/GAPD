@@ -9,6 +9,37 @@
     <div class="alert {{ message.tags }}">{{ message }}</div>
     {% endfor %}
     {% endif %}
+
+    <!-- Botón para abrir el modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#facturaModal">
+        Añadir Código de Factura
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="facturaModal" tabindex="-1" aria-labelledby="facturaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="facturaModalLabel">Código de Factura</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'crear_codigo_factura' %}" method="POST" id="codigoFacturaForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="codigoFactura" class="form-label">Código de Factura</label>
+                            <input type="text" class="form-control" id="codigoFactura" name="codigo_factura" required>
+                        </div>
+                        <samp id="mensaje"></samp>
+                        <div class="text-center">
+                            <button id="btn_factura" type="button" class="btn btn-success">Guardar Código</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="{% url 'crear_material' %}" method="POST">
         {% csrf_token %}
         <div class="row">
@@ -44,4 +75,30 @@
     </form>
 </div>
 
+
 {% endblock index %}
+
+{% block js %}
+<script>
+
+
+    document.getElementById('btn_factura').addEventListener("click", (e) => {
+        e.preventDefault()
+        const form = document.getElementById('codigoFacturaForm')
+
+        axios.post("{% url 'crear_codigo_factura' %}", form)
+            .then((result) => {
+
+                if (result.data.data) {
+                    window.location.reload()
+                } else {
+                    document.getElementById('mensaje').innerHTML = result.data.mensaje
+                }
+            }).catch((err) => {
+
+            });
+    })
+
+</script>
+
+{% endblock js %}

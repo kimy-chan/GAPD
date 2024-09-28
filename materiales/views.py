@@ -10,9 +10,19 @@ from django.http import HttpResponse
 
 
 from django.template.loader import get_template
-from .models import Categoria, Materiales, Informacion_material
+from .models import Categoria, Factura, Materiales, Informacion_material
 from django.contrib import messages
 
+def crear_codigo_factura(request):
+    codigo_factura= request.POST['codigo_factura']
+    if not codigo_factura:
+        return JsonResponse({'mensaje':'campo obligatorio'})
+    try:
+        Factura.objects.create(codigo_factura= codigo_factura)
+        return JsonResponse({'data':True})
+    except IntegrityError as e:
+            return JsonResponse({'mensaje':'El codigo de factura ya existe'})
+                    
 
 def crear_categoria(request):    
     if(request.method == 'POST'):

@@ -1,5 +1,7 @@
 from django.db import models
 
+from proveedor.models import Proveedor
+
 
 class Categoria(models.Model):
     codigo_clasificacion = models.CharField(max_length=100, unique=True , blank=False, null=False, error_messages={'unique':'El codigo de la categoria ya existe'})
@@ -10,20 +12,26 @@ class Categoria(models.Model):
     def __str__(self) -> str:
         return f"{self.nombre},{self.codigo_clasificacion}, {self.fecha_creacion}"
 
+
+
+class Factura(models.Model):
+    codigo_factura=models.CharField(max_length=255,blank=False, null=False, unique=True)
+    es_habilitado=models.BooleanField(default=True)
+
 class Materiales(models.Model):
     nombre = models.CharField(max_length=255,blank=False, null=False,)
     codigo = models.CharField(max_length=255, blank=False, null=False, unique=True,  error_messages={'unique':'El codigo de producto ya existe'})
     marca = models.CharField(max_length=255, blank=False, null=False)
-  
     stock = models.IntegerField(null=True, blank=True, default=0)
-   
     fecha_creacion = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     tamaño = models.CharField(max_length=255,blank=True, null=True)
     color = models.CharField(max_length=100,blank=True, null=True)
     unidad_medida = models.CharField(max_length=255,blank=True, null=True, verbose_name='Unidad de medida')
     material = models.CharField(max_length=255,blank=True, null=True)
+    factura = models.ForeignKey(Factura, models.CASCADE,blank=False, null=False)
     codigo_paquete = models.CharField(max_length=255, unique=True, blank=True, null=True,  error_messages={'unique':'El codigo ya existe'}, verbose_name='Codigo de paquete')
     categoria =models.ForeignKey(Categoria, models.CASCADE,blank=False, null=False )
+    proveedor= models.ForeignKey(Proveedor, models.CASCADE,blank=False, null=False)
     es_habilitado=models.BooleanField(default=True)
 
  
