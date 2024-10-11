@@ -135,6 +135,11 @@
                             <a href="/listando_pedidos" class="nav-link px-0 align-middle">
                                 <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Pedidos</span></a>
                         </li>
+                        <li>
+                            <a href="{% url 'reporte_pedidos' %}" class="nav-link px-0 align-middle">
+                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Resporte
+                                    pedidos</span></a>
+                        </li>
                         {% endif %}
 
                         {% if usuario.rol == "Super_administrador" %}

@@ -208,30 +208,30 @@
         document.getElementById("campoNumero").value = 1; // Limpia el mensaje
     });
 
-
-    document.getElementById('realizarPedidoBtn').addEventListener('click', function (e) {
-        e.preventDefault()
-        var ids = [];
-        var idElements = document.querySelectorAll('.id_pedido');
-        idElements.forEach(function (element) {
-            ids.push(element.value);
-        });
-
-        var queryString = ids.map(id => `id=${encodeURIComponent(id)}`).join('&');
-
-        // Usa Axios para enviar la solicitud GET
-        axios.get(`/cambiar_estado_pedido?${queryString}`)
-            .then((result) => {
-                window.location.reload()
-            })
-            .catch((err) => {
-                console.error(err); // Muestra el error en la consola
+    const realizarPedidoBtn = document.getElementById('realizarPedidoBtn')
+    if (realizarPedidoBtn) {
+        document.getElementById('realizarPedidoBtn').addEventListener('click', function (e) {
+            e.preventDefault()
+            var ids = [];
+            var idElements = document.querySelectorAll('.id_pedido');
+            idElements.forEach(function (element) {
+                ids.push(element.value);
             });
 
-        console.log(ids); // Muestra todos los IDs en la consola
-    });
+            var queryString = ids.map(id => `id=${encodeURIComponent(id)}`).join('&');
 
+            // Usa Axios para enviar la solicitud GET
+            axios.get(`/cambiar_estado_pedido?${queryString}`)
+                .then((result) => {
+                    window.location.reload()
+                })
+                .catch((err) => {
+                    console.error(err); // Muestra el error en la consola
+                });
 
+            console.log(ids); // Muestra todos los IDs en la consola
+        });
+    }
     function listar_informacion_material(id_material) {
         axios.get(`listar_info_material/${id_material}`)
             .then((result) => {
@@ -249,6 +249,7 @@
 
 
     document.getElementById('enviar').addEventListener("click", (e) => {
+
         e.preventDefault()
         const formulario = document.getElementById('pedido_formulario')
         document.getElementById("mensaje").innerHTML = ''
