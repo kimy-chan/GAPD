@@ -555,3 +555,25 @@ def reporte_pedidos(request):
 
 
 
+def reporte_pedido_salida(request):
+    if request.method == 'POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+        salida = Pedido.objects.filter(
+            fecha_entrega_salida__gte= fecha_inicio_dt,
+            fecha_entrega_salida__lte= fecha_fin_dt,
+            
+        )
+        context={
+            'fecha_inicio':fecha_inicio,
+            'fecha_fin':fecha_fin,
+            'data':salida
+        }
+        return render(request, 'pedidos/reporte.pedidos.salida.html', context)
+
+
+    return render(request, 'pedidos/reporte.pedidos.salida.html')

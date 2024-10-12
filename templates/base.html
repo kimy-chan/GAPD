@@ -137,9 +137,21 @@
                         </li>
                         <li>
                             <a href="{% url 'reporte_pedidos' %}" class="nav-link px-0 align-middle">
-                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Resporte
+                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Reporte
                                     pedidos</span></a>
                         </li>
+                        <li>
+                            <a href="{% url 'reporte_materiales_entrada' %}" class="nav-link px-0 align-middle">
+                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Resporte
+                                    Material Entrada</span></a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'reporte_pedido_salida' %}" class="nav-link px-0 align-middle">
+                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Resporte
+                                    Material salida</span></a>
+                        </li>
+
                         {% endif %}
 
                         {% if usuario.rol == "Super_administrador" %}

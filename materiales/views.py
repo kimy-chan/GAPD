@@ -8,6 +8,8 @@ from .forms import Formulario_categoria,Formulario_materiales,Form_infomacion_ma
 from django.http import JsonResponse
 from django.http import HttpResponse
 
+from datetime import datetime
+
 
 from django.template.loader import get_template
 from .models import Categoria, Factura, Materiales, Informacion_material
@@ -211,3 +213,29 @@ def anadir_nuevo_cantidad(request):
     detalle = f'Se registro una nueva cantidad al material con el código: {material.codigo}'
     crear_log_sistema(request.user.username,'Registro', detalle ,'Materiales')
     return JsonResponse({'data':True})
+
+def reporte_materiales_entrada(request):
+    if request.method == 'POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+      
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+
+        material = Informacion_material.objects.filter(
+            fecha_creacion__gte= fecha_inicio_dt,
+            fecha_creacion__lte= fecha_fin_dt,
+            
+        )
+        context={
+            'fecha_inicio':fecha_inicio,
+            'fecha_fin':fecha_fin,
+            'data':material
+        }
+        return render(request, 'materiales/reporte.material.entrada.html', context)
+
+
+    return render(request, 'materiales/reporte.material.entrada.html')
+

@@ -48,6 +48,7 @@ class  Informacion_material(models.Model):
     total_precio= models.DecimalField(max_digits=10, decimal_places=2, null=True)
     cantidad=models.IntegerField(null=True, blank=True)
     material = models.ForeignKey(Materiales, models.CASCADE, blank= False, null=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     def calcular_total_cantidad(self):
         self.cantidad= self.cantidad_paquete * self.cantidad_paquete_unidad
         self.save()
