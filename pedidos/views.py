@@ -411,7 +411,7 @@ def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada uni
     return redirect(f"{url}?success=Pedido autorizado correctamente")
    
 @login_required
-def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos el lamacen
+def autorizar_pedidos_almacen(request, id_pedido):#autoriza pedidos el lamacen
     user = request.user
     pedido = get_object_or_404(Pedido,pk=id_pedido)
     #usuario = get_object_or_404(Usuario, pk= id_usuario)
