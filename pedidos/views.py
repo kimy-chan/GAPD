@@ -412,9 +412,11 @@ def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada uni
    
 @login_required
 def autorizar_pedidos_almacen(request, id_pedido, id_usuario):#autoriza pedidos el lamacen
+    user = request.user
     pedido = get_object_or_404(Pedido,pk=id_pedido)
-    usuario = get_object_or_404(Usuario, pk= id_usuario)
-    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+    #usuario = get_object_or_404(Usuario, pk= id_usuario)
+   
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= user, estado_autorizacion= True)
     autorizacion_pedido.save()
     pedido.aprobado_almacen= True
     pedido.save()
@@ -439,14 +441,28 @@ def rechazar_pedido_unidad(request, id_pedido):
 @login_required
 def imprecion_solicitud(request,numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
+
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
+    user_oficina=None
+    user_unidad=None
+    user_almacen=None
+    for usuarios  in autorizacion:
+        print(usuarios.usuario.oficina)
+        if usuarios.usuario.cargo == 'Encargado_oficina':
+            user_oficina = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+        elif usuarios.usuario.cargo == 'Encargado_unidad':
+            user_unidad = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+        elif usuarios.usuario.oficina.nombre == 'Almacenes':
+            user_almacen=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
 
-    user_autorizacion = f"{autorizacion[0].usuario.persona.nombre} { autorizacion[0].usuario.persona.apellidos }" 
     context = {
         'data': pedido,
         'usuario_pedido':user_pedido,
-       'user_autorizacion':user_autorizacion
+        'user_oficina':user_oficina ,
+        'user_unidad':user_unidad,
+        'user_almacen':user_almacen
+
     }
     return render(request, "imprimir/solicitud.html", context)
 
@@ -455,13 +471,28 @@ def imprecion_solicitud(request,numero):
 @login_required
 def generate_pdf(request, numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
+
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
-    user_autorizacion = f"{autorizacion[0].usuario.persona.nombre} { autorizacion[0].usuario.persona.apellidos }"   
+    user_oficina=None
+    user_unidad=None
+    user_almacen=None
+    for usuarios  in autorizacion:
+        print(usuarios.usuario.oficina)
+        if usuarios.usuario.cargo == 'Encargado_oficina':
+            user_oficina = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+        elif usuarios.usuario.cargo == 'Encargado_unidad':
+            user_unidad = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+        elif usuarios.usuario.oficina.nombre == 'Almacenes':
+            user_almacen=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+
     context = {
         'data': pedido,
         'usuario_pedido':user_pedido,
-        'user_autorizacion':user_autorizacion
+        'user_oficina':user_oficina ,
+        'user_unidad':user_unidad,
+        'user_almacen':user_almacen
+
     }
     html_string = render_to_string('imprimir/solicitud.html', context)
     response = HttpResponse(content_type='application/pdf')

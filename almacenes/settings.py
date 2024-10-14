@@ -165,3 +165,5 @@ EMAIL_HOST_USER = 'zaida.araca89@gmail.com'
 EMAIL_HOST_PASSWORD = 'ekot dfno eems jams'
 
 
+MEDIA_URL='/upload/'
+MEDIA_ROOT =os.path.join(BASE_DIR,'')

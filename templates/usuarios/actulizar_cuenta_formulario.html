@@ -1,16 +1,42 @@
 {% extends '../base.html' %}
 {% load static %}
 {% block index %}
+<style>
+    .profile-image {
+        width: 50px;
+        /* Ajusta el ancho según lo que necesites */
+        height: 50px;
+        /* Asegúrate de que el alto sea igual al ancho para hacerlo circular */
+        border-radius: 50%;
+        /* Esto hace que la imagen sea circular */
+        object-fit: cover;
+        /* Asegura que la imagen se ajuste correctamente */
+    }
 
-
+    .current-image {
+        margin-bottom: 15px;
+        /* Espaciado para separar la imagen del formulario */
+    }
+</style>
 <div class="container">
     <div class="text-center">
         <h2>Añadir usuarios</h2>
     </div>
-    <form action="{% url 'actulizar_cuenta_usuario' usuario.id persona.id %}" method="POST">
+    <form action="{% url 'actulizar_cuenta_usuario' usuario.id persona.id %}" method="POST"
+        enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
+
             <div class="col-6">
+                <label for="{{ form_usuario.item.id_for_label }}"> {{form_usuario.foto.label}}:
+                </label>
+
+                {% if form_usuario.instance.foto %}
+                <img src="{{ form_usuario.instance.foto.url }}" alt="Imagen de perfil" class="profile-image">
+                {% else %}
+                {{ form_usuario.foto }}
+                {% endif %}
+
                 {{ form_persona }}
                 <label for="{{ form_usuario.email.id_for_label }}"> {{ form_usuario.email.label}}: </label>
                 {{ form_usuario.email }}

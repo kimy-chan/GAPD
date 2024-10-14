@@ -136,24 +136,23 @@
             <thead>
                 <tr>
                     <th>Codigo</th>
-                    <th>Unidad de Manejo</th>
+
                     <th>Cantidad Pedida</th>
                     <th>Cantidad modificada</th>
                     <th>Cantidad Entrega</th>
-                    <th>Costo Unidad</th>
-                    <th>TOTAL</th>
+
+
                 </tr>
             </thead>
             <tbody>
                 {% for pedido in data %}
                 <tr>
                     <td>{{ pedido.material.codigo }}</td>
-                    <td>{{ pedido.unidad_manejo }}</td>
+
                     <td>{{ pedido.cantidad_pedida }}</td>
                     <td>{{ pedido.sub_cantidad_pedida }}</td>
                     <td>{{ pedido.cantidad_entrega }}</td>
-                    <td>{{ pedido.material.precio_unidad }}</td>
-                    <td>{{ pedido.material.precio_unidad }}</td>
+
                 </tr>
                 {% endfor %}
             </tbody>
@@ -168,25 +167,30 @@
                     <p>Nombre, cargo y firma</p>
                 </td>
                 <td>
-                    <p>...{{ user_autorizacion }}..</p>
+                    {% if not user_oficina %}
+                    <p>..{{ user_unidad }}..</p>
+                    {% elif user_oficina %}
+                    <p>..{{ user_oficina }}..</p>
+                    {% endif %}
                     <p class="signature-label">Autorizado por</p>
                     <p>Nombre, cargo y firma</p>
                 </td>
                 <td>
-                    <p>..........................................</p>
-                    <p class="signature-label">Entregado por</p>
+
+                    <p>...{{ user_unidad }}....</p>
+                    <p class="signature-label">Autorizado por</p>
                     <p>Nombre, cargo y firma</p>
                 </td>
                 <td>
-                    <p>..........................................</p>
-                    <p class="signature-label">Recibido por</p>
+                    <p>....{{user_almacen}}....</p>
+                    <p class="signature-label">Autorizado por</p>
                     <p>Nombre, cargo y firma</p>
                 </td>
             </tr>
             <tr>
                 <td colspan="4">
                     <p>..........................................</p>
-                    <p class="signature-label">Control Existencias</p>
+                    <p class="signature-label">Recibido por</p>
                     <p>Nombre, cargo y firma</p>
                 </td>
             </tr>

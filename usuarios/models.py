@@ -3,11 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser , UserManager, Permissio
 from django.dispatch import receiver
 from django.db.models.signals import post_migrate
 from django.db import models
+from django.forms import ValidationError
 from  persona.models import Persona
-
-
-
-
+from django.utils.translation import gettext_lazy as _
 
 
     
@@ -68,8 +66,13 @@ def crearUsuarioPorDefecto(sender, **kwargs):
                 usuario.set_password('superadmin')  
                 usuario.save()  
 
+
     
 class Usuario(AbstractBaseUser, PermissionsMixin):
+    def validate_image_file_extension(value):
+        valid_extensions = ['.jpg', '.jpeg', '.png']
+        if not any(value.name.endswith(ext) for ext in valid_extensions):
+            raise ValidationError(_('Extension de archivo invalido'))
     CARGO_ROLE_CHOICES=[
         ('Encargado_unidad','Inmedianto Superior'),
         ('Encargado_oficina','Responsable de la oficina'),
@@ -93,7 +96,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     editar= models.BooleanField(default=False,verbose_name='editar material')
     eliminar=models.BooleanField(default=False,verbose_name='Eliminar material')
     rol=models.CharField(max_length=250, choices=ROLES_CHOICES, default='Personal')
-
+    foto=models.ImageField(upload_to='upload/', blank=True , null=True,
+         verbose_name='Imagen de perfil')
     unidad= models.ForeignKey(Unidad, on_delete=models.RESTRICT,blank=True, null=True)
 
     oficina= models.ForeignKey(Oficinas, on_delete=models.RESTRICT,blank=True, null=True)
@@ -109,3 +113,5 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['rol']
     def __str__(self) -> str:
         return f" Activo:{self.es_activo}"
+    
+    

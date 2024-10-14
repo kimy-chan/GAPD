@@ -6,8 +6,9 @@ class Usuario_formulario(forms.ModelForm):
     confirmar_password= forms.CharField(label='confirmar contraseña', widget=forms.PasswordInput(attrs={'class': 'form-control'}) )
     class Meta:
         model=Usuario
-        fields=['username','password','oficina','confirmar_password','email','cargo', 'item','rol','crear','editar','eliminar','unidad']
+        fields=['foto','username','password','oficina','confirmar_password','email','cargo', 'item','rol','crear','editar','eliminar','unidad']
         widgets={
+             'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'email': forms.TextInput(attrs={'class': 'form-control'}),
@@ -45,8 +46,9 @@ class Usuario_formulario(forms.ModelForm):
 class Usuario_formulario_actulizar(forms.ModelForm):
     class Meta:
         model=Usuario
-        fields=['oficina','email','cargo', 'item','rol','crear','editar','eliminar','unidad']
+        fields=['foto','oficina','email','cargo', 'item','rol','crear','editar','eliminar','unidad']
         widgets={
+              'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'item': forms.TextInput(attrs={'class': 'form-control'}),
             

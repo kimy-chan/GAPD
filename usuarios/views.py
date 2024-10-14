@@ -42,7 +42,7 @@ def actulizar_cuenta_usuario(request, id_usuario, id_persona):
     usuario= get_object_or_404(Usuario, pk=id_usuario)
     persona = get_object_or_404(Persona,pk=id_persona)
     formulario_persona= Formulario_persona(request.POST or None, instance=persona)
-    usuario_formulario= Usuario_formulario_actulizar(request.POST or None, instance=usuario)
+    usuario_formulario= Usuario_formulario_actulizar(request.POST or None, request.FILES or None, instance=usuario)
     if request.method=='POST':
         if formulario_persona.is_valid() and usuario_formulario.is_valid():
             formulario_persona.save()
@@ -64,7 +64,7 @@ def actulizar_cuenta_usuario(request, id_usuario, id_persona):
 
 def creando_usuario(request):
     if(request.method=="POST"):
-        formulario_u = Usuario_formulario(request.POST)
+        formulario_u = Usuario_formulario(request.POST or None, request.FILES or None)
         formulario_p = Formulario_persona(request.POST)
         if formulario_u.is_valid() and  formulario_p.is_valid():
             persona= formulario_p.save()
@@ -75,7 +75,7 @@ def creando_usuario(request):
             detalle=f'Se ha creado una nuevo usuario: {usuario.username}'
             crear_log_sistema(request.user.username,'Creación de Usuarios', detalle ,'Usuario')
         else:
-            formulario_u= Usuario_formulario(request.POST)
+            formulario_u= Usuario_formulario(request.POST or None, request.FILES or None)
             formulario_p = Formulario_persona(request.POST)
     else:
         formulario_u= Usuario_formulario()
@@ -202,6 +202,7 @@ def logout_view(request):
 
 def mi_perfil(request, id_usuario):
     return render(request,'usuarios/mi_perfil.html')
+
 def buscar_cuenta(request, email):
     if not email:
         return  JsonResponse({'mensaje':'Ingrese su email'})

@@ -73,7 +73,7 @@
                                 </button>
                                 {% else %}
                                 <div class="d-flex justify-content-between">
-                                    <a href="{% url 'autorizar_pedido_almacen' pedido.id pedido.usuario.id %}"
+                                    <a href="{% url 'autorizar_pedido_almacen' pedido.id  %}"
                                         class="btn btn-success btn-sm" type="submit" name="action"
                                         value="aprobar">Aprobar</a>
                                     <a class="btn btn-danger btn-sm" type="submit" name="action"

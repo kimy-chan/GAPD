@@ -7,11 +7,20 @@
     <div class="text-center">
         <h2>Añadir usuarios</h2>
     </div>
-    <form action="{% url 'creando_usuarios' %}" method="POST">
+    <form action="{% url 'creando_usuarios' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-6">
-                {{ form_persona }}
+                    <label for="{{ form_usuario.item.id_for_label }}"> {{form_usuario.foto.label}}:
+                    </label>
+                    {{ form_usuario.foto}}
+                    {{form_usuario.foto.errors}}
+               
+               
+               
+                    {{ form_persona }}
+
+    
                 <label for="{{ form_usuario.email.id_for_label }}"> {{ form_usuario.email.label}}: </label>
                 {{ form_usuario.email }}
                 {{form_usuario.email.errors}}
