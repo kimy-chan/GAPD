@@ -8,6 +8,12 @@ class Categoria(models.Model):
     nombre= models.CharField(max_length=200, blank=False, unique=True, null=False, error_messages={'unique':'El nombre de la categoria ya existe'})
     es_habilitado=models.BooleanField(default=True)
     fecha_creacion= models.DateField(auto_now_add=True)
+    def save(self, *args, **kwargs):
+  
+        self.nombre = self.nombre.title()
+       
+        super().save(*args, **kwargs)
+
 
     def __str__(self) -> str:
         return f"{self.nombre},{self.codigo_clasificacion}, {self.fecha_creacion}"
@@ -33,6 +39,14 @@ class Materiales(models.Model):
     categoria =models.ForeignKey(Categoria, models.CASCADE,blank=False, null=False )
     proveedor= models.ForeignKey(Proveedor, models.CASCADE,blank=False, null=False)
     es_habilitado=models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+  
+        self.nombre = self.nombre.title()
+        self.marca = self.marca.title()
+        self.color = self.color.title()
+        self.material = self.material.title()
+        super().save(*args, **kwargs)
 
  
     def __str__(self) -> str:

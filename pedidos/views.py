@@ -17,9 +17,9 @@ from .utils.enviar_notificacion import enviar_notificacion_pedido
 
 from .models import Pedido, Autorizacion_pedido
 
+from logs.views import crear_log_sistema
 @login_required
 def index(request):
-   
     pagina_actual = request.GET.get('limit', 10)
     pedido_pendiente= lista_pedidos_por_estado(request,'pendiente')
     nombre_categoria='materiales'
@@ -98,6 +98,8 @@ def realizar_pedido(request):
             material.stock= total
             pedido.save()
             material.save()
+            detalle = f'El usuario {request.user.username} ha seleccionado un pedido con el ID {pedido.id}.'
+            crear_log_sistema(request.user.username, 'Seleccionar pedido', detalle, 'Pedidos')
             return JsonResponse({"data":"Pedido Realizado"})
        except Exception as e:
            print("ERROR", e)
@@ -126,6 +128,8 @@ def cambiar_estado_pedido(request):
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
                 enviar_notificacion_pedido(pedido)
+                detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
+                crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
         
     if usuario.cargo == 'Encargado_oficina':
@@ -141,6 +145,8 @@ def cambiar_estado_pedido(request):
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
                 enviar_notificacion_pedido(pedido)
+                detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
+                crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
     
     if request.method == 'GET':
@@ -151,7 +157,9 @@ def cambiar_estado_pedido(request):
             pedido.estado_de_pedido='realizado'
             pedido.numero_pedido=numero
             pedido.save()
-            enviar_notificacion_pedido(pedido)    
+            enviar_notificacion_pedido(pedido) 
+            detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
+            crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')   
         return JsonResponse({'status': 'success', 'ids': ids})
     
     # Si la solicitud no es GET, retorna un error
@@ -231,6 +239,8 @@ def realizar_entrega(request):
             pedido.material.stock = nuevo_stock
             pedido.save()
             pedido.material.save()
+            detalle = f'El usuario {request.user.username} ha realizado la entrega del pedido con el ID {pedido.id}.'
+            crear_log_sistema(request.user.username, 'Entrega de pedido', detalle, 'Pedidos')
             return JsonResponse({'data':'Enviado'})
         
 
@@ -248,6 +258,8 @@ def realizar_entrega(request):
         pedido.material.stock = nuevo_stock
         pedido.save()
         pedido.material.save()
+        detalle = f'El usuario {request.user.username} ha realizado la entrega del pedido con el ID {pedido.id}.'
+        crear_log_sistema(request.user.username, 'Entrega de pedido', detalle, 'Pedidos')
         return JsonResponse({'data':'Enviado'})
 
 @login_required
@@ -300,7 +312,10 @@ def eliminar_mi_pedido(request, id_pedido):
     pedido.material.stock= nuevo_stock
     pedido.material.save()
     pedido.delete()
+    detalle = f'El usuario {request.user.username} ha cancelado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Cancelación de pedido', detalle, 'Pedidos')
     return redirect(f"{reverse('mis_pedidos')}?success=Pedido cancelado correctamente")
+
 @login_required
 def eliminar_mi_pedido_carrito(request, id_pedido):
     pedido= get_object_or_404(Pedido, pk=id_pedido)
@@ -310,6 +325,8 @@ def eliminar_mi_pedido_carrito(request, id_pedido):
     pedido.material.stock= nuevo_stock
     pedido.material.save()
     pedido.delete()
+    detalle = f'El usuario {request.user.username} ha cancelado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Cancelación de pedido', detalle, 'Pedidos')
     return redirect(f"{reverse('index')}?success=Pedido cancelado correctamente")
 
 @login_required
@@ -432,7 +449,9 @@ def rechazar_pedido_unidad(request, id_pedido):
     usuario = get_object_or_404(Usuario, pk= id_usuario)
     autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
     autorizacion_pedido.save()
-    
+    detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+
     return redirect(f"{reverse('listar_pedidos_unidad', kwargs={'id_usuario': id_usuario})}?pedido_rechazado=Pedido rechazado correctamente")
     
 
@@ -530,6 +549,9 @@ def sub_pedido(request):
     material_existente.stock=stock
     material_existente.save()
     pedido.save()
+    detalle = f'El usuario {request.user.username} ha modificado la cantidad del pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Modificación de pedido', detalle, 'Pedidos')
+
     return JsonResponse({'data':'guardado'})
 @login_required
 def sub_pedido_almacen(request):
@@ -555,6 +577,7 @@ def sub_pedido_almacen(request):
     material_existente.stock=stock
     material_existente.save()
     pedido.save()
+    
     return JsonResponse({'data':'guardado'})
 
 

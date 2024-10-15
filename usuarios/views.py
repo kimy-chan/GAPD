@@ -30,10 +30,16 @@ def login_sistema(request):
         user = authenticate(username=username, password=password)
         if user is not None and user.es_activo and user.es_habilitado:
                 login(request, user)
-                if user.username =='superadmin': 
+                if user.username =='superadmin':
+                    detalle = f'El usuario {username} ha ingresado al sistema exitosamente.'
+                    crear_log_sistema(username, 'Ingreso exitoso', detalle, 'Usuario') 
                     return  redirect('administracion')
+                detalle = f'El usuario {username} ha ingresado al sistema exitosamente.'
+                crear_log_sistema(username, 'Ingreso exitoso', detalle, 'Usuario')
                 return redirect('index')
         else:
+            detalle = f'El usuario {username} intentó ingresar al sistema, pero la autenticación falló.'
+            crear_log_sistema(username, 'Intento de ingreso fallido', detalle, 'Usuario')
             return render(request, 'usuarios/login.html', {'error_message': 'Credenciales inválidas'})
     else:
         return render(request, 'usuarios/login.html')

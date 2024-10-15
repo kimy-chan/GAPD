@@ -125,6 +125,59 @@
                                 </div>
                             </div>
                         </li>
+
+
+                        <li>
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo" aria-expanded="true"
+                                            aria-controls="collapseTwo">
+                                            <i class="bi bi-file-earmark-text"></i> Reportes
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <ul class="collapse show nav flex-column ms-1" id="submenu2"
+                                                data-bs-parent="#menu">
+                                                <li>
+                                                    <a href="{% url 'reporte_pedido_salida' %}"
+                                                        class="nav-link px-0 align-middle">
+                                                        <i class="bi bi-cart"></i> <span
+                                                            class="ms-1 d-none d-sm-inline">Reporte
+                                                            Material salida</span></a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="{% url 'reporte_materiales_entrada' %}"
+                                                        class="nav-link px-0 align-middle">
+                                                        <i class="bi bi-cart"></i> <span
+                                                            class="ms-1 d-none d-sm-inline">Reporte
+                                                            Material Entrada</span></a>
+                                                </li>
+
+
+                                                <li>
+                                                    <a href="{% url 'reporte_pedidos' %}"
+                                                        class="nav-link px-0 align-middle">
+                                                        <i class="bi bi-cart"></i> <span
+                                                            class="ms-1 d-none d-sm-inline">Reporte
+                                                            pedidos</span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+
+
+
+                        {% endif %}
+                        {% if usuario.rol == "Administrador" and usuario.oficina.nombre == 'Almacenes' %}
                         <li>
                             <a href="/proveedor" class="nav-link px-0 align-middle">
                                 <i class="bi bi-person-bounding-box"></i> <span
@@ -135,22 +188,6 @@
                             <a href="/listando_pedidos" class="nav-link px-0 align-middle">
                                 <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Pedidos</span></a>
                         </li>
-                        <li>
-                            <a href="{% url 'reporte_pedidos' %}" class="nav-link px-0 align-middle">
-                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Reporte
-                                    pedidos</span></a>
-                        </li>
-                        <li>
-                            <a href="{% url 'reporte_materiales_entrada' %}" class="nav-link px-0 align-middle">
-                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Resporte
-                                    Material Entrada</span></a>
-                        </li>
-
-                        <li>
-                            <a href="{% url 'reporte_pedido_salida' %}" class="nav-link px-0 align-middle">
-                                <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Resporte
-                                    Material salida</span></a>
-                        </li>
 
                         {% endif %}
 
@@ -160,8 +197,6 @@
                                 <i class="bi bi-people"></i> <span class="ms-1 d-none d-sm-inline">Usuarios</span>
                             </a>
                         </li>
-                        {% endif %}
-
                         <li>
                             <div class="accordion" id="accordionExample">
                                 <div class="accordion-item">
@@ -169,7 +204,7 @@
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#collapseTwo" aria-expanded="true"
                                             aria-controls="collapseTwo">
-                                            <i class="bi bi-file-earmark-text"></i> Logs Sistema
+                                            <i class="bi bi-file-earmark-text"></i> Bitacora Sistema
                                         </button>
                                     </h2>
                                     <div id="collapseTwo" class="accordion-collapse collapse show"
@@ -187,12 +222,20 @@
                                                 <li class="list-group-item">
                                                     <a href="{% url  'logs_usuarios' %}" class="nav-link">Usuarios</a>
                                                 </li>
+
+                                                <li class="list-group-item">
+                                                    <a href="{% url  'logs_pedidos' %}" class="nav-link">Pedidos</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
+
+                        {% endif %}
+
+
 
                         <li>
                             <a href="/logout" class="nav-link px-0 align-middle">
