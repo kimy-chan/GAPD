@@ -49,6 +49,8 @@ def crear_categoria(request):
 
 def crear_material(request):
     if(request.method=='POST'):
+        fecha_actual = datetime.now()
+        gestion = fecha_actual.year
         formulario= Formulario_materiales(request.POST)
         formulario_info_material= Form_infomacion_material(request.POST)
         if(formulario.is_valid() and formulario_info_material.is_valid()):
@@ -62,6 +64,7 @@ def crear_material(request):
                 material.codigo_paquete= f"{categoria.codigo_clasificacion}-{codigo_paquete }"
                 material.codigo=f"{material.codigo_paquete}-{codigo}"
                 material.stock= cantidad_paquete * cantidad_paquete_unidad
+                material.gestion= gestion
                 material.save()
                 info_material= formulario_info_material.save(commit=False)
                 info_material.material= material
@@ -90,11 +93,12 @@ def crear_material(request):
 
 
 def listado_material(request, id_categoria):#lista todos los material por categoria
+    fecha_actual = datetime.now()
+    gestion = fecha_actual.year
     pagina_actual = request.GET.get('limit', 10)
-    listar_productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria,es_habilitado=True)
+    listar_productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria,es_habilitado=True, gestion = gestion, cierre_gestion=False)
     listar_productos_categoria=paginador_general(request, listar_productos_categoria, pagina_actual)
     nombre_categoria = Categoria.objects.get(pk=id_categoria)#trae el nombre de la categoria para el sud titulo
-
     context={
         'data':listar_productos_categoria,
         'nombre_categoria':nombre_categoria,
@@ -239,3 +243,47 @@ def reporte_materiales_entrada(request):
 
     return render(request, 'materiales/reporte.material.entrada.html')
 
+def cerrar_gestion(request):
+    fecha =datetime.now()
+    gestionNueva= fecha.year
+    if request.method =='POST':
+        gestion = request.POST['año']
+        materiales= Materiales.objects.filter(stock__gt=1 ,gestion= gestion,es_habilitado=True, cierre_gestion=False )
+        for m in materiales:
+            Materiales.objects.create(
+            nombre=m.nombre,
+            codigo=m.codigo + str(gestionNueva),
+            marca=m.marca,
+            stock=m.stock,
+            tamaño=m.tamaño,
+            color=m.color,
+            unidad_medida=m.unidad_medida,
+            unidad_manejo=m.unidad_manejo,
+            material=m.material,
+            factura=m.factura,
+            codigo_paquete=m.codigo_paquete + str(gestionNueva),
+            categoria=m.categoria,
+            proveedor=m.proveedor,
+            es_habilitado=m.es_habilitado,
+            gestion=gestionNueva ,
+            cierre_gestion=False
+    )     
+            materiales= Materiales.objects.filter(stock__gt=1 ,gestion= gestion,es_habilitado=True, cierre_gestion=False ).update(cierre_gestion=True)
+            context={
+        'selected_year':gestion
+    }
+        return render(request, 'materiales/cerrar.gestion.html',context)  
+
+    return render(request, 'materiales/cerrar.gestion.html')
+    
+def reporte_gestion(request):
+    if request.method =='POST':
+        gestion = request.POST['año']
+        materiales= Materiales.objects.filter(gestion= gestion,es_habilitado=True , cierre_gestion=True)
+        print(materiales)
+        context={
+            'data':materiales
+         }
+        return render(request, 'materiales/reporte.gestion.html', context)
+    return render(request, 'materiales/reporte.gestion.html')
+    

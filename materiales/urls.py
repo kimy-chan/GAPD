@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import crear_categoria,reporte_materiales_entrada,crear_codigo_factura,anadir_nuevo_cantidad,eliminar_categoria,actualizar_categoria,listar_categoria_id ,crear_material, listado_material,informacion_material, softDelete, editar_material, inprimir
+from .views import crear_categoria,reporte_gestion,cerrar_gestion,reporte_materiales_entrada,crear_codigo_factura,anadir_nuevo_cantidad,eliminar_categoria,actualizar_categoria,listar_categoria_id ,crear_material, listado_material,informacion_material, softDelete, editar_material, inprimir
 urlpatterns = [
     path('crear_categoria', crear_categoria, name='crear_categoria'),
       path('crear_material', crear_material, name='crear_material'), 
@@ -14,8 +14,10 @@ urlpatterns = [
          path('listar_categoria_id/<int:id>', listar_categoria_id, name='listar_categoria_id' ),
               path('actualizar_categoria', actualizar_categoria, name='actualizar_categoria' ),
                 path('anadir/cantidad',anadir_nuevo_cantidad , name='anadir_cantidad' ),
-                   path('codigo/factura',crear_codigo_factura , name='crear_codigo_factura' ),
+                path('codigo/factura',crear_codigo_factura , name='crear_codigo_factura' ),
                 path('reporte/entrada',reporte_materiales_entrada , name='reporte_materiales_entrada' ),
+                path('cerrar/gestion',cerrar_gestion , name='cerrar_gestion' ),
+                 path('reporte/gestion',reporte_gestion , name='reporte_gestion' ),
   
 
 

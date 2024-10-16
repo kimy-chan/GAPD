@@ -33,12 +33,15 @@ class Materiales(models.Model):
     tamaño = models.CharField(max_length=255,blank=True, null=True)
     color = models.CharField(max_length=100,blank=True, null=True)
     unidad_medida = models.CharField(max_length=255,blank=True, null=True, verbose_name='Unidad de medida')
+    unidad_manejo = models.CharField(max_length=255,blank=True, null=True, verbose_name='Unidad de manejo')
     material = models.CharField(max_length=255,blank=True, null=True)
     factura = models.ForeignKey(Factura, models.CASCADE,blank=False, null=False)
     codigo_paquete = models.CharField(max_length=255, unique=True, blank=True, null=True,  error_messages={'unique':'El codigo ya existe'}, verbose_name='Codigo de paquete')
     categoria =models.ForeignKey(Categoria, models.CASCADE,blank=False, null=False )
     proveedor= models.ForeignKey(Proveedor, models.CASCADE,blank=False, null=False)
     es_habilitado=models.BooleanField(default=True)
+    gestion=  models.IntegerField(blank=True ,null=True, unique=True) 
+    cierre_gestion=  models.IntegerField(default=False) 
 
     def save(self, *args, **kwargs):
   

@@ -189,6 +189,38 @@
                                 <i class="bi bi-cart"></i> <span class="ms-1 d-none d-sm-inline">Pedidos</span></a>
                         </li>
 
+
+                        <li>
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo" aria-expanded="true"
+                                            aria-controls="collapseTwo">
+                                            <i class="bi bi-file-earmark-text"></i> Gestion
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <ul class="collapse show nav flex-column ms-1" id="submenu2"
+                                                data-bs-parent="#menu">
+                                                <li class="list-group-item">
+                                                    <a href="{% url 'cerrar_gestion' %}" class="nav-link">Cerrar
+                                                        gestion</a>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <a href="{% url  'reporte_gestion' %}" class="nav-link">Reporte de
+                                                        gestion</a>
+                                                </li>
+
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                         {% endif %}
 
                         {% if usuario.rol == "Super_administrador" %}

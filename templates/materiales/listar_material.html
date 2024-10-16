@@ -16,6 +16,7 @@
     <table id="materialTable" style="background-color: #0E9097 ;" class="table table-striped  table-hover">
         <thead class="thead-dark">
             <tr>
+                <th scope="col">Gestion</th>
                 <th scope="col">Código</th>
                 <th scope="col">Material</th>
 
@@ -28,6 +29,7 @@
         <tbody>
             {% for material in data %}
             <tr>
+                <td class="small-text">{{ material.gestion }}</td>
                 <td class="small-text">{{ material.codigo }}</td>
                 <td class="small-text">{{ material.nombre }}</td>
 

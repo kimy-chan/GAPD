@@ -4,7 +4,7 @@ from proveedor.models import Proveedor
 class Formulario_materiales(forms.ModelForm):
     class Meta:
         model=Materiales
-        fields = ['nombre','proveedor', 'codigo','factura','codigo_paquete' , 'marca',   'tamaño', 'color', 'unidad_medida', 'material', 'categoria']
+        fields = ['nombre','proveedor', 'codigo','factura','codigo_paquete' , 'marca',   'tamaño', 'color', 'unidad_medida','unidad_manejo', 'material', 'categoria']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control',}),
             'codigo': forms.TextInput(attrs={'class': 'form-control'}),
@@ -13,8 +13,10 @@ class Formulario_materiales(forms.ModelForm):
             'tamaño': forms.TextInput(attrs={'class': 'form-control'}),
             'color': forms.TextInput(attrs={'class': 'form-control'}),
             'unidad_medida': forms.TextInput(attrs={'class': 'form-control'}),
+            'unidad_manejo': forms.TextInput(attrs={'class': 'form-control'}),
             'material': forms.TextInput(attrs={'class': 'form-control'}),
             'codigo_paquete': forms.TextInput(attrs={'class': 'form-control'}),
+        
         }
      
     def __init__(self, *args, **kwargs):#mostrando en un select todas las categorias disponibles

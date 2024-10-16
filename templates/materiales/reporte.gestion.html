@@ -1,0 +1,88 @@
+{% extends '../base.html' %}
+
+{% block index %}
+<div class="container">
+    <form method="POST" action="{% url 'reporte_gestion' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="año">Selecciona el año de gestión:</label>
+            <select name="año" id="año" class="form-control" required>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+</div>
+
+<h2>Lista de Materiales</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Código</th>
+            <th>Marca</th>
+            <th>Stock</th>
+            <th>Fecha de Creación</th>
+            <th>Tamaño</th>
+            <th>Color</th>
+            <th>Unidad de Medida</th>
+            <th>Unidad de Manejo</th>
+            <th>Material</th>
+            <th>Factura</th>
+            <th>Código de Paquete</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Habilitado</th>
+            <th>Gestión</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for material in data %}
+        <tr>
+            <td>{{ material.nombre }}</td>
+            <td>{{ material.codigo }}</td>
+            <td>{{ material.marca }}</td>
+            <td>{{ material.stock }}</td>
+            <td>{{ material.fecha_creacion }}</td>
+            <td>{{ material.tamaño }}</td>
+            <td>{{ material.color }}</td>
+            <td>{{ material.unidad_medida }}</td>
+            <td>{{ material.unidad_manejo }}</td>
+            <td>{{ material.material }}</td>
+            <td>{{ material.factura }}</td>
+            <td>{{ material.codigo_paquete }}</td>
+            <td>{{ material.categoria }}</td>
+            <td>{{ material.proveedor }}</td>
+            <td>{{ material.es_habilitado }}</td>
+            <td>{{ material.gestion }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="15">No hay materiales disponibles.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // Obtener el año actual
+    const currentYear = new Date().getFullYear();
+    const startYear = 2020; // Cambia esto según necesites
+    const endYear = 2050; // Cambia esto según necesites
+    const select = document.getElementById('año');
+
+    // Generar las opciones de años
+    for (let year = startYear; year <= endYear; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        select.appendChild(option);
+
+        // Seleccionar el año actual
+        if (year === currentYear) {
+            option.selected = true;
+        }
+    }
+</script>
+{% endblock index %}
