@@ -6,7 +6,7 @@ from logs.views import crear_log_sistema
 from utils.paginador import paginador_general
 from .forms import Formulario_categoria,Formulario_materiales,Form_infomacion_material
 from django.http import JsonResponse
-from django.http import HttpResponse
+
 
 from datetime import datetime
 
@@ -14,6 +14,8 @@ from datetime import datetime
 from django.template.loader import get_template
 from .models import Categoria, Factura, Materiales, Informacion_material
 from django.contrib import messages
+
+from django.db import transaction
 
 def crear_codigo_factura(request):
     codigo_factura= request.POST['codigo_factura']
@@ -57,6 +59,16 @@ def crear_material(request):
            try:
                 codigo= formulario.cleaned_data['codigo']
                 codigo_paquete= formulario.cleaned_data['codigo_paquete']
+                c = Materiales.objects.filter(codigo= codigo, es_habilitado=True).first()
+                p = Materiales.objects.filter(codigo_paquete= codigo_paquete,  es_habilitado=True).first()
+                
+                if c:
+                    messages.success(request, f'El codigo {c.codigo}  ya existe')
+                    return render(request, 'materiales/formulario.material.html', {'form': formulario, 'form_info': formulario_info_material})
+                elif p  :
+                    messages.success(request, f'El codigo {p.codigo_paquete}  ya existe')
+                    return render(request, 'materiales/formulario.material.html', {'form': formulario,'form_info': formulario_info_material })
+
                 categoria= formulario.cleaned_data['categoria']
                 cantidad_paquete= formulario_info_material.cleaned_data['cantidad_paquete']
                 cantidad_paquete_unidad= formulario_info_material.cleaned_data['cantidad_paquete_unidad']
@@ -244,43 +256,58 @@ def reporte_materiales_entrada(request):
     return render(request, 'materiales/reporte.material.entrada.html')
 
 def cerrar_gestion(request):
-    fecha =datetime.now()
-    gestionNueva= fecha.year
-    if request.method =='POST':
+    fecha = datetime.now()
+    gestionNueva = fecha.year
+    if request.method == 'POST':
         gestion = request.POST['año']
-        materiales= Materiales.objects.filter(stock__gt=1 ,gestion= gestion,es_habilitado=True, cierre_gestion=False )
+        if gestion >= str(gestionNueva):
+            messages.warning(request, 'Cierre de gestión negado. Asegúrate de ingresar el año correcto.')
+            return redirect('cerrar_gestion')
+
+        materiales = Materiales.objects.filter(gestion=gestion, es_habilitado=True, cierre_gestion=False)
+        materiales_a_crear = []
+
         for m in materiales:
-            Materiales.objects.create(
-            nombre=m.nombre,
-            codigo=m.codigo + str(gestionNueva),
-            marca=m.marca,
-            stock=m.stock,
-            tamaño=m.tamaño,
-            color=m.color,
-            unidad_medida=m.unidad_medida,
-            unidad_manejo=m.unidad_manejo,
-            material=m.material,
-            factura=m.factura,
-            codigo_paquete=m.codigo_paquete + str(gestionNueva),
-            categoria=m.categoria,
-            proveedor=m.proveedor,
-            es_habilitado=m.es_habilitado,
-            gestion=gestionNueva ,
-            cierre_gestion=False
-    )     
-            materiales= Materiales.objects.filter(stock__gt=1 ,gestion= gestion,es_habilitado=True, cierre_gestion=False ).update(cierre_gestion=True)
-            context={
-        'selected_year':gestion
-    }
-        return render(request, 'materiales/cerrar.gestion.html',context)  
+            if m.stock > 0:
+                # Crear una copia con un nuevo ID y el año nuevo
+                nuevos_material = Materiales(
+                    nombre=m.nombre,
+                    codigo=f"{m.codigo}{gestionNueva}",
+                    marca=m.marca,
+                    stock=m.stock,
+                    tamaño=m.tamaño,
+                    color=m.color,
+                    unidad_medida=m.unidad_medida,
+                    unidad_manejo=m.unidad_manejo,
+                    material=m.material,
+                    factura=m.factura,
+                    codigo_paquete=f"{m.codigo_paquete}{gestionNueva}",
+                    categoria=m.categoria,
+                    proveedor=m.proveedor,
+                    es_habilitado=m.es_habilitado,
+                    gestion=gestionNueva,
+                    cierre_gestion=False
+                )
+                materiales_a_crear.append(nuevos_material)
+
+        with transaction.atomic():
+            Materiales.objects.bulk_create(materiales_a_crear)  # Crear todos los nuevos materiales
+            materiales.update(cierre_gestion=True, stock=0)  # Actualizar los materiales existentes
+
+        messages.success(request, 'Cierre de gestión completada')
+        context = {
+            'selected_year': gestion,
+        }
+        return render(request, 'materiales/cerrar.gestion.html', context)
 
     return render(request, 'materiales/cerrar.gestion.html')
     
 def reporte_gestion(request):
     if request.method =='POST':
         gestion = request.POST['año']
+        pagina_actual = request.GET.get('limit', 10)
         materiales= Materiales.objects.filter(gestion= gestion,es_habilitado=True , cierre_gestion=True)
-        print(materiales)
+        materiales = paginador_general(request, materiales, pagina_actual)
         context={
             'data':materiales
          }

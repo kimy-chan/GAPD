@@ -6,6 +6,13 @@
     <p class="alert alert-warning">¡Atención! Al cerrar la gestión, todos los materiales con cantidad mayor a 1 se
         transferirán a la siguiente gestión. Asegúrate de que estás listo para proceder.</p>
 
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <form method="POST" action="{% url 'cerrar_gestion' %}">
         {% csrf_token %}
 

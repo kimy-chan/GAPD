@@ -4,66 +4,75 @@
 <div class="container">
     <form method="POST" action="{% url 'reporte_gestion' %}">
         {% csrf_token %}
-
         <div class="form-group">
             <label for="año">Selecciona el año de gestión:</label>
             <select name="año" id="año" class="form-control" required>
             </select>
         </div>
-
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
 </div>
 
 <h2>Lista de Materiales</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Código</th>
-            <th>Marca</th>
-            <th>Stock</th>
-            <th>Fecha de Creación</th>
-            <th>Tamaño</th>
-            <th>Color</th>
-            <th>Unidad de Medida</th>
-            <th>Unidad de Manejo</th>
-            <th>Material</th>
-            <th>Factura</th>
-            <th>Código de Paquete</th>
-            <th>Categoría</th>
-            <th>Proveedor</th>
-            <th>Habilitado</th>
-            <th>Gestión</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for material in data %}
-        <tr>
-            <td>{{ material.nombre }}</td>
-            <td>{{ material.codigo }}</td>
-            <td>{{ material.marca }}</td>
-            <td>{{ material.stock }}</td>
-            <td>{{ material.fecha_creacion }}</td>
-            <td>{{ material.tamaño }}</td>
-            <td>{{ material.color }}</td>
-            <td>{{ material.unidad_medida }}</td>
-            <td>{{ material.unidad_manejo }}</td>
-            <td>{{ material.material }}</td>
-            <td>{{ material.factura }}</td>
-            <td>{{ material.codigo_paquete }}</td>
-            <td>{{ material.categoria }}</td>
-            <td>{{ material.proveedor }}</td>
-            <td>{{ material.es_habilitado }}</td>
-            <td>{{ material.gestion }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="15">No hay materiales disponibles.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive"> <!-- Hace la tabla responsiva -->
+    <form action="{% url 'cerrar_gestion' %}" method="POST">
+        {% csrf_token %}
+        <select id="num" name="limit">
+            <option name="page" value="10">10</option>
+            <option name="page" value="20">20</option>
+            <option name="page" value="50">50</option>
+            <option name="page" value="100">100</option>
+            <option name="page" value="200">200</option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Gestión</th> <!-- Columna Gestión como primera -->
+                <th>Nombre</th>
+                <th>Código</th>
+                <th>Marca</th>
+                <th>Stock</th>
+                <th>Fecha de Creación</th>
+                <th>Tamaño</th>
+                <th>Color</th>
+                <th>Unidad de Medida</th>
+                <th>Unidad de Manejo</th>
+                <th>Material</th>
+                <th>Factura</th>
+                <th>Código de Paquete</th>
+                <th>Categoría</th>
+                <th>Proveedor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in data %}
+            <tr>
+                <td>{{ material.gestion }}</td> <!-- Mueve la gestión aquí -->
+                <td>{{ material.nombre }}</td>
+                <td>{{ material.codigo }}</td>
+                <td>{{ material.marca }}</td>
+                <td>{{ material.stock }}</td>
+                <td>{{ material.fecha_creacion | date:"d-m-Y H:i:s" }}</td>
+                <td>{{ material.tamaño }}</td>
+                <td>{{ material.color }}</td>
+                <td>{{ material.unidad_medida }}</td>
+                <td>{{ material.unidad_manejo }}</td>
+                <td>{{ material.material }}</td>
+                <td>{{ material.factura.codigo_factura }}</td>
+                <td>{{ material.codigo_paquete }}</td>
+                <td>{{ material.categoria.nombre }}</td>
+                <td>{{ material.proveedor.persona.nombre }} {{ material.proveedor.persona.apellidos }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="15">No hay materiales disponibles.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <script>
     // Obtener el año actual

@@ -26,7 +26,7 @@ class Factura(models.Model):
 
 class Materiales(models.Model):
     nombre = models.CharField(max_length=255,blank=False, null=False,)
-    codigo = models.CharField(max_length=255, blank=False, null=False, unique=True,  error_messages={'unique':'El codigo de producto ya existe'})
+    codigo = models.CharField(max_length=255, blank=False, null=False)
     marca = models.CharField(max_length=255, blank=False, null=False)
     stock = models.IntegerField(null=True, blank=True, default=0)
     fecha_creacion = models.DateTimeField(auto_now_add=True, blank=False, null=False)
@@ -36,11 +36,11 @@ class Materiales(models.Model):
     unidad_manejo = models.CharField(max_length=255,blank=True, null=True, verbose_name='Unidad de manejo')
     material = models.CharField(max_length=255,blank=True, null=True)
     factura = models.ForeignKey(Factura, models.CASCADE,blank=False, null=False)
-    codigo_paquete = models.CharField(max_length=255, unique=True, blank=True, null=True,  error_messages={'unique':'El codigo ya existe'}, verbose_name='Codigo de paquete')
+    codigo_paquete = models.CharField(max_length=255, blank=True, null=True,  verbose_name='Codigo de paquete')
     categoria =models.ForeignKey(Categoria, models.CASCADE,blank=False, null=False )
     proveedor= models.ForeignKey(Proveedor, models.CASCADE,blank=False, null=False)
     es_habilitado=models.BooleanField(default=True)
-    gestion=  models.IntegerField(blank=True ,null=True, unique=True) 
+    gestion=  models.IntegerField(blank=True ,null=True) 
     cierre_gestion=  models.IntegerField(default=False) 
 
     def save(self, *args, **kwargs):
