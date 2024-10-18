@@ -74,7 +74,10 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         if not any(value.name.endswith(ext) for ext in valid_extensions):
             raise ValidationError(_('Extension de archivo invalido'))
     CARGO_ROLE_CHOICES=[
-        ('Encargado_unidad','Inmedianto Superior'),
+        ('Almacen','Almacen'),
+        ('Presupuestos','Presupuestos'),
+        ('Cardista','Cardista'),
+        ('Director_administrativo','Director Administrativo'),
         ('Encargado_oficina','Responsable de la oficina'),
         ('Usuario','Personal de la oficina'),
     ]

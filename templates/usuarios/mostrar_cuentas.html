@@ -42,13 +42,7 @@
                 <td>{{ cuenta.oficina.nombre }}</td>
                 <td>{{ cuenta.username }}</td>
                 <td>
-                    {% if cuenta.cargo == "Encargado_oficina" %}
-                    Encargado de la Oficina
-                    {% elif cuenta.cargo == "Encargado_unidad" %}
-                    Inmediato Superior
-                    {% else %}
-                    Personal de la Oficina
-                    {% endif %}
+                    {{cuenta.cargo}}
                 </td>
                 <td>{{ cuenta.rol }}</td>
                 <td>

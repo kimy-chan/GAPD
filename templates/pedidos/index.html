@@ -43,6 +43,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <th>Gestion</th>
                             <th>Código</th>
                             <th>Nombre</th>
                             <th>Marca</th>
@@ -53,6 +54,7 @@
                     <tbody>
                         {% for material in data %}
                         <tr>
+                            <td>{{ material.gestion }}</td>
                             <td>{{ material.codigo }}</td>
                             <td>{{ material.nombre }}</td>
                             <td>{{ material.marca }}</td>

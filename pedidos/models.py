@@ -19,9 +19,15 @@ class Pedido(models.Model):
     codigo_numero=models.DecimalField(max_digits=10, decimal_places=2,blank= True ,null= True)
     usuario=models.ForeignKey(Usuario , on_delete=models.RESTRICT , blank= False, null=False)
     material= models.ForeignKey(Materiales, on_delete=models.RESTRICT,  blank= False, null=False)
-    aprobado_unidad = models.BooleanField( blank= True, null=True) 
+
+
+    aprobado_unidad = models.BooleanField( blank= True, null=True) #director administrativo
     aprobado_oficina = models.BooleanField( blank= True, null=True) 
+    aprobado_presupuestos = models.BooleanField( blank= True, null=True) 
+    aprobado_cardista = models.BooleanField( blank= True, null=True) 
     aprobado_almacen = models.BooleanField( blank= True, null=True) 
+
+
     estado_pedido_almacen = models.CharField(blank=False, null=False, default='Pendiente')
     estado_de_pedido=models.CharField(blank=False, null=False, default='pendiente')
     fecha_pedido= models.DateTimeField(auto_now_add=True, blank=False, null=False)

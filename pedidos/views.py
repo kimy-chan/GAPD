@@ -20,6 +20,8 @@ from .models import Pedido, Autorizacion_pedido
 from logs.views import crear_log_sistema
 @login_required
 def index(request):
+    fecha_actual = datetime.now()
+    gestion = fecha_actual.year
     pagina_actual = request.GET.get('limit', 10)
     pedido_pendiente= lista_pedidos_por_estado(request,'pendiente')
     nombre_categoria='materiales'
@@ -27,7 +29,7 @@ def index(request):
         id_categoria = request.POST.get('categoria_id')
         if not id_categoria:
             return redirect('index')
-        productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria, es_habilitado=True)
+        productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria, es_habilitado=True, gestion=gestion,  stock__gte = 1)
         productos_categoria= paginador_general(request,productos_categoria, pagina_actual)
         if productos_categoria and productos_categoria[0].categoria.nombre:
             nombre_categoria = productos_categoria[0].categoria.nombre
@@ -36,7 +38,7 @@ def index(request):
 
 
     else:
-        productos_categoria= Materiales.objects.select_related('categoria').filter(es_habilitado=True)
+        productos_categoria= Materiales.objects.select_related('categoria').filter(es_habilitado=True, gestion=gestion, stock__gte = 1)
         productos_categoria= paginador_general(request, productos_categoria, pagina_actual)
        
 
@@ -171,7 +173,9 @@ def listar_pedidos_usuarios_almacen(request):
     pagina_actual = request.GET.get('page', 10)
     pedidos_unidad = Pedido.objects.filter(
         aprobado_oficina=True,
-        aprobado_unidad=True
+        aprobado_unidad=True,
+        aprobado_presupuestos = True,
+        aprobado_cardista = True
     ).order_by('numero_pedido')
     pedidos_unicos = {}
     for pedido in pedidos_unidad:
@@ -340,8 +344,54 @@ def todos_mis_pedidos(request):
     }
     return render(request, 'pedidos/mis_pedidos.html', context)
 
+
 @login_required
-def listar_pedidos_unidad(request, id_usuario):
+def listar_pedidos_cardista(request, ):#admisnitrativo
+    pagina_actual = request.GET.get('page', 10)
+    pedidos_unidad = Pedido.objects.filter(
+        #usuario__unidad=usuario.unidad,
+        aprobado_unidad=True,
+        aprobado_oficina=True,
+    
+    ).order_by('numero_pedido')
+    pedidos_unicos = {}
+    for pedido in pedidos_unidad:
+        if pedido.numero_pedido not in pedidos_unicos:
+            pedidos_unicos[pedido.numero_pedido] = pedido
+
+    pedidos_unicos_list = list(pedidos_unicos.values())
+    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
+    context = {
+        'data': pedidos_unicos_list
+    }
+    return render(request, 'pedidos/usuarios.cardista.html', context)
+
+
+@login_required
+def listar_pedidos_presupuestos(request, id_usuario):#admisnitrativo
+    pagina_actual = request.GET.get('page', 10)
+    usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
+    pedidos_unidad = Pedido.objects.filter(
+        #usuario__unidad=usuario.unidad,
+        aprobado_unidad=True,
+        aprobado_oficina=True,
+           aprobado_cardista=True,
+    ).order_by('numero_pedido')
+    pedidos_unicos = {}
+    for pedido in pedidos_unidad:
+        if pedido.numero_pedido not in pedidos_unicos:
+            pedidos_unicos[pedido.numero_pedido] = pedido
+
+    pedidos_unicos_list = list(pedidos_unicos.values())
+    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
+    context = {
+        'data': pedidos_unicos_list
+    }
+    return render(request, 'pedidos/usuarios.pedidos.html', context)
+
+
+@login_required
+def listar_pedidos_unidad(request, id_usuario):#admisnitrativo
     pagina_actual = request.GET.get('page', 10)
     usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
     pedidos_unidad = Pedido.objects.filter(
@@ -358,8 +408,8 @@ def listar_pedidos_unidad(request, id_usuario):
     context = {
         'data': pedidos_unicos_list
     }
-
     return render(request, 'pedidos/usuarios.pedidos.html', context)
+
 
 @login_required
 def listar_pedidos_oficina(request, id_usuario):
@@ -392,6 +442,14 @@ def listar_pedidos_por_codigo(request, numero):#listado por unidad
     return render(request, 'pedidos/listar_pedidos_unidad.html', context)
 
 @login_required
+def listar_pedidos_por_codigo_cardista(request, numero):#listado por unidad
+    pedido= Pedido.objects.filter(numero_pedido=numero)
+    context = {
+        'data': pedido
+    }
+    return render(request, 'pedidos/listar_pedidos_cardista.html', context)
+
+@login_required
 def listar_pedidos_por_codigo_oficina(request, numero): #listado por oficina
     pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
@@ -410,6 +468,19 @@ def autorizar_pedidos(request, id_pedido):#autoria el pedido de cada unidad
     pedido.aprobado_unidad= True
     pedido.save()
     url = reverse('pedido_numero', kwargs={'numero': numero})
+    return redirect(f"{url}?success=Pedido autorizado correctamente")
+
+@login_required
+def autorizar_pedidos_cardista(request, id_pedido):#autoria el pedido de cada unidad
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
+    numero=pedido.numero_pedido
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+    autorizacion_pedido.save()
+    pedido.aprobado_cardista= True
+    pedido.save()
+    url = reverse('pedido_numero_cardista', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
 
 @login_required
@@ -454,6 +525,22 @@ def rechazar_pedido_unidad(request, id_pedido):
 
     return redirect(f"{reverse('listar_pedidos_unidad', kwargs={'id_usuario': id_usuario})}?pedido_rechazado=Pedido rechazado correctamente")
     
+    
+@login_required
+def rechazar_pedido_cardista(request, id_pedido):
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
+    pedido.aprobado_cardista= False
+    pedido.save()
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
+    autorizacion_pedido.save()
+    detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+
+    return redirect(f"{reverse('listar_pedidos_unidad', kwargs={'id_usuario': id_usuario})}?pedido_rechazado=Pedido rechazado correctamente")
+    
+
 
 
 
