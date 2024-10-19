@@ -8,7 +8,7 @@
 
 <div class="container-fluid">
     <div class="text-center">
-        <h2>Cardista</h2>
+        <h2>Presupuestos</h2>
     </div>
     <table class="table table-striped">
         <thead>
@@ -35,7 +35,8 @@
                 <td>{{ pedido.fecha_pedido|date:"m/d/y" }}</td>
 
                 <td>
-                    <a class="btn btn-success btn-sm" href="{% url 'pedido_numero_cardista' pedido.numero_pedido %}">Ver
+                    <a class="btn btn-success btn-sm"
+                        href="{% url 'listar_pedidos_por_codigo_presupuesto' pedido.numero_pedido %}">Ver
                         pedidos</a>
                 </td>
             </tr>

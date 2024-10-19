@@ -40,7 +40,7 @@
 
 
 <div class="container-fluid">
-    <h1>Cardista</h1>
+    <h1>Presupuestos</h1>
 
     <table class="table table-striped">
         <thead>
@@ -64,7 +64,7 @@
 
                 <td>{{ pedido.cantidad_pedida }} {{ pedido.unidad_manejo }}</td>
 
-                {% if pedido.aprobado_cardista == false %}
+                {% if pedido.aprobado_presupuestos == false %}
                 <td>
                     {{ pedido.sub_cantidad_pedida }}
                     <div class="form-container">
@@ -90,16 +90,15 @@
                         </form>
 
                     </div>
-
                 </td>
                 {% else %}
                 <td>{{ pedido.sub_cantidad_pedida }} </td>
                 {% endif %}
                 <td>
-                    {% if pedido.aprobado_cardista == None %}
+                    {% if pedido.aprobado_presupuestos == None %}
                     <div class="row">
                         <div class="col-6">
-                            <a href="{% url 'autorizar_pedidos_cardista' pedido.id %}" class="btn btn-success btn-sm">
+                            <a href="{% url 'autorizar_pedidos_presupuestos' pedido.id %}" class="btn btn-success btn-sm">
                                 <i class="fas fa-check"></i>
                             </a>
                         </div>
@@ -109,7 +108,7 @@
                             </a>
                         </div>
                     </div>
-                    {% elif pedido.aprobado_cardista == False %}
+                    {% elif pedido.aprobado_presupuestos == False %}
                     <button class="btn btn-danger btn-sm" disabled>
                         <i class="fas fa-times"></i> Rechazado
                     </button>
@@ -122,13 +121,13 @@
     {% include 'paginador/paginador.html' %}
 </div>
 
-
 <!-- Botón de Imprimir -->
 <div class="text-center mb-3">
     <a href="{% url 'imprimir' data.0.numero_pedido %}" class="btn btn-primary">
         <i class="fas fa-print"></i> Imprimir
     </a>
 </div>
+
 <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -145,7 +144,6 @@
         </div>
     </div>
 </div>
-
 
 {% endblock usuario %}
 
@@ -169,8 +167,6 @@
                         responseModal.show();
                     })
                     .catch((err) => {
-                        console.log(err);
-
                         const modalBody = document.getElementById('modalBody');
                         modalBody.textContent = err.response ? err.response.data : err.message;
                         const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
