@@ -174,8 +174,9 @@ def listar_pedidos_usuarios_almacen(request):
     pedidos_unidad = Pedido.objects.filter(
         aprobado_oficina=True,
         aprobado_unidad=True,
+        
+        aprobado_cardista = True,
         aprobado_presupuestos = True,
-        aprobado_cardista = True
     ).order_by('numero_pedido')
     pedidos_unicos = {}
     for pedido in pedidos_unidad:
@@ -368,9 +369,9 @@ def listar_pedidos_cardista(request, ):#admisnitrativo
 
 
 @login_required
-def listar_pedidos_presupuestos(request, id_usuario):#admisnitrativo
+def listar_pedidos_presupuestos(request):#admisnitrativo
     pagina_actual = request.GET.get('page', 10)
-    usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
+   
     pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
         aprobado_unidad=True,
@@ -387,7 +388,7 @@ def listar_pedidos_presupuestos(request, id_usuario):#admisnitrativo
     context = {
         'data': pedidos_unicos_list
     }
-    return render(request, 'pedidos/usuarios.pedidos.html', context)
+    return render(request, 'pedidos/usuarios.presupuestos.html', context)
 
 
 @login_required
@@ -450,6 +451,15 @@ def listar_pedidos_por_codigo_cardista(request, numero):#listado por unidad
     return render(request, 'pedidos/listar_pedidos_cardista.html', context)
 
 @login_required
+def listar_pedidos_por_codigo_presupuesto(request, numero):#listado por unidad
+    pedido= Pedido.objects.filter(numero_pedido=numero)
+    context = {
+        'data': pedido
+    }
+    return render(request, 'pedidos/listar_pedidos_presupuestos.html', context)
+
+
+@login_required
 def listar_pedidos_por_codigo_oficina(request, numero): #listado por oficina
     pedido= Pedido.objects.filter(numero_pedido=numero)
     context = {
@@ -481,6 +491,18 @@ def autorizar_pedidos_cardista(request, id_pedido):#autoria el pedido de cada un
     pedido.aprobado_cardista= True
     pedido.save()
     url = reverse('pedido_numero_cardista', kwargs={'numero': numero})
+    return redirect(f"{url}?success=Pedido autorizado correctamente")
+@login_required
+def autorizar_pedidos_presupuestos(request, id_pedido):#autoria el pedido de cada unidad
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
+    numero=pedido.numero_pedido
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+    autorizacion_pedido.save()
+    pedido.aprobado_presupuestos = True
+    pedido.save()
+    url = reverse('listar_pedidos_por_codigo_presuopuesto', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
 
 @login_required
