@@ -152,6 +152,8 @@
                         responseModal.show();
                     })
                     .catch((err) => {
+                        console.log(err);
+
                         const modalBody = document.getElementById('modalBody');
                         modalBody.textContent = err.response ? err.response.data : err.message;
                         const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
