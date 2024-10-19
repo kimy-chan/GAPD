@@ -229,7 +229,7 @@ def realizar_entrega(request):
         if(pedido.cantidad_entrega > 0):
                 return JsonResponse({'data':f'Este pedido ya fue realizada'})
         if(pedido.sub_cantidad_pedida > 0):
-        
+            print("hola")
             if int(cantidad_entregada) < 1:
                 return JsonResponse({'data':'Cantidad minima es: 1'})
             elif int(cantidad_entregada) > pedido.sub_cantidad_pedida:
