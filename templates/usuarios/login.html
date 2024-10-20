@@ -8,44 +8,124 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Estilos adicionales */
+    
+        /* Additional styles */
         body {
-            background-color: #185a9c;
+            font-family: 'Arial', sans-serif;
+            background-color: #1f8e96; 
+            color: #333;
+            width: 100%;
+        }
+
+        .navbar {
+        background-color: #024d5a; 
+        padding: 1.5rem 1rem; 
+        width: 100%;
+    }
+        
+
+        .navbar-brand {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: rgb(150, 27, 27);
         }
 
         .login-container {
-            margin-top: 5%;
+            margin-top: 8%;
+        }
+       
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            background-color:  #98e8ec; 
+            color: rgb(14, 13, 13); 
+        
         }
 
-        .table-sm {
-            font-size: 0.9rem;
-            /* Reducir tamaño de fuente */
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            text-align: center;
+            
+        }
+        .form-group,
+        .form-group label{
+            text-align: center;
+        }
+        .form-control:focus {
+            border-color: darkred; /* Borde rojo oscuro cuando está enfocado */
+            box-shadow: 0 0 5px darkred; /* Sombra roja cuando está enfocado */
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0c8177; /* Darker shade on hover */
+        }
+
+        .modal-header {
+            background-color: #1cc5b7;
+            color: white;
+            border-bottom: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        .small-image {
+            max-width: 150px;
+        }
+
+        footer {
+            background-color:#2A4F62;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
 
         .table-sm td,
         .table-sm th {
             padding: 0.5rem;
-            /* Reducir padding */
         }
 
         .btn-sm {
             font-size: 0.75rem;
-            /* Reducir tamaño del texto del botón */
             padding: 0.25rem 0.5rem;
-            /* Reducir padding */
+        }
+
+        .text-center a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .text-center a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#"></a>
+    </nav>
 
     <div class="container">
         <div class="row justify-content-center login-container">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header text-center">
-                        Login
-                    </div>
                     <div class="card-body">
                         <form action="{% url 'login' %}" method="POST">
                             {% csrf_token %}
@@ -66,8 +146,7 @@
                                 <button type="submit" class="btn btn-primary">Ingresar</button>
                             </div>
                             <div class="text-center mt-2">
-                                <a href="#" data-toggle="modal" data-target="#passwordRecoveryModal">¿Olvidaste tu
-                                    contraseña?</a>
+                                <a href="#" data-toggle="modal" data-target="#passwordRecoveryModal" style="font-weight: bold;">¿Olvidaste tu contraseña?</a>
                             </div>
                         </form>
                     </div>
@@ -82,7 +161,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="passwordRecoveryModalLabel">Recuperar Contraseña</h5>
+                    <h5 class="modal-title" id="passwordRecoveryModalLabel" style="font-weight: bold;">Recuperar Contraseña</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -189,6 +268,15 @@
                 })
         }
     </script>
+    <footer>
+            
+      
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 text-center">
+                <img src="static/imagen/VERTICAL.png" alt="Imagen descriptiva" class="img-fluid small-image">
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>
