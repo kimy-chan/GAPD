@@ -1,6 +1,17 @@
-/env
+# Ignorar el entorno virtual
+/env/
+
+# Ignorar directorios de recuperación
 Recovery/
+
+# Ignorar la carpeta de información del sistema
 System Volume Information/
 
+# Ignorar el directorio de uploads
+/upload/
+
+# Ignorar todos los archivos en __pycache__ de todas las aplicaciones
 __pycache__/
 
+# Ignorar archivos .pyc generados
+*.pyc
