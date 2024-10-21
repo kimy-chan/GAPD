@@ -2,3 +2,5 @@
 Recovery/
 System Volume Information/
 
+__pycache__/
+
