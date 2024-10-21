@@ -575,21 +575,28 @@ def imprecion_solicitud(request,numero):
     user_oficina=None
     user_unidad=None
     user_almacen=None
+    user_cardista=None
+    user_presupuesto=None
     for usuarios  in autorizacion:
-        print(usuarios.usuario.oficina)
         if usuarios.usuario.cargo == 'Encargado_oficina':
             user_oficina = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.cargo == 'Encargado_unidad':
+        elif usuarios.usuario.cargo == 'Director_administrativo':
             user_unidad = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.oficina.nombre == 'Almacenes':
+        elif usuarios.usuario.cargo == 'Almacen':
             user_almacen=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+        elif usuarios.usuario.cargo == 'Cardista':
+            user_cardista =  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }"    
+        elif usuarios.usuario.cargo == 'Presupuestos':
+            user_presupuesto=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
 
     context = {
         'data': pedido,
         'usuario_pedido':user_pedido,
         'user_oficina':user_oficina ,
         'user_unidad':user_unidad,
-        'user_almacen':user_almacen
+        'user_almacen':user_almacen,
+        'user_cardista':user_cardista,
+        'user_presupuesto':user_presupuesto,
 
     }
     return render(request, "imprimir/solicitud.html", context)
@@ -602,24 +609,32 @@ def generate_pdf(request, numero):
 
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
+
     user_oficina=None
     user_unidad=None
     user_almacen=None
+    user_cardista=None
+    user_presupuesto=None
     for usuarios  in autorizacion:
-        print(usuarios.usuario.oficina)
         if usuarios.usuario.cargo == 'Encargado_oficina':
             user_oficina = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.cargo == 'Encargado_unidad':
+        elif usuarios.usuario.cargo == 'Director_administrativo':
             user_unidad = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.oficina.nombre == 'Almacenes':
+        elif usuarios.usuario.cargo == 'Almacen':
             user_almacen=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+        elif usuarios.usuario.cargo == 'Cardista':
+            user_cardista =  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }"    
+        elif usuarios.usuario.cargo == 'Presupuestos':
+            user_presupuesto=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
 
     context = {
         'data': pedido,
         'usuario_pedido':user_pedido,
         'user_oficina':user_oficina ,
         'user_unidad':user_unidad,
-        'user_almacen':user_almacen
+        'user_almacen':user_almacen,
+        'user_cardista':user_cardista,
+        'user_presupuesto':user_presupuesto,
 
     }
     html_string = render_to_string('imprimir/solicitud.html', context)

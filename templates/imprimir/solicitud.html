@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido de Materiales</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Estilos básicos para el cuerpo */
         body {
@@ -15,9 +16,7 @@
             background-color: #f4f4f4;
         }
 
-        /* Estilo para el contenedor principal */
         .container {
-            width: 80%;
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
@@ -25,50 +24,14 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Estilo para el encabezado */
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h4 {
-            margin: 0;
-            color: #007bff;
-        }
-
-        .header p {
-            margin: 5px 0 0;
-            color: #666;
-        }
-
-        /* Estilos para la tabla */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
+        .table,
         .table th,
         .table td {
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
         }
 
-        .table th {
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        /* Estilo para las filas alternas de la tabla */
-        .table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        /* Estilo para la tabla de firmas */
         .signature-table {
             width: 100%;
-            border-collapse: collapse;
             margin-top: 20px;
         }
 
@@ -77,50 +40,22 @@
             padding: 10px;
         }
 
-        .signature {
-            border: 1px solid #ddd;
-            height: 80px;
-            width: 100px;
-            background-color: #f4f4f4;
-            margin: 0 auto;
-        }
-
         .signature-label {
             font-weight: bold;
+            font-size: 0.8rem;
         }
 
-        /* Estilo para el botón */
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            color: #fff;
-            background-color: #9b0505;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* Centrado de texto */
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-4 {
-            margin-top: 20px;
-        }
-
-        /* Estilo para ocultar elementos en la impresión */
         @media print {
             .no-print {
                 display: none;
+            }
+
+            .table,
+            .table th,
+            .table td {
+                border: 1px solid #000 !important;
+
+                border-collapse: collapse;
             }
         }
     </style>
@@ -128,37 +63,35 @@
 
 <body>
     <div class="container">
-        <div class="header">
+        <div class="text-center mb-4">
             <h4>PEDIDO DE MATERIALES y/o BIENES</h4>
             <p>Almacén Central del Gobierno Autónomo Departamental de Potosí</p>
         </div>
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Codigo</th>
-
-                    <th>Cantidad Pedida</th>
-                    <th>Cantidad modificada</th>
-                    <th>Cantidad Entrega</th>
-
-
+                    <th>Cod. pedido</th>
+                    <th>Cod. material</th>
+                    <th>Cant. Pedida</th>
+                    <th>Cant. mod.</th>
+                    <th>Cant. Ent.</th>
+                    <th>Unidad</th>
                 </tr>
             </thead>
             <tbody>
                 {% for pedido in data %}
                 <tr>
+                    <td>{{ pedido.numero_pedido }}</td>
                     <td>{{ pedido.material.codigo }}</td>
-
                     <td>{{ pedido.cantidad_pedida }}</td>
                     <td>{{ pedido.sub_cantidad_pedida }}</td>
                     <td>{{ pedido.cantidad_entrega }}</td>
-
+                    <td>{{ pedido.material.unidad_manejo }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <!-- Tabla para firmas -->
         <table class="signature-table">
             <tr>
                 <td>
@@ -176,19 +109,46 @@
                     <p>Nombre, cargo y firma</p>
                 </td>
                 <td>
-
-                    <p>...{{ user_unidad }}....</p>
-                    <p class="signature-label">Autorizado por</p>
-                    <p>Nombre, cargo y firma</p>
-                </td>
-                <td>
-                    <p>....{{user_almacen}}....</p>
+                    {% if not user_unidad %}
+                    <p>.......................</p>
+                    {% elif user_unidad %}
+                    <p>..{{ user_unidad }}..</p>
+                    {% endif %}
                     <p class="signature-label">Autorizado por</p>
                     <p>Nombre, cargo y firma</p>
                 </td>
             </tr>
             <tr>
-                <td colspan="4">
+                <td>
+                    {% if not user_cardista %}
+                    <p>.......................</p>
+                    {% elif user_cardista %}
+                    <p>..{{ user_cardista }}..</p>
+                    {% endif %}
+                    <p class="signature-label">Autorizado por</p>
+                    <p>Nombre, cargo y firma</p>
+                </td>
+                <td>
+                    {% if not user_presupuesto %}
+                    <p>.......................</p>
+                    {% elif user_presupuesto %}
+                    <p>..{{ user_presupuesto }}..</p>
+                    {% endif %}
+                    <p class="signature-label">Autorizado por</p>
+                    <p>Nombre, cargo y firma</p>
+                </td>
+                <td>
+                    {% if not user_almacen %}
+                    <p>.......................</p>
+                    {% elif user_almacen %}
+                    <p>..{{ user_almacen }}..</p>
+                    {% endif %}
+                    <p class="signature-label">Autorizado por</p>
+                    <p>Nombre, cargo y firma</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
                     <p>..........................................</p>
                     <p class="signature-label">Recibido por</p>
                     <p>Nombre, cargo y firma</p>
@@ -197,9 +157,14 @@
         </table>
 
         <div class="text-center mt-4">
-            <a href="{% url 'pdf' data.0.numero_pedido %}" class="btn no-print">Generar PDF</a>
+            <a href="{% url 'pdf' data.0.numero_pedido %}" class="btn btn-danger no-print">Generar PDF</a>
+            <button onclick="window.print()" class="btn btn-primary no-print">Imprimir</button>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
