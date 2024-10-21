@@ -10,6 +10,16 @@
     <div class="text-center">
         <h2>Cardista</h2>
     </div>
+    <form action="{% url 'listar_pedidos_cardista' %}" method="GET">
+        <select id="num" name="limit">
+            <option name="page" value="10">10</option>
+            <option name="page" value="20">20</option>
+            <option name="page" value="50">50</option>
+            <option name="page" value="100">100</option>
+            <option name="page" value="200">200</option>
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
     <table class="table table-striped">
         <thead>
             <tr>

@@ -9,13 +9,13 @@ urlpatterns = [
    path('informacion_pedido/<int:numero>',listando_pedido_almacen , name='informacion_pedido' ),
    path('mis_pedidos',mis_pedidos , name='mis_pedidos' ),
    path('todos_mis_pedidos',todos_mis_pedidos, name='todos_mis_pedidos' ),
-   path('listar_pedidos_unidad/<int:id_usuario>',listar_pedidos_unidad, name='listar_pedidos_unidad' ),
+   path('listar_pedidos_unidad',listar_pedidos_unidad, name='listar_pedidos_unidad' ),
       path('listar_pedidos_cardista',listar_pedidos_cardista, name='listar_pedidos_cardista' ),
        path('listar_pedidos_presupuestos',listar_pedidos_presupuestos, name='listar_pedidos_presupuestos' ),
 
 
 
-   path('listar_pedidos_oficina/<int:id_usuario>',listar_pedidos_oficina, name='listar_pedidos_oficina' ),
+   path('listar_pedidos_oficina',listar_pedidos_oficina, name='listar_pedidos_oficina' ),
 
     path('autorizar_pedidos_cardista/<int:id_pedido>',autorizar_pedidos_cardista, name='autorizar_pedidos_cardista' ),
 path('autorizar_pedidos_presupuestos/<int:id_pedido>',autorizar_pedidos_presupuestos, name='autorizar_pedidos_presupuestos' ),

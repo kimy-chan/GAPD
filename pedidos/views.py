@@ -348,7 +348,7 @@ def todos_mis_pedidos(request):
 
 @login_required
 def listar_pedidos_cardista(request, ):#admisnitrativo
-    pagina_actual = request.GET.get('page', 10)
+    pagina_actual = request.GET.get('limit', 10)
     pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
         aprobado_unidad=True,
@@ -370,7 +370,7 @@ def listar_pedidos_cardista(request, ):#admisnitrativo
 
 @login_required
 def listar_pedidos_presupuestos(request):#admisnitrativo
-    pagina_actual = request.GET.get('page', 10)
+    pagina_actual = request.GET.get('limit', 10)
    
     pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
@@ -392,9 +392,10 @@ def listar_pedidos_presupuestos(request):#admisnitrativo
 
 
 @login_required
-def listar_pedidos_unidad(request, id_usuario):#admisnitrativo
-    pagina_actual = request.GET.get('page', 10)
-    usuario = get_object_or_404(Usuario, pk=id_usuario)#descomentar cuando se quiera recibir por unidad 
+def listar_pedidos_unidad(request):#admisnitrativo
+    pagina_actual = request.GET.get('limit', 10)
+    user= request.user
+    #usuario = get_object_or_404(Usuario, pk=user.id)#descomentar cuando se quiera recibir por unidad 
     pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
         aprobado_oficina=True
@@ -409,15 +410,17 @@ def listar_pedidos_unidad(request, id_usuario):#admisnitrativo
     context = {
         'data': pedidos_unicos_list
     }
-    return render(request, 'pedidos/usuarios.pedidos.html', context)
+    return render(request, 'pedidos/usuarios.pedidos.unidad.html', context)
 
 
 @login_required
-def listar_pedidos_oficina(request, id_usuario):
-    pagina_actual = request.GET.get('page', 10)
-    usuario = get_object_or_404(Usuario, pk=id_usuario)
+def listar_pedidos_oficina(request):
+    user= request.user
+    pagina_actual = request.GET.get('limit', 10) 
+    usuario = get_object_or_404(Usuario, pk=user.id)
     pedidos_unidad = Pedido.objects.filter(
-        usuario__oficina=usuario.oficina
+        usuario__oficina=usuario.oficina,
+        estado_de_pedido='realizado'
     ).order_by('numero_pedido')
 
     pedidos_unicos = {}
