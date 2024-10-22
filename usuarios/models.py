@@ -15,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Secretaria(models.Model):
     secretaria = models.CharField(max_length=100, blank=False , null=False, unique=True)
+    esHabilitado = models.BooleanField(default=True)
     def __str__(self) -> str:
         return f"{self.secretaria}"
     
@@ -22,12 +23,14 @@ class Secretaria(models.Model):
 class Unidad(models.Model):
     nombre =models.CharField(max_length=100,blank=False, null=False, unique=True )
     secretaria=models.ForeignKey(Secretaria, on_delete=models.RESTRICT, blank= True, null=True)
+    esHabilitado = models.BooleanField(default=True)
     def __str__(self) -> str:
         return f"{self.nombre}"
     
 class Oficinas(models.Model):
     nombre =models.CharField(max_length=100,blank=False, null=False, unique=True)
     unidad=models.ForeignKey(Unidad, on_delete=models.RESTRICT, blank= True, null=True)
+    esHabilitado = models.BooleanField(default=True)
     def __str__(self) -> str:
         return f"{self.nombre}"
     

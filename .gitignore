@@ -11,8 +11,8 @@ System Volume Information/
 /upload/
 
 # Ignorar todos los archivos en __pycache__ de todas las aplicaciones
-__pycache__/
-
+(materiales/__pycache__/)
+(pedidos/__pycache__/)
 # Ignorar archivos .pyc generados
 *.pyc
 

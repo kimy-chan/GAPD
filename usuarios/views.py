@@ -279,3 +279,33 @@ def enviar_correos(request, id_usuario):
     except Exception as e:
         print(f'Error al enviar el correo: {e}')
         return JsonResponse({'data': False})
+    
+
+
+def organigrama(request):
+    data = []
+    
+    secretarias = Secretaria.objects.filter(esHabilitado=True)
+    for se in secretarias:
+        filtrado = {
+            'secretaria': se.secretaria,
+            'unidades': []
+        }
+        
+        unidades = Unidad.objects.filter(esHabilitado=True, secretaria=se)
+        for u in unidades:
+            oficina_list = []
+            oficinas = Oficinas.objects.filter(esHabilitado=True, unidad=u)
+            for o in oficinas:
+                oficina_list.append(o.nombre)
+            
+            filtrado['unidades'].append({
+                'unidad': u.nombre,
+                'oficinas': oficina_list
+            })
+
+        data.append(filtrado)
+
+ 
+    
+    return render(request, 'usuarios/organigrama.html', {'data': data})
