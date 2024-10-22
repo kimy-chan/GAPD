@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index,reporte_pedido_salida,autorizar_pedidos_cardista,listar_pedidos_por_codigo_presupuesto,listar_pedidos_presupuestos,autorizar_pedidos_presupuestos,rechazar_pedido_cardista,listar_pedidos_por_codigo_cardista,listar_pedidos_cardista,listar_pedidos_por_codigo_oficina,eliminar_mi_pedido_carrito,sub_pedido_almacen,reporte_pedidos,autorizar_pedidos_oficina,listar_pedidos_por_codigo,listar_pedidos_oficina ,sub_pedido,lista_pedido_por_id,cambiar_estado_pedido,listar_info_material,realizar_entrega,imprecion_solicitud,autorizar_pedidos_almacen,listando_pedido_almacen,generate_pdf,buscador,mostrar_informacion_pedidio_aprobaciones, realizar_pedido, listar_pedidos_usuarios_almacen, mis_pedidos,todos_mis_pedidos, listar_pedidos_unidad, autorizar_pedidos, rechazar_pedido_unidad, eliminar_mi_pedido
+from .views import index,reporte_pedido_salida,rechazar_pedido_oficina,cancelar_todos_los_pedidos,autorizar_pedidos_cardista,listar_pedidos_por_codigo_presupuesto,listar_pedidos_presupuestos,autorizar_pedidos_presupuestos,rechazar_pedido_cardista,listar_pedidos_por_codigo_cardista,listar_pedidos_cardista,listar_pedidos_por_codigo_oficina,eliminar_mi_pedido_carrito,sub_pedido_almacen,reporte_pedidos,autorizar_pedidos_oficina,listar_pedidos_por_codigo,listar_pedidos_oficina ,sub_pedido,lista_pedido_por_id,cambiar_estado_pedido,listar_info_material,realizar_entrega,imprecion_solicitud,autorizar_pedidos_almacen,listando_pedido_almacen,generate_pdf,buscador,mostrar_informacion_pedidio_aprobaciones, realizar_pedido, listar_pedidos_usuarios_almacen, mis_pedidos,todos_mis_pedidos, listar_pedidos_unidad, autorizar_pedidos, rechazar_pedido_unidad, eliminar_mi_pedido
 
 urlpatterns = [
    path('index',index , name='index' ),
@@ -13,6 +13,8 @@ urlpatterns = [
       path('listar_pedidos_cardista',listar_pedidos_cardista, name='listar_pedidos_cardista' ),
        path('listar_pedidos_presupuestos',listar_pedidos_presupuestos, name='listar_pedidos_presupuestos' ),
 
+       path('cancelar_todos_los_pedidos',cancelar_todos_los_pedidos, name='cancelar_todos_los_pedidos' ),
+
 
 
    path('listar_pedidos_oficina',listar_pedidos_oficina, name='listar_pedidos_oficina' ),
@@ -23,6 +25,8 @@ path('autorizar_pedidos_presupuestos/<int:id_pedido>',autorizar_pedidos_presupue
     path('autorizar_pedido_oficina/<int:id_pedido>',autorizar_pedidos_oficina, name='autorizar_pedido_oficina' ),
    path('autorizar_pedido_almacen/<int:id_pedido>',autorizar_pedidos_almacen, name='autorizar_pedido_almacen' ),
    path('rechazar_pedido_unidad/<int:id_pedido>',rechazar_pedido_unidad, name='rechazar_pedido_unidad' ),
+         path('rechazar_pedido_oficina/<int:id_pedido>',rechazar_pedido_oficina, name='rechazar_pedido_oficina' ),
+    
       path('rechazar_pedido_cardista/<int:id_pedido>',rechazar_pedido_cardista, name='rechazar_pedido_cardista' ),
    path('eliminar_mi_pedido/<int:id_pedido>',eliminar_mi_pedido, name='eliminar_mi_pedido'),
       path('eliminar/mi_pedido/carrito/<int:id_pedido>',eliminar_mi_pedido_carrito, name='eliminar_mi_pedido_carrito'),

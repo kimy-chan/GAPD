@@ -110,6 +110,7 @@ def realizar_pedido(request):
 def generar_numero_unico():
     pedidos = Pedido.objects.count()
     return pedidos
+    
 @login_required
 def cambiar_estado_pedido(request):
     id_usuario= request.user.id
@@ -167,6 +168,22 @@ def cambiar_estado_pedido(request):
     # Si la solicitud no es GET, retorna un error
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
 
+@login_required
+def cancelar_todos_los_pedidos(request):
+ 
+    
+    ids = request.GET.getlist('id')
+    for i in ids:
+        pedido = get_object_or_404(Pedido, pk=i)
+        material = get_object_or_404(Materiales, pk= pedido.material.id)
+        cantidad = pedido.cantidad_pedida
+        newStock = material.stock + cantidad
+        material.stock= newStock
+        material.save()
+        pedido.delete()
+        detalle = f'El usuario {request.user.username} ha cancelado un pedido con el ID {pedido.id}.'
+        crear_log_sistema(request.user.username, 'Cancelar pedido', detalle, 'Pedidos') 
+    return JsonResponse({'status': 'success', 'ids': ids})
 #------------------------------
 @login_required
 def listar_pedidos_usuarios_almacen(request):
@@ -540,17 +557,46 @@ def autorizar_pedidos_almacen(request, id_pedido):#autoriza pedidos el lamacen
 def rechazar_pedido_unidad(request, id_pedido):
     id_usuario= request.user.id
     pedido = get_object_or_404(Pedido,pk=id_pedido)
+    
     pedido.aprobado_unidad= False
+   
+    stock = pedido.material.stock
+    if pedido.sub_cantidad_pedida > 0:
+        pedido.material.stock = stock + pedido.sub_cantidad_pedida
+    else:
+        pedido.material.stock = stock + pedido.cantidad_pedida
+    pedido.material.save()
     pedido.save()
     usuario = get_object_or_404(Usuario, pk= id_usuario)
     autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
     autorizacion_pedido.save()
     detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
     crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+    url = reverse('pedido_numero_oficina', kwargs={'numero': pedido.numero_pedido})
+    return redirect(f"{url}?success=Pedido autorizado correctamente")
 
-    return redirect(f"{reverse('listar_pedidos_unidad', kwargs={'id_usuario': id_usuario})}?pedido_rechazado=Pedido rechazado correctamente")
+@login_required
+def rechazar_pedido_oficina(request, id_pedido):
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
     
-    
+    pedido.aprobado_oficina= False
+   
+    stock = pedido.material.stock
+    if pedido.sub_cantidad_pedida > 0:
+        pedido.material.stock = stock + pedido.sub_cantidad_pedida
+    else:
+        pedido.material.stock = stock + pedido.cantidad_pedida
+    pedido.material.save()
+    pedido.save()
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
+    autorizacion_pedido.save()
+    detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+    url = reverse('pedido_numero_oficina', kwargs={'numero': pedido.numero_pedido})
+    return redirect(f"{url}?success=Pedido autorizado correctamente")  
+
 @login_required
 def rechazar_pedido_cardista(request, id_pedido):
     id_usuario= request.user.id
@@ -572,7 +618,6 @@ def rechazar_pedido_cardista(request, id_pedido):
 @login_required
 def imprecion_solicitud(request,numero):
     pedido= Pedido.objects.filter(numero_pedido=numero)
-
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
     user_oficina=None
