@@ -46,9 +46,9 @@ class Materiales(models.Model):
     def save(self, *args, **kwargs):
   
         self.nombre = self.nombre.title()
-        self.marca = self.marca.title()
-        self.color = self.color.title()
-        self.material = self.material.title()
+        self.marca = self.marca.title() or None
+        self.color = self.color.title() or None
+        self.material = self.material.title() or None
         super().save(*args, **kwargs)
 
  

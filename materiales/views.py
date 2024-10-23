@@ -120,8 +120,12 @@ def listado_material(request, id_categoria):#lista todos los material por catego
 
 def informacion_material(request, id_material):
     info_producto= Materiales.objects.get(pk= id_material)
+    data_info_material =Informacion_material.objects.filter(material= id_material)
+
     context={
-        'material':info_producto
+        'material':info_producto,
+        'data_info_material':data_info_material
+        
     }
     return render(request, 'materiales/informacion_material.html', context)
 

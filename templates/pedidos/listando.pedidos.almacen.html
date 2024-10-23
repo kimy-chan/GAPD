@@ -71,12 +71,17 @@
                                     class="btn btn-primary btn-sm" data-toggle="modal" data-target="#example_entrega">
                                     Realizar entrega
                                 </button>
+
+                                {% elif pedido.aprobado_almacen == False %}
+                                <a class="btn btn-danger btn-sm" type="submit" name="action"
+                                    value="rechazar">Rechazado</a>
                                 {% else %}
                                 <div class="d-flex justify-content-between">
                                     <a href="{% url 'autorizar_pedido_almacen' pedido.id  %}"
                                         class="btn btn-success btn-sm" type="submit" name="action"
                                         value="aprobar">Aprobar</a>
-                                    <a class="btn btn-danger btn-sm" type="submit" name="action"
+                                    <a href="{% url 'rechazar_pedido_almacen' pedido.id %}"
+                                        class="btn btn-danger btn-sm" type="submit" name="action"
                                         value="rechazar">Rechazar</a>
                                 </div>
                                 {% endif %}

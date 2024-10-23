@@ -18,6 +18,7 @@ from .utils.enviar_notificacion import enviar_notificacion_pedido
 from .models import Pedido, Autorizacion_pedido
 
 from logs.views import crear_log_sistema
+
 @login_required
 def index(request):
     fecha_actual = datetime.now()
@@ -456,7 +457,7 @@ def listar_pedidos_oficina(request):
 
 @login_required
 def listar_pedidos_por_codigo(request, numero):#listado por unidad
-    pedido= Pedido.objects.filter(numero_pedido=numero)
+    pedido= Pedido.objects.filter(numero_pedido=numero, aprobado_oficina=True)
     context = {
         'data': pedido
     }
@@ -464,7 +465,8 @@ def listar_pedidos_por_codigo(request, numero):#listado por unidad
 
 @login_required
 def listar_pedidos_por_codigo_cardista(request, numero):#listado por unidad
-    pedido= Pedido.objects.filter(numero_pedido=numero)
+    pedido= Pedido.objects.filter(numero_pedido=numero ,     aprobado_unidad=True,
+        aprobado_oficina=True, )
     context = {
         'data': pedido
     }
@@ -472,7 +474,9 @@ def listar_pedidos_por_codigo_cardista(request, numero):#listado por unidad
 
 @login_required
 def listar_pedidos_por_codigo_presupuesto(request, numero):#listado por unidad
-    pedido= Pedido.objects.filter(numero_pedido=numero)
+    pedido= Pedido.objects.filter(numero_pedido=numero,   aprobado_unidad=True,
+        aprobado_oficina=True,
+           aprobado_cardista=True,)
     context = {
         'data': pedido
     }
@@ -572,8 +576,8 @@ def rechazar_pedido_unidad(request, id_pedido):
     autorizacion_pedido.save()
     detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
     crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
-    url = reverse('pedido_numero_oficina', kwargs={'numero': pedido.numero_pedido})
-    return redirect(f"{url}?success=Pedido autorizado correctamente")
+    url = reverse('pedido_numero', kwargs={'numero': pedido.numero_pedido})
+    return redirect(f"{url}?success=Pedido rechazado correctamente")
 
 @login_required
 def rechazar_pedido_oficina(request, id_pedido):
@@ -595,22 +599,71 @@ def rechazar_pedido_oficina(request, id_pedido):
     detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
     crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
     url = reverse('pedido_numero_oficina', kwargs={'numero': pedido.numero_pedido})
-    return redirect(f"{url}?success=Pedido autorizado correctamente")  
+    return redirect(f"{url}?success=Pedido rechazado correctamente")  
 
 @login_required
 def rechazar_pedido_cardista(request, id_pedido):
     id_usuario= request.user.id
     pedido = get_object_or_404(Pedido,pk=id_pedido)
     pedido.aprobado_cardista= False
+   
+    stock = pedido.material.stock
+    if pedido.sub_cantidad_pedida > 0:
+        pedido.material.stock = stock + pedido.sub_cantidad_pedida
+    else:
+        pedido.material.stock = stock + pedido.cantidad_pedida
+    pedido.material.save()
     pedido.save()
     usuario = get_object_or_404(Usuario, pk= id_usuario)
     autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
     autorizacion_pedido.save()
     detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
     crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+    url = reverse('pedido_numero_cardista', kwargs={'numero': pedido.numero_pedido})
+    return redirect(f"{url}?success=Pedido rechazado correctamente")  
 
-    return redirect(f"{reverse('listar_pedidos_unidad', kwargs={'id_usuario': id_usuario})}?pedido_rechazado=Pedido rechazado correctamente")
-    
+@login_required
+def rechazar_pedido_presupuestos(request, id_pedido):
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
+    pedido.aprobado_presupuestos= False
+   
+    stock = pedido.material.stock
+    if pedido.sub_cantidad_pedida > 0:
+        pedido.material.stock = stock + pedido.sub_cantidad_pedida
+    else:
+        pedido.material.stock = stock + pedido.cantidad_pedida
+    pedido.material.save()
+    pedido.save()
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
+    autorizacion_pedido.save()
+    detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+    url = reverse('listar_pedidos_por_codigo_presupuesto', kwargs={'numero': pedido.numero_pedido})
+    return redirect(f"{url}?success=Pedido rechazado correctamente")  
+
+@login_required
+def rechazar_pedido_almacen(request, id_pedido):
+    id_usuario= request.user.id
+    pedido = get_object_or_404(Pedido,pk=id_pedido)
+    pedido.aprobado_almacen= False
+   
+    stock = pedido.material.stock
+    if pedido.sub_cantidad_pedida > 0:
+        pedido.material.stock = stock + pedido.sub_cantidad_pedida
+    else:
+        pedido.material.stock = stock + pedido.cantidad_pedida
+    pedido.material.save()
+    pedido.save()
+    usuario = get_object_or_404(Usuario, pk= id_usuario)
+    autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= False)
+    autorizacion_pedido.save()
+    detalle = f'El usuario {request.user.username} ha rechazado el pedido con el ID {pedido.id}.'
+    crear_log_sistema(request.user.username, 'Rechazo de pedido', detalle, 'Pedidos')
+    url = reverse('informacion_pedido', kwargs={'numero': pedido.numero_pedido})
+    return redirect(f"{url}?success=Pedido rechazado correctamente")  
+
 
 
 

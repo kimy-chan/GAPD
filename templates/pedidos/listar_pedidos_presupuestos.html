@@ -98,12 +98,13 @@
                     {% if pedido.aprobado_presupuestos == None %}
                     <div class="row">
                         <div class="col-6">
-                            <a href="{% url 'autorizar_pedidos_presupuestos' pedido.id %}" class="btn btn-success btn-sm">
+                            <a href="{% url 'autorizar_pedidos_presupuestos' pedido.id %}"
+                                class="btn btn-success btn-sm">
                                 <i class="fas fa-check"></i>
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="{% url 'rechazar_pedido_cardista' pedido.id %}" class="btn btn-danger btn-sm">
+                            <a href="{% url 'rechazar_pedido_presupuestos' pedido.id %}" class="btn btn-danger btn-sm">
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>
