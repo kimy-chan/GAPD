@@ -47,7 +47,7 @@
                             <th>Código</th>
                             <th>Nombre</th>
                             <th>Marca</th>
-                            <th>Disponible</th>
+                            <th>Estado</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -58,7 +58,12 @@
                             <td>{{ material.codigo }}</td>
                             <td>{{ material.nombre }}</td>
                             <td>{{ material.marca }}</td>
-                            <td>{{ material.stock }}</td>
+                            <td>{% if material.stock > 0 %}
+                                Disponible
+                                {% else %}
+                                No disponible
+                                {% endif%}
+                            </td>
                             <td>
                                 <button onclick="listar_informacion_material('{{ material.id }}')" type="button"
                                     class="btn btn-primary" data-toggle="modal" data-target="#pedidoModal">

@@ -64,6 +64,12 @@
                         <td>{{ material.categoria.nombre }}</td>
                     </tr>
                     {% endif %}
+                    {% if material.categoria.nombre %}
+                    <tr>
+                        <th>Factura</th>
+                        <td>{{ material.factura }}</td>
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
 
@@ -73,6 +79,7 @@
                     <th>Cantidad por Paquete</th>
                     <th>Precio por Paquete</th>
                     <th>Precio por Unidad</th>
+                    <th>Fecha</th>
                 </tr>
                 {% for data in data_info_material %}
                 <tr>
@@ -80,6 +87,9 @@
                     <td>{{ data.cantidad_paquete }}</td>
                     <td>{{ data.precio_paquete|floatformat:2 }}</td>
                     <td>{{ data.precio_unidad|floatformat:2 }}</td>
+                    <td>{{ data.fecha_creacion}}</td>
+
+
                 </tr>
                 {% endfor %}
             </table>

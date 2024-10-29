@@ -1,5 +1,5 @@
 from django import forms
-from .models import Categoria, Materiales, Informacion_material, Factura
+from .models import Categoria, Materiales, Informacion_material
 from proveedor.models import Proveedor
 class Formulario_materiales(forms.ModelForm):
     class Meta:
@@ -9,7 +9,7 @@ class Formulario_materiales(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control',}),
             'codigo': forms.TextInput(attrs={'class': 'form-control'}),
             'marca': forms.TextInput(attrs={'class': 'form-control'}),
-           
+            'factura': forms.TextInput(attrs={'class': 'form-control'}),
             'tamaño': forms.TextInput(attrs={'class': 'form-control'}),
             'color': forms.TextInput(attrs={'class': 'form-control'}),
             'unidad_medida': forms.TextInput(attrs={'class': 'form-control'}),
@@ -23,17 +23,13 @@ class Formulario_materiales(forms.ModelForm):
         super(Formulario_materiales,self).__init__(*args, **kwargs)
         categorias_disponibles = [(categoria.id, categoria.nombre) for categoria in Categoria.objects.filter(es_habilitado=True)]#consultado a la base de datos   
         proveedores = [(proveedor.id, f'{proveedor.persona.nombre} {proveedor.persona.apellidos}') for proveedor in Proveedor.objects.filter(es_habilitado=True)]#consultado a la base de datos     
-       
-        factura = [(factura.id, factura.codigo_factura) for factura in Factura.objects.filter(es_habilitado=True)]#consultado a la base de datos   
-        
+   
         self.fields['categoria'].widget = forms.Select(choices=categorias_disponibles, attrs={'class': 'form-select'})
         self.fields['categoria'].widget.attrs.update({'class': 'form-select'})
 
         self.fields['proveedor'].widget = forms.Select(choices=proveedores, attrs={'class': 'form-select'})
         self.fields['proveedor'].widget.attrs.update({'class': 'form-select'})
-        
-        self.fields['factura'].widget = forms.Select(choices=factura, attrs={'class': 'form-select'})
-        self.fields['factura'].widget.attrs.update({'class': 'form-select'})
+      
 
         instance = kwargs.get('instance')
         if instance:

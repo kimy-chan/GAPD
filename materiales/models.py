@@ -20,9 +20,6 @@ class Categoria(models.Model):
 
 
 
-class Factura(models.Model):
-    codigo_factura=models.CharField(max_length=255,blank=False, null=False, unique=True)
-    es_habilitado=models.BooleanField(default=True)
 
 class Materiales(models.Model):
     nombre = models.CharField(max_length=255,blank=False, null=False,)
@@ -35,7 +32,7 @@ class Materiales(models.Model):
     unidad_medida = models.CharField(max_length=255,blank=True, null=True, verbose_name='Unidad de medida')
     unidad_manejo = models.CharField(max_length=255,blank=True, null=True, verbose_name='Unidad de manejo')
     material = models.CharField(max_length=255,blank=True, null=True)
-    factura = models.ForeignKey(Factura, models.CASCADE,blank=False, null=False)
+    factura = models.CharField(max_length=255,blank=False, null=False,)
     codigo_paquete = models.CharField(max_length=255, blank=True, null=True,  verbose_name='Codigo de paquete')
     categoria =models.ForeignKey(Categoria, models.CASCADE,blank=False, null=False )
     proveedor= models.ForeignKey(Proveedor, models.CASCADE,blank=False, null=False)

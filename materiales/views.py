@@ -12,21 +12,12 @@ from datetime import datetime
 
 
 from django.template.loader import get_template
-from .models import Categoria, Factura, Materiales, Informacion_material
+from .models import Categoria, Materiales, Informacion_material
 from django.contrib import messages
 
 from django.db import transaction
 
-def crear_codigo_factura(request):
-    codigo_factura= request.POST['codigo_factura']
-    if not codigo_factura:
-        return JsonResponse({'mensaje':'campo obligatorio'})
-    try:
-        Factura.objects.create(codigo_factura= codigo_factura)
-        return JsonResponse({'data':True})
-    except IntegrityError as e:
-            return JsonResponse({'mensaje':'El codigo de factura ya existe'})
-                    
+
 
 def crear_categoria(request):    
     if(request.method == 'POST'):
@@ -307,14 +298,28 @@ def cerrar_gestion(request):
     return render(request, 'materiales/cerrar.gestion.html')
     
 def reporte_gestion(request):
+    año_actual = datetime.now().year
+   
+    gestion = [str(año) for año in range(año_actual - 1, año_actual + 10)]
     if request.method =='POST':
-        gestion = request.POST['año']
-        pagina_actual = request.GET.get('limit', 10)
-        materiales= Materiales.objects.filter(gestion= gestion,es_habilitado=True , cierre_gestion=True)
+        gestion1 = request.POST['año']
+   
+        pagina_actual = request.POST.get('limit', 10) 
+        print(gestion1)
+        materiales= Materiales.objects.filter(gestion= gestion1,es_habilitado=True , cierre_gestion=True)
+        print(len(materiales))
         materiales = paginador_general(request, materiales, pagina_actual)
+      
         context={
-            'data':materiales
+            'data':materiales,
+            'gestion1':gestion1,
+            'gestion':gestion
          }
         return render(request, 'materiales/reporte.gestion.html', context)
-    return render(request, 'materiales/reporte.gestion.html')
+
+    context={
+       
+            'gestion':gestion
+         }
+    return render(request, 'materiales/reporte.gestion.html',context)
     

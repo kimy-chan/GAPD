@@ -8,7 +8,7 @@ from utils.paginador import paginador_general
 from usuarios.models import Usuario
 from  utils.paginador import paginador_general
 from django.urls import reverse
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 from datetime import datetime
@@ -30,7 +30,7 @@ def index(request):
         id_categoria = request.POST.get('categoria_id')
         if not id_categoria:
             return redirect('index')
-        productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria, es_habilitado=True, gestion=gestion,  stock__gte = 1)
+        productos_categoria= Materiales.objects.select_related('categoria').filter(categoria_id=id_categoria, es_habilitado=True, gestion=gestion, )
         productos_categoria= paginador_general(request,productos_categoria, pagina_actual)
         if productos_categoria and productos_categoria[0].categoria.nombre:
             nombre_categoria = productos_categoria[0].categoria.nombre
@@ -39,10 +39,9 @@ def index(request):
 
 
     else:
-        productos_categoria= Materiales.objects.select_related('categoria').filter(es_habilitado=True, gestion=gestion, stock__gte = 1)
+        productos_categoria= Materiales.objects.select_related('categoria').filter(es_habilitado=True, gestion=gestion)
         productos_categoria= paginador_general(request, productos_categoria, pagina_actual)
-       
-
+        
     context ={
             'data1':pedido_pendiente,
             'data':productos_categoria,
@@ -116,8 +115,51 @@ def generar_numero_unico():
 def cambiar_estado_pedido(request):
     id_usuario= request.user.id
     usuario = get_object_or_404(Usuario, pk=id_usuario)
+    if usuario.cargo == 'Presupuestos':
+        if request.method == 'GET':
+            ids = request.GET.getlist('id')
+            numero = generar_numero_unico()
+            for id in ids:
+                pedido= get_object_or_404(Pedido, pk=id)
+                pedido.estado_de_pedido='realizado'
+                pedido.numero_pedido=numero
+                pedido.aprobado_oficina= True
+                pedido.aprobado_unidad = True
+                pedido.aprobado_cardista = True
+                pedido.aprobado_presupuestos = True
+                pedido.save()
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido.save()
+                enviar_notificacion_pedido(pedido)
+                detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
+                crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
+            return JsonResponse({'status': 'success', 'ids': ids})
+    
+    elif usuario.cargo == 'Cardista':
+        if request.method == 'GET':
+            ids = request.GET.getlist('id')
+            numero = generar_numero_unico()
+            for id in ids:
+                pedido= get_object_or_404(Pedido, pk=id)
+                pedido.estado_de_pedido='realizado'
+                pedido.numero_pedido=numero
+                pedido.aprobado_oficina= True
+                pedido.aprobado_unidad = True
+                pedido.aprobado_cardista = True
+                pedido.save()
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
+                autorizacion_pedido.save()
+                enviar_notificacion_pedido(pedido)
+                detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
+                crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
+            return JsonResponse({'status': 'success', 'ids': ids})
 
-    if usuario.cargo == 'Encargado_unidad':
+    elif usuario.cargo == 'Director_administrativo':
         if request.method == 'GET':
             ids = request.GET.getlist('id')
             numero = generar_numero_unico()
@@ -136,7 +178,7 @@ def cambiar_estado_pedido(request):
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
         
-    if usuario.cargo == 'Encargado_oficina':
+    elif usuario.cargo == 'Encargado_oficina':
         if request.method == 'GET':
             ids = request.GET.getlist('id')
             numero = generar_numero_unico()
@@ -153,20 +195,20 @@ def cambiar_estado_pedido(request):
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
     
-    if request.method == 'GET':
-        ids = request.GET.getlist('id')
-        numero = generar_numero_unico()
-        for id in ids:
-            pedido= get_object_or_404(Pedido, pk=id)
-            pedido.estado_de_pedido='realizado'
-            pedido.numero_pedido=numero
-            pedido.save()
-            enviar_notificacion_pedido(pedido) 
-            detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
-            crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')   
-        return JsonResponse({'status': 'success', 'ids': ids})
-    
-    # Si la solicitud no es GET, retorna un error
+    else:
+        if request.method == 'GET':
+            ids = request.GET.getlist('id')
+            numero = generar_numero_unico()
+            for id in ids:
+                pedido= get_object_or_404(Pedido, pk=id)
+                pedido.estado_de_pedido='realizado'
+                pedido.numero_pedido=numero
+                pedido.save()
+                enviar_notificacion_pedido(pedido) 
+                detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
+                crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')   
+            return JsonResponse({'status': 'success', 'ids': ids})
+
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
 
 @login_required
@@ -287,8 +329,45 @@ def realizar_entrega(request):
 
 @login_required
 def mis_pedidos(request): #muestra los pedidos de cada unidad o secretaria
-    pagina_actual = request.GET.get('page', 10)
-    pedidos= lista_pedidos_por_estado(request, 'realizado')
+    id_usuario= request.user.id
+    fechaActual = datetime.now()
+    if request.method == 'POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+        pagina_actual = request.GET.get('limit', 10)
+        pedidos= Pedido.objects.select_related('usuario').filter(
+                    usuario_id=id_usuario,
+                     estado_de_pedido='realizado',
+                     fecha_pedido__gte=fecha_inicio_dt,
+                       fecha_pedido__lte=fecha_fin_dt,
+                    
+
+                     ).order_by('-fecha_pedido')
+
+        pedidos= paginador_general(request, pedidos, pagina_actual)
+        context={
+        'data':pedidos,
+         'fecha_inicio':fecha_inicio,
+         'fecha_fin':fecha_fin,
+        'title':'Mis pedidos'   
+        }
+        return render(request, 'pedidos/mis_pedidos.html', context)
+
+    fecha_inicio_dt = datetime(fechaActual.year, fechaActual.month, fechaActual.day)  # Inicio del día
+    fecha_fin_dt = fecha_inicio_dt + timedelta(days=1)
+    pagina_actual = request.GET.get('limit', 10)
+    pedidos= Pedido.objects.select_related('usuario').filter(
+                    usuario_id=id_usuario,
+                     estado_de_pedido='realizado',
+                     fecha_pedido__gte=fecha_inicio_dt,
+                       fecha_pedido__lte=fecha_fin_dt,
+                    
+
+                     ).order_by('-fecha_pedido')
+                                        
     pedidos= paginador_general(request, pedidos, pagina_actual)
     context={
         'data':pedidos,
@@ -298,8 +377,14 @@ def mis_pedidos(request): #muestra los pedidos de cada unidad o secretaria
 
 @login_required
 def lista_pedidos_por_estado(request,estado):
+      
     id_usuario= request.user.id
-    pedidos= Pedido.objects.select_related('usuario').filter(usuario_id=id_usuario, estado_de_pedido=estado).order_by('-fecha_pedido')
+  
+    pedidos= Pedido.objects.select_related('usuario').filter(
+                    usuario_id=id_usuario,
+                     estado_de_pedido=estado,
+              
+                     ).order_by('-fecha_pedido')
     return pedidos
 
 @login_required

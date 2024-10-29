@@ -39,7 +39,6 @@ def crear_entidades_por_defecto(sender, **kwargs):
     if sender.name == 'usuarios':
         secretaria, created = Secretaria.objects.get_or_create(secretaria='Secretaria departamental administrativa financiera')
         unidad, created = Unidad.objects.get_or_create(nombre='Financiera', secretaria=secretaria)
-        Oficinas.objects.get_or_create(nombre='Ninguna', unidad=unidad)
         Oficinas.objects.get_or_create(nombre='Almacenes', unidad=unidad)
         Oficinas.objects.get_or_create(nombre='Sistemas', unidad=unidad)
       
@@ -77,7 +76,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         if not any(value.name.endswith(ext) for ext in valid_extensions):
             raise ValidationError(_('Extension de archivo invalido'))
     CARGO_ROLE_CHOICES=[
-        ('Almacen','Almacen'),
         ('Presupuestos','Presupuestos'),
         ('Cardista','Cardista'),
         ('Director_administrativo','Director Administrativo'),

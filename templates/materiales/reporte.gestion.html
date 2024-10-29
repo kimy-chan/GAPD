@@ -4,32 +4,33 @@
 <div class="container">
     <form method="POST" action="{% url 'reporte_gestion' %}">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="año">Selecciona el año de gestión:</label>
-            <select name="año" id="año" class="form-control" required>
-            </select>
-        </div>
+        <select name="año" class="form-control" required>
+            {% if gestion %}
+            {% for año in gestion %}
+            <option value="{{ año }}" {% if gestion1 == año %} selected {% endif %}>{{ año }}</option>
+            {% endfor %}
+            {% else %}
+            <option disabled>No hay años disponibles</option>
+            {% endif %}
+        </select>
         <button type="submit" class="btn btn-primary">Buscar</button>
+        <select id="num" name="limit">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+        </select>
     </form>
 </div>
 
 <h2>Lista de Materiales</h2>
-<div class="table-responsive"> <!-- Hace la tabla responsiva -->
-    <form action="{% url 'cerrar_gestion' %}" method="POST">
-        {% csrf_token %}
-        <select id="num" name="limit">
-            <option name="page" value="10">10</option>
-            <option name="page" value="20">20</option>
-            <option name="page" value="50">50</option>
-            <option name="page" value="100">100</option>
-            <option name="page" value="200">200</option>
-        </select>
-        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-    </form>
-    <table class="table table-striped">
+<div class="table-responsive">
+    <table id="table_gestion" class="table table-striped">
         <thead>
             <tr>
-                <th>Gestión</th> <!-- Columna Gestión como primera -->
+                <th>Gestión</th>
                 <th>Nombre</th>
                 <th>Código</th>
                 <th>Marca</th>
@@ -49,12 +50,12 @@
         <tbody>
             {% for material in data %}
             <tr>
-                <td>{{ material.gestion }}</td> <!-- Mueve la gestión aquí -->
+                <td>{{ material.gestion }}</td>
                 <td>{{ material.nombre }}</td>
                 <td>{{ material.codigo }}</td>
                 <td>{{ material.marca }}</td>
                 <td>{{ material.stock }}</td>
-                <td>{{ material.fecha_creacion | date:"d-m-Y H:i:s" }}</td>
+                <td>{{ material.fecha_creacion|date:"d-m-Y H:i:s" }}</td>
                 <td>{{ material.tamaño }}</td>
                 <td>{{ material.color }}</td>
                 <td>{{ material.unidad_medida }}</td>
@@ -72,26 +73,38 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include 'paginador/paginador.html' %}
 </div>
 
-<script>
-    // Obtener el año actual
-    const currentYear = new Date().getFullYear();
-    const startYear = 2020; // Cambia esto según necesites
-    const endYear = 2050; // Cambia esto según necesites
-    const select = document.getElementById('año');
-
-    // Generar las opciones de años
-    for (let year = startYear; year <= endYear; year++) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        select.appendChild(option);
-
-        // Seleccionar el año actual
-        if (year === currentYear) {
-            option.selected = true;
-        }
-    }
-</script>
 {% endblock index %}
+
+{% block js %}
+
+<script>
+    $(document).ready(function () {
+
+
+        const table = $('#table_gestion').DataTable({
+            paging: false,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel',
+                {
+                    extend: 'pdf',
+                    orientation: 'landscape', // Establece la orientación horizontal
+                    pageSize: 'A4',
+                    title: 'Informe',
+                    customize: function (doc) {
+                        doc.content[1].margin = [10, 10, 10, 10]; // Margen de la tabla
+                        // Configura otras opciones del PDF aquí si es necesario
+                    },
+                    exportOptions: {
+                        columns: ':visible' // Exporta solo columnas visibles
+                    }
+                },
+                'print'
+            ],
+        });
+    });
+</script>
+{% endblock js %}
