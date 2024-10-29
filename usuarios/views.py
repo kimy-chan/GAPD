@@ -105,8 +105,9 @@ def crear_secretaria_listar(request):
             return JsonResponse({"error": "El valor  ya existe"})
 
     else:
-        secretatias = list(Secretaria.objects.all().values())   
+        secretatias = list(Secretaria.objects.filter(esHabilitado=True).values())   
         return JsonResponse({'data':secretatias}, safe=False)
+    
 def Crear_unidad_secretaria(request):
     if request.method== 'POST':
         unidad = request.POST.get('unidad')
@@ -138,14 +139,14 @@ def crear_unidad_listar(request):
         except IntegrityError:
             return JsonResponse({"error": "El valor  ya existe"})
     else:
-        unidad= list(Unidad.objects.all().values())
+        unidad= list(Unidad.objects.filter(esHabilitado=True).values())
         return JsonResponse({'data':unidad})
     
     
 
 
 def oficinas_listar(request, id_unidad):
-    oficinas= list(Oficinas.objects.filter(unidad=id_unidad).values())
+    oficinas= list(Oficinas.objects.filter(unidad=id_unidad, esHabilitado=True).values())
     return JsonResponse({'data':oficinas})
 
 def crear_oficinas(request):
@@ -280,6 +281,41 @@ def enviar_correos(request, id_usuario):
         print(f'Error al enviar el correo: {e}')
         return JsonResponse({'data': False})
     
+def listar_secretaria(request):
+    secretarias = Secretaria.objects.filter(esHabilitado=True)
+    context={
+        'data':secretarias
+    }
+    return render(request,'usuarios/listar.secretarias.html', context) 
+def listar_unidad(request):
+    unidad = Unidad.objects.filter(esHabilitado=True)
+    context={
+        'data':unidad
+    }
+    return render(request,'usuarios/listar.unidades.html', context) 
+def listar_oficina(request):
+    oficinas = Oficinas.objects.filter(esHabilitado=True)
+    context={
+        'data':oficinas
+    }
+    return render(request,'usuarios/listar.oficinas.html', context)  
+def soft_delete_secretaria(request, id):
+    secretaria = get_object_or_404(Secretaria, pk=id)
+    secretaria.esHabilitado=False
+    secretaria.save()
+    return redirect('listar_secretaria')
+
+def soft_delete_undiad(request, id):
+    unidad = get_object_or_404(Unidad, pk=id)
+    unidad.esHabilitado=False
+    unidad.save()
+    return redirect('listar_unidad')
+def soft_delete_oficina(request, id):
+    oficina = get_object_or_404(Oficinas, pk=id)
+    oficina.esHabilitado=False
+    oficina.save()
+    return redirect('listar_oficina')
+
 
 
 def organigrama(request):

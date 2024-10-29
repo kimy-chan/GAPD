@@ -1,5 +1,5 @@
 from django.urls import path, include 
-from .views  import login_sistema,organigrama,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
+from .views  import login_sistema, listar_secretaria,soft_delete_secretaria, soft_delete_oficina, soft_delete_undiad,listar_unidad, listar_oficina,organigrama,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
 from django.conf import settings
 from django.contrib.staticfiles.urls import static
 urlpatterns = [
@@ -14,6 +14,13 @@ urlpatterns = [
     path('actulizar_cuenta_usuario/<int:id_usuario>/<int:id_persona>', actulizar_cuenta_usuario, name='actulizar_cuenta_usuario') ,
     path("logout", logout_view, name='logout'),
     path("unidad",crear_unidad_listar , name='unidad' ),
+        path("listar/unidad",listar_unidad , name='listar_unidad' ),
+              path("listar/oficina",listar_oficina , name='listar_oficina' ),
+                      path("listar/secretaria",listar_secretaria , name='listar_secretaria' ),
+
+                        path("delte/unidad/<int:id>",soft_delete_undiad , name='delete_unidad' ),
+              path("delete/oficina/<int:id>",soft_delete_oficina , name='delete_oficina' ),
+                      path("delete/secretaria/<int:id>",soft_delete_secretaria , name='delete_secretaria' ),
 
  
     path('oficinas/<int:id_unidad>',oficinas_listar, name='oficinas'),
