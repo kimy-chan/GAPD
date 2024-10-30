@@ -287,6 +287,7 @@
             .then((result) => {
                 if (result.data.data) {
                     document.getElementById("mensaje").innerHTML = result.data.data
+                    window.location.reload()
 
                 } else if (result.data.error) {
                     document.getElementById("mensaje").innerHTML = result.data.error

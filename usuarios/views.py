@@ -1,3 +1,7 @@
+import datetime
+from pathlib import Path
+import shutil
+import subprocess
 from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth import authenticate, logout, login
 from django.db import IntegrityError
@@ -10,19 +14,20 @@ from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
-
+import os
+from dotenv import load_dotenv
 
 from .models import Usuario, Secretaria, Oficinas, Unidad
 
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse
 
 from persona.forms import Formulario_persona 
 
 from utils.paginador import paginador_general
 from persona.models import Persona 
 
-# Create your views here.
-
+#
+load_dotenv()
 def login_sistema(request):
     if(request.method=='POST'):
         username = request.POST["username"]
@@ -345,3 +350,61 @@ def organigrama(request):
  
     
     return render(request, 'usuarios/organigrama.html', {'data': data})
+
+
+def backup_database(request):
+    print( os.getenv('DB_HOST'))
+    if request.method == 'POST':
+        try:
+            # Directorio temporal en el proyecto para crear el archivo
+            temp_backup_dir = os.path.join(settings.BASE_DIR, 'backups')
+            if not os.path.exists(temp_backup_dir):
+                os.makedirs(temp_backup_dir)
+
+            # Nombre del archivo de backup
+            date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            temp_backup_file = os.path.join(temp_backup_dir, f'backup_{date_str}.sql')
+
+            # Obtener la ruta de la carpeta de descargas del usuario
+            downloads_dir = os.path.join(str(Path.home()), 'Documents')
+            final_backup_file = os.path.join(downloads_dir, f'backup_{date_str}.sql')
+
+            # Ruta completa a pg_dump
+            pg_dump_path = r'C:\Program Files\PostgreSQL\16\bin\pg_dump.exe'
+
+            if not os.path.exists(pg_dump_path):
+                return JsonResponse({'success': False, 'message': f'pg_dump no se encuentra en la ruta especificada: {pg_dump_path}'})
+
+            # Comando para realizar la copia de seguridad
+            command = [
+                pg_dump_path,
+                '-h',  os.getenv('DB_HOST'),
+                '-U',os.getenv('DB_USER'),
+                '-d', os.getenv('DB_NAME'),
+                '-f', temp_backup_file
+            ]
+
+            # Configurar la variable de entorno PGPASSWORD
+            env = os.environ.copy()
+            env['PGPASSWORD'] = settings.DATABASES["default"]["PASSWORD"]
+
+            # Ejecutar el comando para crear el archivo de backup
+            result = subprocess.run(command, env=env, text=True, capture_output=True)
+
+            # Verificar si hubo errores durante la ejecución del comando
+            if result.returncode != 0:
+                return JsonResponse({'success': False, 'message': f'Error al ejecutar pg_dump: {result.stderr}'})
+
+            # Mover el archivo a la carpeta de descargas
+            shutil.move(temp_backup_file, final_backup_file)
+
+            # Preparar el archivo para descarga
+            response = FileResponse(open(final_backup_file, 'rb'))
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(final_backup_file)}"'
+            return response
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Error al crear la copia de seguridad: {str(e)}'})
+
+    else:
+        return render(request, 'usuarios/backup.html')
