@@ -14,7 +14,7 @@
         /* Estilos personalizados */
         body {
             font-family: 'Arial', sans-serif;
-            background-color:  #5bd0d6;
+            background-color: #5bd0d6;
         }
 
         .navbar-brand {
@@ -29,8 +29,9 @@
         .nav-link:hover {
             color: #007bff;
         }
+
         footer {
-            background-color:#2A4F62;
+            background-color: #2A4F62;
             color: rgb(182, 42, 42);
             text-align: center;
             padding: 5px;
@@ -43,30 +44,30 @@
             width: 300px;
             /* Ancho personalizado para el campo de búsqueda */
         }
+
         nav {
             background-color: aqua;
 
         }
+
         .small-image {
-        max-width: 150px; /* Ajusta el tamaño según sea necesario */
-        height: auto;
-       }
-       .navbar .navbar-expand-lg .navbar-light .bg-light{
-        flex-basis: 100%;
-        flex-grow: 2;
-        background-color: rgb(20, 163, 151);
+            max-width: 150px;
+            /* Ajusta el tamaño según sea necesario */
+            height: auto;
+        }
 
-       }
-       
+        .navbar .navbar-expand-lg .navbar-light .bg-light {
+            flex-basis: 100%;
+            flex-grow: 2;
+            background-color: rgb(20, 163, 151);
 
-
-
+        }
     </style>
 </head>
 
 <body>
-   
-    <nav class="navbar navbar-expand-lg" >
+
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Bienvenido, {{ usuario.persona.nombre }} {{ usuario.persona.apellidos}}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -77,7 +78,8 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mi_perfil' usuario.id %}" style="font-weight: bold;">Mi perfil</a>
+                        <a class="nav-link" href="{% url 'mi_perfil' usuario.id %}" style="font-weight: bold;">Mi
+                            perfil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'mis_pedidos' %}" style="font-weight: bold;">Mis pedidos</a>
@@ -118,7 +120,7 @@
                     {% endif %}
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}"  style="font-weight: bold;">Cerrar sesión</a>
+                        <a class="nav-link" href="{% url 'logout' %}" style="font-weight: bold;">Cerrar sesión</a>
                     </li>
                 </ul>
             </div>
@@ -154,8 +156,8 @@
     {% endblock js %}
 
     <footer>
-            
-      
+
+
         <div class="row justify-content-center mt-4">
             <div class="col-md-6 text-center">
                 <img src="static/imagen/VERTICAL.png" alt="Imagen descriptiva" class="img-fluid small-image">

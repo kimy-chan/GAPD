@@ -22,8 +22,7 @@
     <div class="text-center">
         <h2>Añadir usuarios</h2>
     </div>
-    <form action="{% url 'actulizar_cuenta_usuario' usuario.id persona.id %}" method="POST"
-        enctype="multipart/form-data">
+    <form action="{% url 'actulizar_cuenta_usuario' user.id persona.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
 
@@ -51,7 +50,7 @@
                 <span>Seleccione su unidad</span>
                 <div class="row">
                     <div class="col-12">
-                        <input type="hidden" id="id_unidad" value="{{ usuario.unidad.id }}">
+                        <input type="hidden" id="id_unidad" value="{{ user.unidad.id }}">
                         <select name="unidad" id="selectUnidad" class="form-control"></select>
                     </div>
                     <div class="col-12 pt-3 text-center ">
@@ -75,7 +74,7 @@
                 <span>Seleccione la oficina</span>
                 <div class="row">
                     <div class="col-12">
-                        <input type="hidden" id="id_oficina_value" value="{{ usuario.oficina.id }}">
+                        <input type="hidden" id="id_oficina_value" value="{{ user.oficina.id }}">
                         <select name="oficina" id="selectOficinas" class="form-control"></select>
                     </div>
                     <div class="col-4">
@@ -268,7 +267,7 @@
             })
             .catch((e) => {
                 console.log(e);
-                alert('Error: ' + e.message);
+
             });
     }
 
@@ -295,7 +294,7 @@
             })
             .catch((e) => {
                 console.log(e);
-                alert('Error: ' + e.message);  // Proporcionar un mensaje de error más claro
+
             });
     }
 
@@ -322,7 +321,8 @@
                 }
             })
             .catch((e) => {
-                alert(e)
+                console.log(e);
+
             })
 
 
@@ -412,7 +412,7 @@
             })
             .catch((e) => {
                 console.log(e);
-                alert(e);
+
             });
     });
 
@@ -436,7 +436,7 @@
                 }
             })
             .catch((e) => {
-                alert(e)
+                console.log(e)
             })
 
 

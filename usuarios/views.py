@@ -62,7 +62,7 @@ def actulizar_cuenta_usuario(request, id_usuario, id_persona):
             usuario.save()
             return redirect('listando_usuarios')
     context={
-        'usuario':usuario,
+        'user':usuario,
         'persona':persona,
         'form_persona':formulario_persona,
         'form_usuario':usuario_formulario
