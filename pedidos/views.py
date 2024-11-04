@@ -133,7 +133,7 @@ def cambiar_estado_pedido(request):
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
-                enviar_notificacion_pedido(pedido)
+                enviar_notificacion_pedido(request,pedido)
                 detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
@@ -154,7 +154,7 @@ def cambiar_estado_pedido(request):
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
-                enviar_notificacion_pedido(pedido)
+                enviar_notificacion_pedido(request,pedido)
                 detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
@@ -173,7 +173,7 @@ def cambiar_estado_pedido(request):
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
-                enviar_notificacion_pedido(pedido)
+                enviar_notificacion_pedido(request,pedido)
                 detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
@@ -190,7 +190,7 @@ def cambiar_estado_pedido(request):
                 pedido.save()
                 autorizacion_pedido= Autorizacion_pedido.objects.create(pedido=pedido,usuario= usuario, estado_autorizacion= True)
                 autorizacion_pedido.save()
-                enviar_notificacion_pedido(pedido)
+                enviar_notificacion_pedido(request,pedido)
                 detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')
             return JsonResponse({'status': 'success', 'ids': ids})
@@ -204,7 +204,7 @@ def cambiar_estado_pedido(request):
                 pedido.estado_de_pedido='realizado'
                 pedido.numero_pedido=numero
                 pedido.save()
-                enviar_notificacion_pedido(pedido) 
+                enviar_notificacion_pedido(request,pedido) 
                 detalle = f'El usuario {request.user.username} ha realizado un pedido con el ID {pedido.id}.'
                 crear_log_sistema(request.user.username, 'Realizar pedido', detalle, 'Pedidos')   
             return JsonResponse({'status': 'success', 'ids': ids})

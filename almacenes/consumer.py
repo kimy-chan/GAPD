@@ -1,20 +1,22 @@
 # almacenes/consumer.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from usuarios.models import Usuario
 
 class NotificacionConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-      
+    async def connect(self): 
+        self.user_id = self.scope['user'].id
+        self.group_name = f'notificaciones_{self.user_id}'
+
         await self.channel_layer.group_add(
-            'notificaciones',
+            self.group_name,
             self.channel_name
         )
         await self.accept()
 
     async def disconnect(self, close_code):
-    
         await self.channel_layer.group_discard(
-            'notificaciones',
+            self.group_name,
             self.channel_name
         )
 
