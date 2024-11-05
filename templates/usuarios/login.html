@@ -8,21 +8,20 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    
         /* Additional styles */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1f8e96; 
+            background-color: #1f8e96;
             color: #333;
             width: 100%;
         }
 
         .navbar {
-        background-color: #024d5a; 
-        padding: 1.5rem 1rem; 
-        width: 100%;
-    }
-        
+            background-color: #024d5a;
+            padding: 1.5rem 1rem;
+            width: 100%;
+        }
+
 
         .navbar-brand {
             font-size: 1.4rem;
@@ -33,15 +32,15 @@
         .login-container {
             margin-top: 8%;
         }
-       
+
 
         .card {
             border: none;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-            background-color:  #98e8ec; 
-            color: rgb(14, 13, 13); 
-        
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #98e8ec;
+            color: rgb(14, 13, 13);
+
         }
 
         .card-body {
@@ -51,15 +50,19 @@
         .form-group label {
             font-weight: bold;
             text-align: center;
-            
+
         }
+
         .form-group,
-        .form-group label{
+        .form-group label {
             text-align: center;
         }
+
         .form-control:focus {
-            border-color: darkred; /* Borde rojo oscuro cuando está enfocado */
-            box-shadow: 0 0 5px darkred; /* Sombra roja cuando está enfocado */
+            border-color: darkred;
+            /* Borde rojo oscuro cuando está enfocado */
+            box-shadow: 0 0 5px darkred;
+            /* Sombra roja cuando está enfocado */
         }
 
         .btn-primary {
@@ -69,7 +72,8 @@
         }
 
         .btn-primary:hover {
-            background-color: #0c8177; /* Darker shade on hover */
+            background-color: #0c8177;
+            /* Darker shade on hover */
         }
 
         .modal-header {
@@ -87,7 +91,7 @@
         }
 
         footer {
-            background-color:#2A4F62;
+            background-color: #2A4F62;
             color: white;
             text-align: center;
             padding: 10px 0;
@@ -146,7 +150,8 @@
                                 <button type="submit" class="btn btn-primary">Ingresar</button>
                             </div>
                             <div class="text-center mt-2">
-                                <a href="#" data-toggle="modal" data-target="#passwordRecoveryModal" style="font-weight: bold;">¿Olvidaste tu contraseña?</a>
+                                <a href="#" data-toggle="modal" data-target="#passwordRecoveryModal"
+                                    style="font-weight: bold;">¿Olvidaste tu contraseña?</a>
                             </div>
                         </form>
                     </div>
@@ -161,7 +166,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="passwordRecoveryModalLabel" style="font-weight: bold;">Recuperar Contraseña</h5>
+                    <h5 class="modal-title" id="passwordRecoveryModalLabel" style="font-weight: bold;">Recuperar
+                        Contraseña</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -209,7 +215,7 @@
                             <table class="table table-sm table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
+                                       
                                         <th>Usuario</th>
                                         <th>Acción</th>
                                     </tr>
@@ -219,7 +225,7 @@
                         result.data.data.forEach(element => {
                             tableHtml += `
                                 <tr>
-                                    <td>${element.nombres}</td>
+                                 
                                     <td>${element.username}</td>
                                     <td><button class="btn btn-secondary btn-sm select-btn" data-id="${element.id}"  data-email="${element.email}">Seleccionar</button></td>
                                 </tr>`;
@@ -269,8 +275,8 @@
         }
     </script>
     <footer>
-            
-      
+
+
         <div class="row justify-content-center mt-4">
             <div class="col-md-6 text-center">
                 <img src="static/imagen/VERTICAL.png" alt="Imagen descriptiva" class="img-fluid small-image">

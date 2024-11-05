@@ -29,8 +29,8 @@ def enviar_notificacion_pedido(request, pedido):
                 }
             )
     elif request.user.cargo == 'Encargado_oficina':
-
-        jefe_oficina = Usuario.objects.filter(oficina=request.user.unidad, cargo='Director_administrativo')
+    
+        jefe_oficina = Usuario.objects.filter(cargo='Director_administrativo')
         
         for u in jefe_oficina:
           

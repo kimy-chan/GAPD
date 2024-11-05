@@ -307,8 +307,8 @@ def reporte_gestion(request):
         pagina_actual = request.POST.get('limit', 10) 
         print(gestion1)
         materiales= Materiales.objects.filter(gestion= gestion1,es_habilitado=True , cierre_gestion=True)
-        print(len(materiales))
-        materiales = paginador_general(request, materiales, pagina_actual)
+  
+        #materiales = paginador_general(request, materiales, pagina_actual)
       
         context={
             'data':materiales,

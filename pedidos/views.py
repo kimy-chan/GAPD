@@ -571,6 +571,7 @@ def listar_pedidos_por_codigo_presupuesto(request, numero):#listado por unidad
 @login_required
 def listar_pedidos_por_codigo_oficina(request, numero): #listado por oficina
     pedido= Pedido.objects.filter(numero_pedido=numero)
+
     context = {
         'data': pedido
     }
@@ -586,6 +587,7 @@ def autorizar_pedidos(request, id_pedido):#autoria el pedido de cada unidad
     autorizacion_pedido.save()
     pedido.aprobado_unidad= True
     pedido.save()
+    enviar_notificacion_pedido(request,pedido)
     url = reverse('pedido_numero', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
 
@@ -599,6 +601,7 @@ def autorizar_pedidos_cardista(request, id_pedido):#autoria el pedido de cada un
     autorizacion_pedido.save()
     pedido.aprobado_cardista= True
     pedido.save()
+    enviar_notificacion_pedido(request,pedido)
     url = reverse('pedido_numero_cardista', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
 @login_required
@@ -611,6 +614,7 @@ def autorizar_pedidos_presupuestos(request, id_pedido):#autoria el pedido de cad
     autorizacion_pedido.save()
     pedido.aprobado_presupuestos = True
     pedido.save()
+    enviar_notificacion_pedido(request,pedido)
     url = reverse('listar_pedidos_por_codigo_presupuesto', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
 
@@ -626,6 +630,7 @@ def autorizar_pedidos_oficina(request, id_pedido):#autoria el pedido de cada uni
     autorizacion_pedido.save()
     pedido.aprobado_oficina= True
     pedido.save()
+    enviar_notificacion_pedido(request,pedido)
     url = reverse('pedido_numero_oficina', kwargs={'numero': numero})
     return redirect(f"{url}?success=Pedido autorizado correctamente")
    
