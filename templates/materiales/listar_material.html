@@ -1,6 +1,37 @@
 {% extends '../base.html' %}
 
 {% block index %}
+<style>
+    /* Alinear los botones de paginación a la derecha */
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+    }
+
+    /* Alinear los botones de exportación a la derecha */
+    .dt-buttons {
+        float: right;
+        margin-bottom: 10px;
+    }
+
+    /* Alinear el buscador a la derecha */
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    /* Hacer que la tabla sea responsiva */
+    @media (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table th,
+        .table td {
+            white-space: nowrap;
+        }
+    }
+</style>
 <div class="container table-responsive">
     <h2 class="text-center">{{ nombre_categoria.nombre }}</h2>
     <form action="{% url 'categorias_por_id' id_categoria %}" method="GET">

@@ -298,28 +298,30 @@ def cerrar_gestion(request):
     return render(request, 'materiales/cerrar.gestion.html')
     
 def reporte_gestion(request):
-    año_actual = datetime.now().year
-   
-    gestion = [str(año) for año in range(año_actual - 1, año_actual + 10)]
+ 
     if request.method =='POST':
-        gestion1 = request.POST['año']
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
    
-        pagina_actual = request.POST.get('limit', 10) 
-        print(gestion1)
-        materiales= Materiales.objects.filter(gestion= gestion1,es_habilitado=True , cierre_gestion=True)
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+      
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+  
+    
+        materiales= Materiales.objects.filter(es_habilitado=True 
+                                              , cierre_gestion=True,
+                                                fecha_creacion__gte =fecha_inicio_dt,
+                                                  fecha_creacion__lte =fecha_fin_dt
+                                              )
   
         #materiales = paginador_general(request, materiales, pagina_actual)
       
         context={
             'data':materiales,
-            'gestion1':gestion1,
-            'gestion':gestion
+          
          }
         return render(request, 'materiales/reporte.gestion.html', context)
 
-    context={
-       
-            'gestion':gestion
-         }
-    return render(request, 'materiales/reporte.gestion.html',context)
+    return render(request, 'materiales/reporte.gestion.html')
     
