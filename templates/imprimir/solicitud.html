@@ -45,6 +45,20 @@
             font-size: 0.8rem;
         }
 
+        .no-bullets {
+            list-style-type: none;
+
+            padding: 0;
+
+            margin: 0;
+
+        }
+
+        .no-bullets li {
+            padding-left: 0;
+
+        }
+
         @media print {
             .no-print {
                 display: none;
@@ -95,56 +109,92 @@
         <table class="signature-table">
             <tr>
                 <td>
-                    <p>...{{ usuario_pedido }}..</p>
                     <p class="signature-label">Pedido por</p>
-                    <p>Nombre, cargo y firma</p>
+                    <p>...{{ usuario_pedido }}..</p>
                 </td>
                 <td>
-                    {% if not user_oficina %}
-                    <p>..{{ user_unidad }}..</p>
-                    {% elif user_oficina %}
-                    <p>..{{ user_oficina }}..</p>
-                    {% endif %}
                     <p class="signature-label">Autorizado por</p>
-                    <p>Nombre, cargo y firma</p>
+                    <ul class="no-bullets">
+                        {% if user_oficina.usuario %}
+                        <li>{{ user_oficina.usuario }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+
+                        {% if user_oficina.cargo %}
+                        <li>{{ user_oficina.cargo }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+                    </ul>
                 </td>
                 <td>
-                    {% if not user_unidad %}
-                    <p>.......................</p>
-                    {% elif user_unidad %}
-                    <p>..{{ user_unidad }}..</p>
-                    {% endif %}
                     <p class="signature-label">Autorizado por</p>
-                    <p>Nombre, cargo y firma</p>
+                    <ul class="no-bullets">
+                        {% if user_unidad.usuario %}
+                        <li>{{ user_unidad.usuario }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+
+                        {% if user_unidad.cargo %}
+                        <li>{{ user_unidad.cargo }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+                    </ul>
                 </td>
             </tr>
+
             <tr>
                 <td>
-                    {% if not user_cardista %}
-                    <p>.......................</p>
-                    {% elif user_cardista %}
-                    <p>..{{ user_cardista }}..</p>
-                    {% endif %}
                     <p class="signature-label">Autorizado por</p>
-                    <p>Nombre, cargo y firma</p>
+                    <ul class="no-bullets">
+                        {% if user_cardista.usuario %}
+                        <li>{{ user_cardista.usuario }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+
+                        {% if user_cardista.cargo %}
+                        <li>{{ user_cardista.cargo }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+                    </ul>
                 </td>
                 <td>
-                    {% if not user_presupuesto %}
-                    <p>.......................</p>
-                    {% elif user_presupuesto %}
-                    <p>..{{ user_presupuesto }}..</p>
-                    {% endif %}
+
                     <p class="signature-label">Autorizado por</p>
-                    <p>Nombre, cargo y firma</p>
+                    <ul class="no-bullets">
+                        {% if user_presupuesto.usuario %}
+                        <li>{{ user_presupuesto.usuario }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+
+                        {% if user_presupuesto.cargo %}
+                        <li>{{ user_presupuesto.cargo }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+                    </ul>
                 </td>
                 <td>
-                    {% if not user_almacen %}
-                    <p>.......................</p>
-                    {% elif user_almacen %}
-                    <p>..{{ user_almacen }}..</p>
-                    {% endif %}
                     <p class="signature-label">Autorizado por</p>
-                    <p>Nombre, cargo y firma</p>
+                    <ul class="no-bullets">
+                        {% if user_almacen.usuario %}
+                        <li>{{ user_almacen.usuario }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+
+                        {% if user_almacen.cargo %}
+                        <li>{{ user_almacen.cargo }}</li>
+                        {% else %}
+                        <li>.......................</li>
+                        {% endif %}
+                    </ul>
                 </td>
             </tr>
             <tr>
@@ -154,6 +204,7 @@
                     <p>Nombre, cargo y firma</p>
                 </td>
             </tr>
+
         </table>
 
         <div class="text-center mt-4">

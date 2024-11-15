@@ -287,7 +287,7 @@ def cerrar_gestion(request):
 
         with transaction.atomic():
             Materiales.objects.bulk_create(materiales_a_crear)  # Crear todos los nuevos materiales
-            materiales.update(cierre_gestion=True, stock=0)  # Actualizar los materiales existentes
+            materiales.update(cierre_gestion=True)  # Actualizar los materiales existentes
 
         messages.success(request, 'Cierre de gestión completada')
         context = {

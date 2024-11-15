@@ -6,6 +6,7 @@ class Pedido(models.Model):
     numero_pedido=models.IntegerField(blank= True ,null= True)
     cantidad_pedida=models.IntegerField(blank=False, null=False, default=0)
     cantidad_entrega=models.IntegerField(blank= True ,null= True, default=0)
+    descripcion = models.TextField(null=True)
     partida_presupuestada=models.DecimalField(max_digits=10, decimal_places=2,blank= True ,null= True)
     costo_unidad=models.DecimalField(max_digits=10, decimal_places=2,blank= True ,null= True)
     costo_total=models.DecimalField(max_digits=10, decimal_places=2,blank= True ,null= True)
@@ -27,6 +28,7 @@ class Pedido(models.Model):
     aprobado_cardista = models.BooleanField( blank= True, null=True) 
     aprobado_almacen = models.BooleanField( blank= True, null=True) 
 
+    aprobado_cardista_segunda=models.BooleanField( blank= True, null=True)
 
     estado_pedido_almacen = models.CharField(blank=False, null=False, default='Pendiente')
     estado_de_pedido=models.CharField(blank=False, null=False, default='pendiente')

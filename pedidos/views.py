@@ -760,25 +760,44 @@ def rechazar_pedido_almacen(request, id_pedido):
 
 @login_required
 def imprecion_solicitud(request,numero):
-    pedido= Pedido.objects.filter(numero_pedido=numero)
+    user=request.user
+    
+    pedido= Pedido.objects.filter(numero_pedido=numero, aprobado_almacen = True)
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
-    user_oficina=None
-    user_unidad=None
-    user_almacen=None
-    user_cardista=None
-    user_presupuesto=None
+    user_oficina={}
+    user_unidad={}
+    user_almacen={}
+    user_cardista={}
+    user_presupuesto={}
     for usuarios  in autorizacion:
         if usuarios.usuario.cargo == 'Encargado_oficina':
-            user_oficina = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+            user_oficina['usuario'] = f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}"
+            user_oficina['cargo'] = f"Cargo: {usuarios.usuario.cargo}"
+
         elif usuarios.usuario.cargo == 'Director_administrativo':
-            user_unidad = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.cargo == 'Almacen':
-            user_almacen=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+            user_unidad['usuario'] = f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}"
+            user_unidad['cargo'] = f"Cargo: {usuarios.usuario.cargo}"
+
+    
         elif usuarios.usuario.cargo == 'Cardista':
-            user_cardista =  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }"    
+            user_cardista = {
+        'usuario': f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}",
+        'cargo': f"Cargo: {usuarios.usuario.cargo}"
+    }
+
         elif usuarios.usuario.cargo == 'Presupuestos':
-            user_presupuesto=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+            user_presupuesto = {
+        'usuario': f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}",
+        'cargo': f"Cargo: {usuarios.usuario.cargo}"
+    }
+
+    if user.oficina.nombre == 'Almacenes':
+        user_almacen = {
+        'usuario': f"Nombre: {user.persona.nombre} {user.persona.apellidos}",
+        'cargo': f"Cargo: {user.oficina.nombre}"
+    }
+           
 
     context = {
         'data': pedido,
@@ -796,28 +815,42 @@ def imprecion_solicitud(request,numero):
 
 @login_required
 def generate_pdf(request, numero):
-    pedido= Pedido.objects.filter(numero_pedido=numero)
-
+    user=request.user
+    pedido= Pedido.objects.filter(numero_pedido=numero, aprobado_almacen = True)
     user_pedido = f"{pedido[0].usuario.persona.nombre} { pedido[0].usuario.persona.apellidos }" 
     autorizacion= Autorizacion_pedido.objects.filter(pedido=pedido[0].id)
-
-    user_oficina=None
-    user_unidad=None
-    user_almacen=None
-    user_cardista=None
-    user_presupuesto=None
+    user_oficina={}
+    user_unidad={}
+    user_almacen={}
+    user_cardista={}
+    user_presupuesto={}
     for usuarios  in autorizacion:
         if usuarios.usuario.cargo == 'Encargado_oficina':
-            user_oficina = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.cargo == 'Director_administrativo':
-            user_unidad = f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.cargo == 'Almacen':
-            user_almacen=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
-        elif usuarios.usuario.cargo == 'Cardista':
-            user_cardista =  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }"    
-        elif usuarios.usuario.cargo == 'Presupuestos':
-            user_presupuesto=  f"{usuarios.usuario.persona.nombre} { usuarios.usuario.persona.apellidos }" 
+            user_oficina['usuario'] = f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}"
+            user_oficina['cargo'] = f"Cargo: {usuarios.usuario.cargo}"
 
+        elif usuarios.usuario.cargo == 'Director_administrativo':
+            user_unidad['usuario'] = f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}"
+            user_unidad['cargo'] = f"Cargo: {usuarios.usuario.cargo}"
+
+    
+        elif usuarios.usuario.cargo == 'Cardista':
+            user_cardista = {
+            'usuario': f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}",
+            'cargo': f"Cargo: {usuarios.usuario.cargo}"
+    }
+
+        elif usuarios.usuario.cargo == 'Presupuestos':
+            user_presupuesto = {
+        'usuario': f"Nombre: {usuarios.usuario.persona.nombre} {usuarios.usuario.persona.apellidos}",
+        'cargo': f"Cargo: {usuarios.usuario.cargo}"
+    }
+
+    if user.oficina.nombre == 'Almacenes':
+        user_almacen = {
+        'usuario': f"Nombre: {user.persona.nombre} {user.persona.apellidos}",
+        'cargo': f"Cargo: {user.oficina.nombre}"
+    }
     context = {
         'data': pedido,
         'usuario_pedido':user_pedido,
