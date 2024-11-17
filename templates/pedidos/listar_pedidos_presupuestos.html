@@ -42,6 +42,7 @@
 <div class="container-fluid">
     <h1>Presupuestos</h1>
 
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -51,6 +52,7 @@
                 <th>Material</th>
                 <th>Cantidad de pedido</th>
                 <th>Cantidad de pedido 2</th>
+                <th>Presupuestada</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -91,8 +93,40 @@
 
                     </div>
                 </td>
+
                 {% else %}
                 <td>{{ pedido.sub_cantidad_pedida }} </td>
+                {% endif %}
+                {% if pedido.aprobado_presupuestos == false %}
+                <td>
+                    {{ pedido.partida_presupuestada }}
+                    <div class="form-container">
+                        <form id="form_partida_presupuestada_{{ pedido.id }}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <!-- Campos ocultos -->
+                                    <input type="number" name="pedido" value="{{ pedido.id }}"
+                                        class="form-control d-none" id="pedido_{{ pedido.id }}">
+                                    <input type="number" name="material" value="{{ pedido.material.id }}"
+                                        class="form-control d-none" id="material_{{ pedido.id }}">
+                                    <input name="partida" required type="number" class="form-control"
+                                        id="partida_{{ pedido.id }}" placeholder="Ingrese un valor">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary btn-sm" type="submit"
+                                            data-form-id="{{ pedido.id }}">
+                                            <i class="fas fa-floppy-disk"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </td>
+
+                {% else %}
+                <td>{{ pedido.partida_presupuestada }} </td>
                 {% endif %}
                 <td>
                     {% if pedido.aprobado_presupuestos == None %}
@@ -164,6 +198,7 @@
 
                         const modalBody = document.getElementById('modalBody');
                         modalBody.textContent = result.data.data;
+                        window.location.reload()
                         const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
                         responseModal.show();
                     })
@@ -175,6 +210,47 @@
                     });
             });
         });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('button[data-form-id]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const formId = button.getAttribute('data-form-id');
+                const form = document.getElementById(`form_partida_presupuestada_${formId}`);
+                const formData = new FormData(form);
+                axios.post("{% url 'partida_presupuestada' %}", formData)
+                    .then((result) => {
+
+                        const modalBody = document.getElementById('modalBody');
+                        modalBody.textContent = result.data.data;
+                        window.location.reload()
+                        /* const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
+                         responseModal.show();*/
+                    })
+                    .catch((err) => {
+                        const modalBody = document.getElementById('modalBody');
+                        modalBody.textContent = err.response ? err.response.data : err.message;
+                        const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
+                        responseModal.show();
+                    });
+            });
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        today.setDate(today.getDate() - 1); // Resta un día
+        const formattedDate = today.toISOString().split('T')[0];
+
+        if (!document.getElementById('fecha_inicio').value) {
+            document.getElementById('fecha_inicio').value = formattedDate;
+        }
+        if (!document.getElementById('fecha_fin').value) {
+            document.getElementById('fecha_fin').value = formattedDate;
+        }
     });
 
 

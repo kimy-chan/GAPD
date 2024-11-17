@@ -10,7 +10,24 @@
     <div class="text-center">
         <h2>Presupuestos</h2>
     </div>
-    <form action="{% url 'listar_pedidos_presupuestos' %}" method="GET">
+    <form method="POST" class="mb-3" action="{% url 'listar_pedidos_presupuestos' %}">
+
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <label for="fecha_inicio">Fecha Inicio</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control"
+                    value="{{ fecha_inicio }}">
+            </div>
+            <div class="col">
+                <label for="fecha_fin">Fecha Fin</label>
+                <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+            </div>
+            <div class="col">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary mt-4">Buscar</button>
+            </div>
+        </div>
         <select id="num" name="limit">
             <option name="page" value="10">10</option>
             <option name="page" value="20">20</option>
@@ -18,8 +35,9 @@
             <option name="page" value="100">100</option>
             <option name="page" value="200">200</option>
         </select>
-        <button type="submit">Filtrar</button>
+
     </form>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -59,3 +77,24 @@
 
 
 {% endblock usuario %}
+
+{% block js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        today.setDate(today.getDate() - 1); // Resta un día
+        const formattedDate = today.toISOString().split('T')[0];
+
+        if (!document.getElementById('fecha_inicio').value) {
+            document.getElementById('fecha_inicio').value = formattedDate;
+        }
+        if (!document.getElementById('fecha_fin').value) {
+            document.getElementById('fecha_fin').value = formattedDate;
+        }
+    });
+
+
+</script>
+
+{% endblock js %}

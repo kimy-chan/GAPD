@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import   login_required
@@ -451,47 +452,72 @@ def todos_mis_pedidos(request):
 
 @login_required
 def listar_pedidos_cardista(request, ):#admisnitrativo
-    pagina_actual = request.GET.get('limit', 10)
-    pedidos_unidad = Pedido.objects.filter(
+    if request.method == 'POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+        pagina_actual = request.GET.get('limit', 10)
+
+        pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
         aprobado_unidad=True,
         aprobado_oficina=True,
+        fecha_pedido__gte = fecha_inicio_dt,
+        fecha_pedido__lte = fecha_fin_dt
+        
     
-    ).order_by('numero_pedido')
-    pedidos_unicos = {}
-    for pedido in pedidos_unidad:
-        if pedido.numero_pedido not in pedidos_unicos:
-            pedidos_unicos[pedido.numero_pedido] = pedido
+        ).order_by('numero_pedido')
+        pedidos_unicos = {}
+        for pedido in pedidos_unidad:
+            if pedido.numero_pedido not in pedidos_unicos:
+                pedidos_unicos[pedido.numero_pedido] = pedido
 
-    pedidos_unicos_list = list(pedidos_unicos.values())
-    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
-    context = {
-        'data': pedidos_unicos_list
+        pedidos_unicos_list = list(pedidos_unicos.values())
+        pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
+        context = {
+        'data': pedidos_unicos_list,
+              'fecha_inicio':fecha_inicio,
+            'fecha_fin':fecha_fin,
     }
-    return render(request, 'pedidos/usuarios.cardista.html', context)
+        return render(request, 'pedidos/usuarios.cardista.html', context)
+    return render(request, 'pedidos/usuarios.cardista.html')
 
 
 @login_required
 def listar_pedidos_presupuestos(request):#admisnitrativo
-    pagina_actual = request.GET.get('limit', 10)
+    if request.method == 'POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+        pagina_actual = request.GET.get('limit', 10)
    
-    pedidos_unidad = Pedido.objects.filter(
+        pedidos_unidad = Pedido.objects.filter(
         #usuario__unidad=usuario.unidad,
         aprobado_unidad=True,
         aprobado_oficina=True,
            aprobado_cardista=True,
-    ).order_by('numero_pedido')
-    pedidos_unicos = {}
-    for pedido in pedidos_unidad:
-        if pedido.numero_pedido not in pedidos_unicos:
-            pedidos_unicos[pedido.numero_pedido] = pedido
+           fecha_pedido__gte = fecha_inicio_dt,
+           fecha_pedido__lte = fecha_fin_dt
 
-    pedidos_unicos_list = list(pedidos_unicos.values())
-    pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
-    context = {
-        'data': pedidos_unicos_list
+        ).order_by('numero_pedido')
+        pedidos_unicos = {}
+        for pedido in pedidos_unidad:
+            if pedido.numero_pedido not in pedidos_unicos:
+                pedidos_unicos[pedido.numero_pedido] = pedido
+
+        pedidos_unicos_list = list(pedidos_unicos.values())
+        pedidos_unicos_list = paginador_general(request,pedidos_unicos_list, pagina_actual)
+        context = {
+        'data': pedidos_unicos_list,
+              'fecha_inicio':fecha_inicio,
+            'fecha_fin':fecha_fin,
     }
-    return render(request, 'pedidos/usuarios.presupuestos.html', context)
+        return render(request, 'pedidos/usuarios.presupuestos.html', context)
+    return render(request, 'pedidos/usuarios.presupuestos.html')
 
 
 @login_required
@@ -979,3 +1005,75 @@ def reporte_pedido_salida(request):
 
 
     return render(request, 'pedidos/reporte.pedidos.salida.html')
+@login_required
+def listar_pedidos_cardista_costo(request):
+    if request.method =='POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+        pedidos = Pedido.objects.filter(
+        aprobado_unidad=True,
+        aprobado_oficina=True,
+        aprobado_presupuestos=True,
+        aprobado_cardista=True,
+        aprobado_almacen=True,
+        fecha_entrega_salida__gte= fecha_inicio_dt,
+        fecha_entrega_salida__lte= fecha_fin_dt,
+        ).distinct('numero_pedido')
+        context={
+        'data':pedidos
+        }
+        print(pedidos)
+        return render(request, 'pedidos/costos.cardista.html', context)
+    return render(request, 'pedidos/costos.cardista.html')
+@login_required
+def listar_pedido_codigo_cardita(request, codigo):
+    pedidos = Pedido.objects.filter(
+        aprobado_unidad=True,
+        aprobado_oficina=True,
+        aprobado_presupuestos=True,
+        aprobado_cardista=True,
+        aprobado_almacen=True,
+        numero_pedido=codigo
+        )
+    costo_total = 0 
+    consto_unidad =0
+    for data in pedidos:
+        costo_total +=  data.costo_total if data.costo_total else Decimal(0)
+        consto_unidad += data.costo_unidad if data.costo_unidad else Decimal(0)
+    context ={
+        'data':pedidos,
+            'costo_total' : costo_total,
+            'costo_unidad' :consto_unidad
+    }
+    return render(request, 'pedidos/costos.cardista.codigo.html', context)
+@login_required
+def asignar_costo(request):
+    if request.method =='POST':
+        costo = request.POST.get('costo')  
+        pedido = request.POST.get('pedido')
+        if not costo or not pedido:
+            return JsonResponse({'error':'Campos obligatorios'})
+        pedi = get_object_or_404(Pedido, pk=pedido)
+        cantidad = pedi.cantidad_entrega 
+        costo_total_multiplicacion=int(costo) * cantidad
+        pedi.costo_unidad= int(costo)
+        pedi.costo_total= costo_total_multiplicacion
+        pedi.save()
+        return JsonResponse({'data':True})
+@login_required
+
+
+def asignar_partida_presupuestada(request):
+    if request.method =='POST':
+        pedido= request.POST['pedido']
+        partida= request.POST['partida']
+        if not pedido or not partida:
+            return JsonResponse({'data':'Campos obligatorios'})
+        pedi = get_object_or_404(Pedido, pk = pedido)
+        pedi.partida_presupuestada= partida
+        pedi.save()
+        return JsonResponse({'data':'Guardado'})

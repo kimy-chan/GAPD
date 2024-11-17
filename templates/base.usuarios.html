@@ -118,6 +118,11 @@
                         <a class="nav-link" href="{% url 'administracion' %}">Administración</a>
                     </li>
                     {% endif %}
+                    {% if usuario.cargo == "Cardista" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar_pedidos_cardista_costo' %}">Costos</a>
+                    </li>
+                    {% endif %}
 
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}" style="font-weight: bold;">Cerrar sesión</a>
