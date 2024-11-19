@@ -2,7 +2,37 @@
 
 {% block index %}
 
+<style>
+    .container{
+        background-color: #0E9097 !important;
+        color: rgb(240, 232, 232) !important;
+        font-weight: Helvetica Bold;
+    }
+    .text-center{
+      
+        color:#0c0b0b !important;
+    }
+    .form-group{
+        background-color: #0E9097
+    }
+    .form-control, 
+.form-select, 
+textarea {
+    background-color: #6DA5C0; /* Fondo rojo claro */
+    color: #020405; /* Texto rojo oscuro */
+   
+}
 
+.form-control:focus, 
+.form-select:focus, 
+textarea:focus {
+    background-color: #0C6D73; /* Fondo rojo más claro al enfocar */
+    border-color: rgb(3, 30, 41); /* Borde rojo oscuro al enfocar */
+    box-shadow: 0 0 5px rgba(1, 49, 77, 0.5); /* Sombra roja */
+}
+
+    
+</style>
 <div class="container">
     <div class="text-center">AGREGAR PROVEEDORES</div>
 

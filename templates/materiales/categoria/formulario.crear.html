@@ -1,6 +1,38 @@
 {% extends '../../base.html' %}
 
 {% block index %}
+<style>
+      .modal-body {
+        background-color:#2A4F62;
+    }
+   
+    .modal-header {
+        text-align: center;
+        background-color: rgb(15, 110, 102); /* Centra el contenido del encabezado */
+    }
+
+    .modal-header .modal-title {
+        color: black; /* Cambia el color del texto a rojo */
+        font-weight: bold; /* Opcional: negrita para el texto */
+        margin: 0 auto; /* Centra el título horizontalmente */
+    }
+    #exampleModal .modal-body {
+        background-color: #082E33;
+        color: rgb(241, 237, 237); 
+        font-weight: bold;
+        text-align: center; 
+        
+    }
+    th{
+        background-color: #082E33 !important;
+        color: rgb(241, 238, 238) !important;
+        
+         
+        font-weight: bold;
+    }
+ 
+   
+</style>
 <div class="container">
     <!-- Button trigger modal -->
 
@@ -166,3 +198,5 @@
 
 
 {% endblock index %}
+
+
