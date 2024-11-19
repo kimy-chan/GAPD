@@ -1,8 +1,34 @@
+
 {% extends '../base.html' %}
 
 {% block index %}
+<Style>
+     .form-control, 
+.form-select, 
+textarea {
+    background-color: #b5b5b5; /* Fondo rojo claro */
+    color: #020405; /* Texto rojo oscuro */
+   
+}
 
-<h2>Actualizar material</h2>
+.form-control:focus, 
+.form-select:focus, 
+textarea:focus {
+    background-color: #0C6D73; /* Fondo rojo más claro al enfocar */
+    border-color: rgb(3, 30, 41); /* Borde rojo oscuro al enfocar */
+    box-shadow: 0 0 5px rgba(1, 49, 77, 0.5); /* Sombra roja */
+}
+.container{
+        background-color: #0E9097 !important;
+        color: rgb(241, 238, 238) !important;
+        font-weight: bold;
+    }
+    .text-center{
+      
+        color:#0c0b0b !important;
+    }
+</Style>
+<h2 class="text-center">Actualizar material</h2>
 <div class="container">
     {% if messages %}
     {% for message in messages %}
