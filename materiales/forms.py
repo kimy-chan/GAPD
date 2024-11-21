@@ -48,10 +48,10 @@ class Formulario_categoria(forms.ModelForm):
 class Form_infomacion_material(forms.ModelForm):
     class Meta:
         model= Informacion_material
-        fields= ['cantidad_paquete', 'precio_unidad','cantidad_paquete_unidad' , 'precio_paquete']
+        fields= ['cantidad_paquete', 'cantidad_paquete_unidad']
         widgets = {
             'cantidad_paquete': forms.TextInput(attrs={'class': 'form-control',}),
             'cantidad_paquete_unidad': forms.TextInput(attrs={'class': 'form-control'}),
-            'precio_paquete': forms.TextInput(attrs={'class': 'form-control'}),
-            'precio_unidad': forms.TextInput(attrs={'class': 'form-control'}),
+            #'precio_paquete': forms.TextInput(attrs={'class': 'form-control'}),
+           # 'precio_unidad': forms.TextInput(attrs={'class': 'form-control'}),
         }

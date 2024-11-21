@@ -73,12 +73,13 @@ def crear_material(request):
                 info_material.material= material
                 info_material.save()
                 info_material.calcular_total_cantidad()
-                info_material.calcular_precio_total()
+                #info_material.calcular_precio_total()
                 detalle=f'Se ha creado una nuevo material: {material.nombre} con el codigo {material.codigo}'
                 crear_log_sistema(request.user.username,'Registrado', detalle ,'Materiales')
                 messages.success(request, 'Material creado exitosamente.')
                 return redirect('crear_material')
            except IntegrityError as e:
+                print(e)
                 if 'codigo_paquete' in str(e):
                     messages.error(request, 'El código de paquete ya existe.')
                 else:
@@ -205,9 +206,9 @@ def eliminar_categoria(request, id):
 def anadir_nuevo_cantidad(request):
     cantidad_unidad= request.POST['cantidadUnidad']
     cantidad_paquete= request.POST['cantidadPaquete']
-    precio_paquete= request.POST['precioPaquete']
+   # precio_paquete= request.POST['precioPaquete']
     id_material=request.POST['materialId']
-    precio_unidad=request.POST['precio_unidad']
+    #precio_unidad=request.POST['precio_unidad']
     if not cantidad_unidad or not cantidad_paquete or not id_material:
         return JsonResponse({'data':'Campos obligatorios'})
     totalCantidad = int(cantidad_unidad) * int(cantidad_paquete)
@@ -216,9 +217,9 @@ def anadir_nuevo_cantidad(request):
     stock = material.stock
     material.stock= int(stock) + totalCantidad
     
-    info_mat = Informacion_material.objects.create(cantidad_paquete= int(cantidad_paquete), cantidad_paquete_unidad= int(cantidad_unidad), precio_unidad=float(precio_unidad),precio_paquete=float(precio_paquete),material= material)
+    info_mat = Informacion_material.objects.create(cantidad_paquete= int(cantidad_paquete), cantidad_paquete_unidad= int(cantidad_unidad),material= material)
     info_mat.calcular_total_cantidad()
-    info_mat.calcular_precio_total()
+    #info_mat.calcular_precio_total()
     material.save()
     info_mat.save()
     detalle = f'Se registro una nueva cantidad al material con el código: {material.codigo}'

@@ -13,20 +13,22 @@
 
         }
     }
-    th{
+
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
     }
-    .modal-content{
+
+    .modal-content {
         background-color: #0E9097 !important;
         color: rgb(241, 238, 238) !important;
     }
-    h5{
+
+    h5 {
         color: white;
-         font-weight: bold;
-         
+        font-weight: bold;
+
     }
-    
 </style>
 
 <table class="table table-striped">
@@ -97,7 +99,7 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="costoInput" class="form-label">Costo</label>
-                        <input type="number" class="form-control" id="costoInput" name="costo"
+                        <input type="float" class="form-control" id="costoInput" name="costo"
                             placeholder="Ingrese el costo" required>
                     </div>
                     <p id="msg"></p>

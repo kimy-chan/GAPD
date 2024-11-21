@@ -1059,8 +1059,8 @@ def asignar_costo(request):
             return JsonResponse({'error':'Campos obligatorios'})
         pedi = get_object_or_404(Pedido, pk=pedido)
         cantidad = pedi.cantidad_entrega 
-        costo_total_multiplicacion=int(costo) * cantidad
-        pedi.costo_unidad= int(costo)
+        costo_total_multiplicacion=float(costo) * cantidad
+        pedi.costo_unidad= float(costo)
         pedi.costo_total= costo_total_multiplicacion
         pedi.save()
         return JsonResponse({'data':True})

@@ -44,8 +44,8 @@ class Materiales(models.Model):
   
         self.nombre = self.nombre.title()
         self.marca = self.marca.title() or None
-        self.color = self.color.title() or None
-        self.material = self.material.title() or None
+        #self.color = self.color.title() or None
+        #self.material = self.material.title() or None
         super().save(*args, **kwargs)
 
  
@@ -57,8 +57,8 @@ class Materiales(models.Model):
 class  Informacion_material(models.Model):
     cantidad_paquete=models.IntegerField(blank=False, null=False, verbose_name='Cantidad por paquetes')
     cantidad_paquete_unidad = models.IntegerField(blank=False, null=False,verbose_name='Cantidad por paquetes (en unidades)')
-    precio_paquete = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False,verbose_name='Precio por paquetes')
-    precio_unidad=models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False,verbose_name='Precio por Unidad')
+    precio_paquete = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,verbose_name='Precio por paquetes')
+    precio_unidad=models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,verbose_name='Precio por Unidad')
     total_precio= models.DecimalField(max_digits=10, decimal_places=2, null=True)
     cantidad=models.IntegerField(null=True, blank=True)
     material = models.ForeignKey(Materiales, models.CASCADE, blank= False, null=False)
