@@ -5,15 +5,20 @@
     th{
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
-        font-weight: bold;
     }
+    .texto-blanco {
+    color: white;
+    font-weight: bold;
+}
+
+
 </style>
 <div class="container-fluid mt-5">
     <div class="row">
         <div class="col-sm-12 col-md-4">
             <form action="{% url 'index' %}" method="POST">
                 {% csrf_token %}
-                <h4>Buscar por categoria</h4>
+                <h4 class="texto-blanco">Buscar por categoria</h4>
                 <select class="form-select" name="categoria_id">
                     {% for categoria in listado_categoria %}
                     <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
@@ -26,7 +31,7 @@
         </div>
         <div class="col-sm-12 col-md-8">
             <div class="text-center">
-                <h3>Lista de {{ categoria }}</h3>
+                <h3 class="texto-blanco">Lista de {{ categoria }}</h3>
             </div>
             <div class="mb-lg-4 text-end">
                 <form class="d-flex justify-content-end" role="search" action="{% url 'buscar' %}" method="GET">
@@ -114,7 +119,7 @@
                 <form id="pedido_formulario">
                     {% csrf_token %}
                     <!-- Detalles del Pedido -->
-                    <legend class="text-muted">Informacion del material</legend>
+                    <legend class="text-muted" >Informacion del material</legend>
                     <div class="form-group">
                         <label for="productos" class="font-weight-bold">Material</label>
                         <ul id="productos" class="list-group">
@@ -307,3 +312,5 @@
     })
 </script>
 {% endblock js %}
+
+

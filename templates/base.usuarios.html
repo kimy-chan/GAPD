@@ -68,9 +68,56 @@
         }
         .container {
         position: relative;
-        z-index: 2;
+        
         }
      
+
+ 
+
+/* Lista de elementos en la barra de navegación */
+.navbar-nav {
+    list-style: none; /* Sin viñetas */
+    display: flex; /* Flexbox para alinear horizontalmente */
+    margin: 0; /* Elimina márgenes */
+    padding: 0; /* Elimina relleno */
+    gap: 15px; /* Espaciado entre elementos */
+}
+
+/* Elementos de la lista */
+.nav-item {
+    margin: 0;
+}
+
+
+.nav-link {
+    color: #0f0f0f; /* Color del texto */
+    text-decoration: none; /* Sin subrayado */
+    padding: 8px 15px; /* Espaciado interno */
+    border-radius: 3px; /* Bordes suaves */
+    transition: background-color 0.3s ease; /* Efecto al pasar el mouse */
+    font-weight: bold; /* Negrita */
+}
+
+/* Cambios al pasar el mouse */
+.nav-link:hover {
+    background-color: #495057; /* Fondo más claro */
+    color: #ffffff; /* Asegura que el texto siga siendo visible */
+}
+
+/* Estilo para enlaces activos (opcional) */
+.nav-link.active {
+    background-color: #007bff; /* Azul para enlaces activos */
+    color: #ffffff;
+}
+
+/* Ajuste en pantallas pequeñas (opcional) */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column; /* Apila los elementos verticalmente */
+        gap: 10px; /* Ajusta el espaciado */
+    }
+}
+
     </style>
 </head>
 
@@ -169,15 +216,7 @@
     <!-- Scripts adicionales específicos -->
     {% endblock js %}
 
-    <footer>
-
-
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-6 text-center">
-                <img src="static/imagen/VERTICAL.png" alt="Imagen descriptiva" class="img-fluid small-image">
-            </div>
-        </div>
-    </footer>
+  
 </body>
 
 

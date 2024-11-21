@@ -1,7 +1,18 @@
 {% extends '../base.usuarios.html' %}
 {% load static %}
 {% block usuario %}
-
+<style>
+    th{
+        background-color: #082E33 !important;
+        color: rgb(241, 238, 238) !important;
+    }
+    .row{
+        color: white;
+        
+       
+        font-weight: bold;
+    }
+</style>
 <div class="container mt-2">
     <form method="POST" class="mb-3" action="{% url 'listar_pedidos_cardista_costo' %}">
 

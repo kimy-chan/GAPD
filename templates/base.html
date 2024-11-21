@@ -22,7 +22,8 @@
 
 
         .sidebar .nav-link {
-            color: #041619;
+            color: white;
+            font-weight: bold;
         }
 
         .sidebar .nav-link:hover {
@@ -61,6 +62,57 @@
         .accordion-item a.nav-link:hover {
             color: #549c58;
         }
+              /* Fondo oscuro para la barra lateral */
+
+/* Establecer el color blanco para el texto dentro de la barra lateral */
+.sidebar .text-white {
+    color: rgb(109, 184, 25); /* Cambiar el color del texto a blanco */
+}
+
+
+
+/* Cambiar el color de los enlaces cuando el usuario pase el cursor por encima */
+.sidebar .nav-link:hover {
+    color: #e41464 !important; /* Color blanco más suave cuando pasa el mouse */
+}
+
+/* Estilo para los botones de la acordeón */
+.sidebar .accordion-button {
+    color: rgb(245, 243, 247);
+    background-color: #495057;
+    font-weight: bold;
+    
+}
+
+
+
+/* Cambiar color de los enlaces dentro de la lista */
+.sidebar .list-group-item a {
+    color: rgb(232, 233, 240);
+    font-weight: bold;
+}
+
+
+.sidebar .list-group-item a:hover {
+    color: #922d2d; /* Color blanco suave al pasar el mouse */
+}
+
+
+.sidebar img {
+    width: 100px; /* Ajustar tamaño de la imagen */
+    height: auto;
+}
+
+/* Estilo para el contenido principal */
+.container-fluid {
+    color: white;
+   
+
+}
+
+
+
+
  
   
     </style>
@@ -86,7 +138,7 @@
                         {% endif %}
                         <li class="nav-item">
                             <a href="/administracion" class="nav-link align-middle px-0">
-                                <i class="bi bi-gear"></i> <span class="ms-1 d-none d-sm-inline">Administración</span>
+                                <i class="bi bi-gear"></i> <span class="ms-1 d-none d-sm-inline"></span>
                             </a>
                         </li>
                         {% if usuario.rol != "Super_administrador" %}
