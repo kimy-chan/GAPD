@@ -26,7 +26,7 @@ from persona.forms import Formulario_persona
 from utils.paginador import paginador_general
 from persona.models import Persona 
 
-#
+
 load_dotenv()
 def login_sistema(request):
     if(request.method=='POST'):
