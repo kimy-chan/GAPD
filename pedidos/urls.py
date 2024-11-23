@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index,asignar_costo,asignar_partida_presupuestada,listar_pedido_codigo_cardita,listar_pedidos_cardista_costo,reporte_pedido_salida,rechazar_pedido_almacen, rechazar_pedido_presupuestos,rechazar_pedido_oficina,cancelar_todos_los_pedidos,autorizar_pedidos_cardista,listar_pedidos_por_codigo_presupuesto,listar_pedidos_presupuestos,autorizar_pedidos_presupuestos,rechazar_pedido_cardista,listar_pedidos_por_codigo_cardista,listar_pedidos_cardista,listar_pedidos_por_codigo_oficina,eliminar_mi_pedido_carrito,sub_pedido_almacen,reporte_pedidos,autorizar_pedidos_oficina,listar_pedidos_por_codigo,listar_pedidos_oficina ,sub_pedido,lista_pedido_por_id,cambiar_estado_pedido,listar_info_material,realizar_entrega,imprecion_solicitud,autorizar_pedidos_almacen,listando_pedido_almacen,generate_pdf,buscador,mostrar_informacion_pedidio_aprobaciones, realizar_pedido, listar_pedidos_usuarios_almacen, mis_pedidos,todos_mis_pedidos, listar_pedidos_unidad, autorizar_pedidos, rechazar_pedido_unidad, eliminar_mi_pedido
+from .views import listar_pedido_codigo_cardista_almacen,listar_pedidos_cardista_costo_almacen,index,asignar_costo,asignar_partida_presupuestada,listar_pedido_codigo_cardista,listar_pedidos_cardista_costo,reporte_pedido_salida,rechazar_pedido_almacen, rechazar_pedido_presupuestos,rechazar_pedido_oficina,cancelar_todos_los_pedidos,autorizar_pedidos_cardista,listar_pedidos_por_codigo_presupuesto,listar_pedidos_presupuestos,autorizar_pedidos_presupuestos,rechazar_pedido_cardista,listar_pedidos_por_codigo_cardista,listar_pedidos_cardista,listar_pedidos_por_codigo_oficina,eliminar_mi_pedido_carrito,sub_pedido_almacen,reporte_pedidos,autorizar_pedidos_oficina,listar_pedidos_por_codigo,listar_pedidos_oficina ,sub_pedido,lista_pedido_por_id,cambiar_estado_pedido,listar_info_material,realizar_entrega,imprecion_solicitud,autorizar_pedidos_almacen,listando_pedido_almacen,generate_pdf,buscador,mostrar_informacion_pedidio_aprobaciones, realizar_pedido, listar_pedidos_usuarios_almacen, mis_pedidos,todos_mis_pedidos, listar_pedidos_unidad, autorizar_pedidos, rechazar_pedido_unidad, eliminar_mi_pedido
 
 urlpatterns = [
    path('index',index , name='index' ),
@@ -49,9 +49,12 @@ path('autorizar_pedidos_presupuestos/<int:id_pedido>',autorizar_pedidos_presupue
                 path('pedidos/presupuestos/numero/<int:numero>',listar_pedidos_por_codigo_presupuesto, name='listar_pedidos_por_codigo_presupuesto' ),
           path('pedidos/reporte',reporte_pedidos, name='reporte_pedidos' ),
                           path('pedido/salida',reporte_pedido_salida , name='reporte_pedido_salida' ),
-    path('pedido/costo/cardistar',listar_pedidos_cardista_costo , name='listar_pedidos_cardista_costo' ),
+    path('pedido/costo/cardista',listar_pedidos_cardista_costo , name='listar_pedidos_cardista_costo' ),
+          path('pedido/costo/cardista/almacen',listar_pedidos_cardista_costo_almacen , name='listar_pedidos_cardista_costo_almacen' ),
       
-   path('pedido/costo/cardistar/codigo/<int:codigo>',listar_pedido_codigo_cardita , name='listar_pedidos_cardista_costo_codigo' ),
+   path('pedido/costo/cardista/codigo/<int:codigo>',listar_pedido_codigo_cardista , name='listar_pedidos_cardista_costo_codigo' ),
+   path('pedido/costo/cardista/codigo/almacen/<int:codigo>',listar_pedido_codigo_cardista_almacen , name='listar_pedido_codigo_cardita_almacen' ),
+      
        path('pedido/costo/asignar',asignar_costo , name='asignar_costo' ),
         
     path('pedido/partida/presupuestada',asignar_partida_presupuestada , name='partida_presupuestada' ),

@@ -1005,6 +1005,8 @@ def reporte_pedido_salida(request):
 
 
     return render(request, 'pedidos/reporte.pedidos.salida.html')
+
+
 @login_required
 def listar_pedidos_cardista_costo(request):
     if request.method =='POST':
@@ -1026,11 +1028,38 @@ def listar_pedidos_cardista_costo(request):
         context={
         'data':pedidos
         }
-        print(pedidos)
+        print(    request.user.oficina )
+        
         return render(request, 'pedidos/costos.cardista.html', context)
     return render(request, 'pedidos/costos.cardista.html')
+
 @login_required
-def listar_pedido_codigo_cardita(request, codigo):
+def listar_pedidos_cardista_costo_almacen(request):
+    if request.method =='POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+        pedidos = Pedido.objects.filter(
+        aprobado_unidad=True,
+        aprobado_oficina=True,
+        aprobado_presupuestos=True,
+        aprobado_cardista=True,
+        aprobado_almacen=True,
+        fecha_entrega_salida__gte= fecha_inicio_dt,
+        fecha_entrega_salida__lte= fecha_fin_dt,
+        ).distinct('numero_pedido')
+        context={
+            'data':pedidos
+             }
+        return render(request, 'pedidos/costos.cardista.almacen.html', context)
+    return render(request, 'pedidos/costos.cardista.almacen.html')
+    
+
+
+@login_required
+def listar_pedido_codigo_cardista(request, codigo):
     pedidos = Pedido.objects.filter(
         aprobado_unidad=True,
         aprobado_oficina=True,
@@ -1050,6 +1079,30 @@ def listar_pedido_codigo_cardita(request, codigo):
             'costo_unidad' :consto_unidad
     }
     return render(request, 'pedidos/costos.cardista.codigo.html', context)
+
+@login_required
+def listar_pedido_codigo_cardista_almacen(request, codigo):
+    pedidos = Pedido.objects.filter(
+        aprobado_unidad=True,
+        aprobado_oficina=True,
+        aprobado_presupuestos=True,
+        aprobado_cardista=True,
+        aprobado_almacen=True,
+        numero_pedido=codigo
+        )
+    costo_total = 0 
+    consto_unidad =0
+    for data in pedidos:
+        costo_total +=  data.costo_total if data.costo_total else Decimal(0)
+        consto_unidad += data.costo_unidad if data.costo_unidad else Decimal(0)
+    context ={
+        'data':pedidos,
+            'costo_total' : costo_total,
+            'costo_unidad' :consto_unidad
+    }
+    return render(request, 'pedidos/costos.cardista.codigo.almacen.html', context)
+
+
 @login_required
 def asignar_costo(request):
     if request.method =='POST':
