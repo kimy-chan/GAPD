@@ -1047,8 +1047,9 @@ def listar_pedidos_cardista_costo_almacen(request):
         aprobado_presupuestos=True,
         aprobado_cardista=True,
         aprobado_almacen=True,
-        fecha_entrega_salida__gte= fecha_inicio_dt,
-        fecha_entrega_salida__lte= fecha_fin_dt,
+        aprobado_cardista_segunda=True,
+        aprobado_cardista_segunda_fecha__gte= fecha_inicio_dt,
+      aprobado_cardista_segunda_fecha__lte= fecha_fin_dt,
         ).distinct('numero_pedido')
         context={
             'data':pedidos
@@ -1115,11 +1116,11 @@ def asignar_costo(request):
         costo_total_multiplicacion=float(costo) * cantidad
         pedi.costo_unidad= float(costo)
         pedi.costo_total= costo_total_multiplicacion
+        pedi.aprobado_cardista_segunda= True
+        pedi.aprobado_cardista_segunda_fecha = datetime.now()
         pedi.save()
         return JsonResponse({'data':True})
 @login_required
-
-
 def asignar_partida_presupuestada(request):
     if request.method =='POST':
         pedido= request.POST['pedido']

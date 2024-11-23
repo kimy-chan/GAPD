@@ -2,36 +2,40 @@
 
 {% block index %}
 <style>
-      .modal-body {
-        background-color:#2A4F62;
+    .modal-body {
+        background-color: #2A4F62;
     }
-   
+
     .modal-header {
         text-align: center;
-        background-color: rgb(15, 110, 102); /* Centra el contenido del encabezado */
+        background-color: rgb(15, 110, 102);
+        /* Centra el contenido del encabezado */
     }
 
     .modal-header .modal-title {
-        color: black; /* Cambia el color del texto a rojo */
-        font-weight: bold; /* Opcional: negrita para el texto */
-        margin: 0 auto; /* Centra el título horizontalmente */
+        color: black;
+        /* Cambia el color del texto a rojo */
+        font-weight: bold;
+        /* Opcional: negrita para el texto */
+        margin: 0 auto;
+        /* Centra el título horizontalmente */
     }
+
     #exampleModal .modal-body {
         background-color: #082E33;
-        color: rgb(241, 237, 237); 
+        color: rgb(241, 237, 237);
         font-weight: bold;
-        text-align: center; 
-        
+        text-align: center;
+
     }
-    th{
+
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
-        
-         
+
+
         font-weight: bold;
     }
- 
-   
 </style>
 <div class="container">
     <!-- Button trigger modal -->
@@ -86,6 +90,7 @@
                         {% csrf_token %}
                         <input type="hidden" id="form-id" name="id">
                         <input type="text" id="form-nombre" name="nombre">
+                        <input type="text" id="form-codigo" name="codigo">
                         <span id="nombre_error"></span>
                         <div class="text-center mt-3">
                             <button class="btn btn-success" id="btn_categoria" type="submit">Guardar</button>
@@ -144,6 +149,7 @@
                 if (result.data) {
                     document.getElementById('form-id').value = result.data.id;
                     document.getElementById('form-nombre').value = result.data.nombre;
+                    document.getElementById('form-codigo').value = result.data.codigo;
 
                 }
             }
@@ -198,5 +204,3 @@
 
 
 {% endblock index %}
-
-

@@ -172,6 +172,7 @@ def inprimir(request, id):
 def listar_categoria_id(request, id):
     categoria= get_object_or_404(Categoria, pk=id)
     data={
+        'codigo':categoria.codigo_clasificacion,
         'nombre':categoria.nombre,
         'id':categoria.id
     }
@@ -180,12 +181,14 @@ def listar_categoria_id(request, id):
 def actualizar_categoria(request):
     id=request.POST['id']
     nombre=request.POST['nombre']
+    codigo=request.POST['codigo']
     if not  nombre  or not id:
         return JsonResponse({'error':'Ingrese los campos'})
     try:
         categoria= get_object_or_404(Categoria, pk=id)
         nombre_anterior= categoria.nombre
         categoria.nombre =nombre
+        categoria.codigo_clasificacion = codigo
         categoria.save()
         detalle=f"Se ha editado la categoría: {nombre_anterior} a {categoria.nombre}"
         crear_log_sistema(request.user.username,'Edicion', detalle ,'Categoria')

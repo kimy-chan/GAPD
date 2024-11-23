@@ -30,6 +30,8 @@ class Pedido(models.Model):
 
     aprobado_cardista_segunda=models.BooleanField( blank= True, null=True)
 
+    aprobado_cardista_segunda_fecha =models.DateTimeField(blank=True, null=True)
+
     estado_pedido_almacen = models.CharField(blank=False, null=False, default='Pendiente')
     estado_de_pedido=models.CharField(blank=False, null=False, default='pendiente')
     fecha_pedido= models.DateTimeField(auto_now_add=True, blank=False, null=False)

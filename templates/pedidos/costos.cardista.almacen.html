@@ -67,7 +67,7 @@
         <tr>
             <td>{{ pedido.numero_pedido }}</td>
             <td>{{ pedido.usuario.persona.nombre }} {{ pedido.usuario.persona.apellidos }}</td>
-            <td>{{ pedido.fecha_entrega_salida|date:"m/d/y H:i" }}</td>
+            <td>{{ pedido.aprobado_cardista_segunda_fecha|date:"m/d/y H:i" }}</td>
             <td> <a href="{% url 'listar_pedido_codigo_cardita_almacen' pedido.numero_pedido %}"
                     class="btn btn-success btn-sm">costo</a></td>
         </tr>
@@ -87,7 +87,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const today = new Date();
-        today.setDate(today.getDate() - 1); // Resta un día
+        today.setDate(today.getDate()); // Resta un día
         const formattedDate = today.toISOString().split('T')[0];
 
         if (!document.getElementById('fecha_inicio').value) {
