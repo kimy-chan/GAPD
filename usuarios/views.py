@@ -1,7 +1,14 @@
+import os
 import datetime
-from pathlib import Path
-import shutil
 import subprocess
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from django.http import JsonResponse, FileResponse
+from django.conf import settings
+from pathlib import Path
+from django.shortcuts import render
+from base64 import b64encode
+from cryptography.hazmat.primitives import padding
 from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth import authenticate, logout, login
 from django.db import IntegrityError
@@ -351,9 +358,32 @@ def organigrama(request):
     
     return render(request, 'usuarios/organigrama.html', {'data': data})
 
+def encrypt_file(file_path, output_path, key):
+    # Asegurarse de que la clave sea de 32 bytes para AES-256
+    key = key.ljust(32, b'\0')[:32]  # Rellenar o truncar la clave a 32 bytes
+    iv = os.urandom(16)  # Generar un vector de inicialización aleatorio
+    
+    # Crear un objeto de cifrado AES en modo CBC
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+    
+    # Abrir el archivo original y encriptarlo
+    with open(file_path, 'rb') as f:
+        data = f.read()
+    
+    # Agregar padding al archivo para que su tamaño sea múltiplo de 16
+    padder = padding.PKCS7(algorithms.AES.block_size).padder()
+    padded_data = padder.update(data) + padder.finalize()
+    
+    # Encriptar el contenido
+    encrypted_data = encryptor.update(padded_data) + encryptor.finalize()
+    
+    # Guardar el archivo encriptado
+    with open(output_path, 'wb') as f_enc:
+        f_enc.write(iv + encrypted_data)  # Guardamos el IV junto con los datos encriptados
 
 def backup_database(request):
-    print( os.getenv('DB_HOST'))
+    print(os.getenv('DB_HOST'))
     if request.method == 'POST':
         try:
             # Directorio temporal en el proyecto para crear el archivo
@@ -367,7 +397,7 @@ def backup_database(request):
 
             # Obtener la ruta de la carpeta de descargas del usuario
             downloads_dir = os.path.join(str(Path.home()), 'Documents')
-            final_backup_file = os.path.join(downloads_dir, f'backup_{date_str}.sql')
+            final_backup_file_encrypted = os.path.join(downloads_dir, f'backup_{date_str}.enc')
 
             # Ruta completa a pg_dump
             pg_dump_path = r'C:\Program Files\PostgreSQL\16\bin\pg_dump.exe'
@@ -378,8 +408,8 @@ def backup_database(request):
             # Comando para realizar la copia de seguridad
             command = [
                 pg_dump_path,
-                '-h',  os.getenv('DB_HOST'),
-                '-U',os.getenv('DB_USER'),
+                '-h', os.getenv('DB_HOST'),
+                '-U', os.getenv('DB_USER'),
                 '-d', os.getenv('DB_NAME'),
                 '-f', temp_backup_file
             ]
@@ -395,12 +425,16 @@ def backup_database(request):
             if result.returncode != 0:
                 return JsonResponse({'success': False, 'message': f'Error al ejecutar pg_dump: {result.stderr}'})
 
-            # Mover el archivo a la carpeta de descargas
-            shutil.move(temp_backup_file, final_backup_file)
+            # Encriptar el archivo SQL generado
+            encryption_key = b'MySecretEncryptionKey'  # Usar una clave segura
+            encrypt_file(temp_backup_file, final_backup_file_encrypted, encryption_key)
 
-            # Preparar el archivo para descarga
-            response = FileResponse(open(final_backup_file, 'rb'))
-            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(final_backup_file)}"'
+            # Eliminar el archivo SQL temporal después de la encriptación
+            os.remove(temp_backup_file)
+
+            # Preparar el archivo encriptado para la descarga
+            response = FileResponse(open(final_backup_file_encrypted, 'rb'))
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(final_backup_file_encrypted)}"'
             return response
 
         except Exception as e:
