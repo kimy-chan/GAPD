@@ -26,10 +26,11 @@ def formulario_proveedor(request):
         direccion = request.POST['direccion']
         pais = request.POST['pais'] 
         descripcion= request.POST['descripcion']
+        ciudad= request.POST['ciudad']
 
         try:
             persona= Persona.objects.create(cedula_identidad= cedula_identidad, nombre= nombre, apellidos= apellidos)
-            Proveedor.objects.create(empresa=empresa, descripcion= descripcion,nit= nit, correo= correo, telefono=telefono,pais=pais ,direccion= direccion, persona=persona)
+            Proveedor.objects.create(empresa=empresa,ciudad= ciudad, descripcion= descripcion,nit= nit, correo= correo, telefono=telefono,pais=pais ,direccion= direccion, persona=persona)
             return redirect('listar_proveedor')
         except IntegrityError as err:
             mensaje= 'La cedula de identidad ya existe'
@@ -49,6 +50,7 @@ def actulizar_proveedor(request, id):
         direccion = request.POST['direccion']
         pais = request.POST['pais'] 
         descripcion= request.POST['descripcion']
+        ciudad= request.POST['ciudad']
 
         try:
             proveedor.empresa= empresa
@@ -61,6 +63,7 @@ def actulizar_proveedor(request, id):
             proveedor.direccion= direccion
             proveedor.pais=pais
             proveedor.descripcion=descripcion
+            proveedor.ciudad=ciudad
             proveedor.save()
             proveedor.persona.save()
             mensaje= 'Actulizado'

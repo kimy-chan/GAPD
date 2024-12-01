@@ -109,8 +109,9 @@ def realizar_pedido(request):
            return JsonResponse({"error":"Ocurrio un error al realiza el pedido"})
            
 def generar_numero_unico():
-    pedidos = Pedido.objects.count()
-    return pedidos
+    pedidos = Pedido.objects.count() + 1 
+    numero_con_ceros = f'{pedidos:06d}' 
+    return numero_con_ceros
     
 @login_required
 def cambiar_estado_pedido(request):
@@ -282,6 +283,8 @@ def lista_pedido_por_id(request, id_pedido):
 @login_required
 def realizar_entrega(request):
     if request.method == 'POST':
+  
+      
         id= request.POST['pedido_id']
         cantidad_entregada = request.POST['cantidad_entregada']
         if not cantidad_entregada:
@@ -290,7 +293,7 @@ def realizar_entrega(request):
         if(pedido.cantidad_entrega > 0):
                 return JsonResponse({'data':f'Este pedido ya fue realizada'})
         if(pedido.sub_cantidad_pedida > 0):
-            print("hola")
+           
             if int(cantidad_entregada) < 1:
                 return JsonResponse({'data':'Cantidad minima es: 1'})
             elif int(cantidad_entregada) > pedido.sub_cantidad_pedida:
@@ -326,7 +329,8 @@ def realizar_entrega(request):
         pedido.material.save()
         detalle = f'El usuario {request.user.username} ha realizado la entrega del pedido con el ID {pedido.id}.'
         crear_log_sistema(request.user.username, 'Entrega de pedido', detalle, 'Pedidos')
-        return JsonResponse({'data':'Enviado'})
+        return  JsonResponse({'data':'Enviado'})
+     
 
 @login_required
 def mis_pedidos(request): #muestra los pedidos de cada unidad o secretaria
@@ -1061,6 +1065,7 @@ def listar_pedidos_cardista_costo_almacen(request):
 
 @login_required
 def listar_pedido_codigo_cardista(request, codigo):
+    print(codigo)
     pedidos = Pedido.objects.filter(
         aprobado_unidad=True,
         aprobado_oficina=True,

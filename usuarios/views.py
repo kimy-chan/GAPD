@@ -408,3 +408,42 @@ def backup_database(request):
 
     else:
         return render(request, 'usuarios/backup.html')
+
+
+def editar_secretaria(request, id):
+    secretaria = get_object_or_404(Secretaria, pk = id)
+    if request.method =='POST':
+        secre = request.POST['secretaria']
+        secretaria.secretaria= secre
+        secretaria.save()
+        return redirect('listar_secretaria')
+    else:
+        context={
+            'secretaria':secretaria
+        }
+        return render(request, 'usuarios/editar.secretaria.html', context)
+def editar_oficina(request, id):
+    oficina = get_object_or_404(Oficinas, pk = id)
+    if request.method =='POST':
+        ofi = request.POST['oficina']
+     
+        oficina.nombre= ofi
+        oficina.save()
+        return redirect('listar_oficina')
+    else:
+        context={
+            'oficina':oficina
+        }
+        return render(request, 'usuarios/editar.oficina.html',context)
+def editar_unidad(request, id):
+    unidad = get_object_or_404(Unidad, pk = id)
+    if request.method =='POST':
+        u = request.POST['unidad']
+        unidad.nombre= u
+        unidad.save()
+        return redirect('listar_unidad')
+    else:
+        context={
+            'unidad':unidad
+        }
+        return render(request, 'usuarios/editar.unidad.html', context)

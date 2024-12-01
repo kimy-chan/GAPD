@@ -2,7 +2,7 @@
 {% load static %}
 {% block index %}
 <style>
-    th{
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
     }
@@ -25,7 +25,10 @@
                 <td>{{ oficina.unidad.nombre }}</td>
                 <td>{{ oficina.esHabilitado|yesno:"Habilitada,Deshabilitada" }}</td>
                 <td>
-                    <a href="{% url 'delete_oficina' oficina.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="{% url 'editar_oficina' oficina.id %}" class="btn btn-warning btn-sm"><i
+                            class="bi bi-pencil"></i></a>
+                    <a href="{% url 'delete_oficina' oficina.id %}" class="btn btn-danger btn-sm"><i
+                            class="bi bi-trash"></i></a>
                 </td>
             </tr>
             {% empty %}

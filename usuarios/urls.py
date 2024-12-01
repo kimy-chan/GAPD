@@ -1,5 +1,5 @@
 from django.urls import path, include 
-from .views  import login_sistema, listar_secretaria,backup_database,soft_delete_secretaria, soft_delete_oficina, soft_delete_undiad,listar_unidad, listar_oficina,organigrama,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
+from .views  import login_sistema,editar_oficina, editar_secretaria, editar_unidad, listar_secretaria,backup_database,soft_delete_secretaria, soft_delete_oficina, soft_delete_undiad,listar_unidad, listar_oficina,organigrama,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
 from django.conf import settings
 from django.contrib.staticfiles.urls import static
 urlpatterns = [
@@ -32,5 +32,9 @@ urlpatterns = [
        path('enviar_correos/<int:id_usuario>', enviar_correos, name='enviar_correos'),
               path('organigrama', organigrama, name='organigrama'),
               path('cambiar_contrasena/<int:id_usuario>', cambiar_contrasena, name='cambiar_contrasena'),
-             path('backup/create',backup_database, name='backup_database')
+             path('backup/create',backup_database, name='backup_database'),
+
+     path('editar/oficina/<int:id>',editar_oficina, name='editar_oficina'),
+        path('editar/secretaria/<int:id>',editar_secretaria, name='editar_secretaria'),
+           path('editar/unidad/<int:id>',editar_unidad, name='editar_unidad')
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -83,7 +83,7 @@
 </table>
 
 <div class="text-center mt-4">
-    <button onclick="window.print()" class="btn btn-primary no-print">Imprimir</button>
+    <button onclick="imprimirTabla()" class="btn btn-primary no-print">Imprimir</button>
 </div>
 
 
@@ -91,6 +91,35 @@
 {% endblock index %}
 
 {% block js %}
+<script>
+    function imprimirTabla() {
+        var tabla = document.querySelector('table');
+        var tablaClonada = tabla.cloneNode(true);
+        var filas = tablaClonada.querySelectorAll('tr');
 
+        filas.forEach(function (fila) {
+
+            var celdas = fila.querySelectorAll('td, th');
+
+
+            if (celdas.length > 0) {
+                celdas[celdas.length - 1].remove();
+            }
+        });
+
+        var ventanaImpresion = window.open('', '_blank');
+
+        ventanaImpresion.document.write('<html><head><title>Imprimir Tabla</title>');
+        ventanaImpresion.document.write('<style>table {width: 100%; border-collapse: collapse;}');
+        ventanaImpresion.document.write('th, td {border: 1px solid black; padding: 8px; text-align: left;}');
+        ventanaImpresion.document.write('</style></head><body>');
+        ventanaImpresion.document.write(tablaClonada.outerHTML);
+        ventanaImpresion.document.write('</body></html>');
+
+
+        ventanaImpresion.document.close();
+        ventanaImpresion.print();
+    }
+</script>
 
 {% endblock js %}

@@ -9,6 +9,7 @@ class Proveedor(models.Model):
     correo = models.EmailField(max_length=255)
     descripcion= models.TextField( null=True)
     pais = models.CharField(max_length=100)
+    ciudad = models.CharField(max_length=100, default='POTOSI')
     direccion = models.CharField(max_length=100)
     fecha_creacion= models.DateTimeField(auto_now_add=True)
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
