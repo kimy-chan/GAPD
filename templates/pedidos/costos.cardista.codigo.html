@@ -35,7 +35,7 @@
     <thead>
         <tr>
             <th>Código Pedido</th>
-            <th>Descripción</th>
+
             <th>Material</th>
             <th>Cantidad de pedido</th>
             <th>Cantidad entrega</th>
@@ -50,7 +50,7 @@
         {% for pedido in data %}
         <tr>
             <td>{{ pedido.material.codigo }}</td>
-            <td>{{ pedido.descripcion }}</td>
+
             <td>{{ pedido.material.nombre }}</td>
             <td>{{ pedido.cantidad_pedida }}</td>
             <td>{{ pedido.cantidad_entrega }}</td>
@@ -77,7 +77,7 @@
             <th> {{costo_unidad}} </th>
             <th> {{costo_total}} </th>
             <th></th>
-            <th></th>
+
         </tr>
     </tfoot>
 </table>

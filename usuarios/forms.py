@@ -4,13 +4,20 @@ from .models import Usuario
 
 class Usuario_formulario(forms.ModelForm):
     confirmar_password= forms.CharField(label='confirmar contraseña', widget=forms.PasswordInput(attrs={'class': 'form-control'}) )
+    password = forms.CharField(
+        label='Contraseña',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        min_length=8,  
+        error_messages={
+            'min_length': 'La contraseña debe tener al menos 8 caracteres.'
+        })
     class Meta:
         model=Usuario
         fields=['foto','username','password','oficina','confirmar_password','email','cargo', 'item','rol','crear','editar','eliminar','unidad']
         widgets={
              'foto': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            #'password': forms.PasswordInput(attrs={'class': 'form-control'}),
             'email': forms.TextInput(attrs={'class': 'form-control'}),
             'item': forms.TextInput(attrs={'class': 'form-control'}),
             'confirmar_password':forms.PasswordInput(attrs={'class': 'form-control'}),

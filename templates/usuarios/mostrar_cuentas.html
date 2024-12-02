@@ -2,11 +2,10 @@
 {% load static %}
 {% block index %}
 <style>
-     th{
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
     }
-    
 </style>
 <div class="container table-responsive">
     <h2 class="text-center">Cuentas de Usuario</h2>
@@ -53,14 +52,23 @@
                 <td>{{ cuenta.rol }}</td>
                 <td>
                     <a class="btn btn-secondary btn-sm"
-                        href="{% url 'actulizar_cuenta_usuario' cuenta.id cuenta.persona.id %}">Editar</a>
-                    <a class="btn btn-danger btn-sm" href="{% url 'eliminar_cuenta' cuenta.id %}">Eliminar</a>
+                        href="{% url 'actulizar_cuenta_usuario' cuenta.id cuenta.persona.id %}" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="{% url 'eliminar_cuenta' cuenta.id %}" title="Eliminar">
+                        <i class="bi bi-trash"></i>
+                    </a>
                     {% if cuenta.es_activo %}
-                    <a class="btn btn-warning btn-sm" href="{% url 'desactivar_cuenta' cuenta.id %}">Desactivar</a>
+                    <a class="btn btn-warning btn-sm" href="{% url 'desactivar_cuenta' cuenta.id %}" title="Desactivar">
+                        <i class="bi bi-person-dash"></i>
+                    </a>
                     {% else %}
-                    <a class="btn btn-success btn-sm" href="{% url 'activar_cuenta' cuenta.id %}">Activar</a>
+                    <a class="btn btn-success btn-sm" href="{% url 'activar_cuenta' cuenta.id %}" title="Activar">
+                        <i class="bi bi-person-check"></i>
+                    </a>
                     {% endif %}
                 </td>
+
             </tr>
             {% endfor %}
         </tbody>
