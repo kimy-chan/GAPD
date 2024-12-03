@@ -479,3 +479,7 @@ def editar_unidad(request, id):
             'unidad':unidad
         }
         return render(request, 'usuarios/editar.unidad.html', context)
+
+
+def ayuda_tecnica(request):
+    return render(request, 'usuarios/mantenimiento.html')
