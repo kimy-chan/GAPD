@@ -483,3 +483,5 @@ def editar_unidad(request, id):
 
 def ayuda_tecnica(request):
     return render(request, 'usuarios/mantenimiento.html')
+def manual_usuario(request):
+    return render(request, 'usuarios/manual.html')

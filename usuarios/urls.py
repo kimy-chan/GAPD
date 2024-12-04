@@ -1,5 +1,5 @@
 from django.urls import path, include 
-from .views  import login_sistema,editar_oficina, ayuda_tecnica,editar_secretaria, editar_unidad, listar_secretaria,backup_database,soft_delete_secretaria, soft_delete_oficina, soft_delete_undiad,listar_unidad, listar_oficina,organigrama,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
+from .views  import login_sistema,editar_oficina,manual_usuario, ayuda_tecnica,editar_secretaria, editar_unidad, listar_secretaria,backup_database,soft_delete_secretaria, soft_delete_oficina, soft_delete_undiad,listar_unidad, listar_oficina,organigrama,mi_perfil,cambiar_contrasena,enviar_correos,buscar_cuenta,crear_oficinas,Crear_unidad_secretaria,logout_view,crear_unidad_listar,oficinas_listar, creando_usuario, listando_usuarios, crear_secretaria_listar,soft_delete, activar_cuenta, desactivar_cuenta, actulizar_cuenta_usuario
 from django.conf import settings
 from django.contrib.staticfiles.urls import static
 urlpatterns = [
@@ -37,5 +37,6 @@ urlpatterns = [
      path('editar/oficina/<int:id>',editar_oficina, name='editar_oficina'),
         path('editar/secretaria/<int:id>',editar_secretaria, name='editar_secretaria'),
            path('editar/unidad/<int:id>',editar_unidad, name='editar_unidad'),
-                 path('ayuda/tecnica',ayuda_tecnica, name='ayuda_tecnica')
+                 path('ayuda/tecnica',ayuda_tecnica, name='ayuda_tecnica'),
+                       path('manual/usuario',manual_usuario, name='manual_usuario')
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
