@@ -139,13 +139,14 @@
                 {
                     extend: 'pdfHtml5',
                     orientation: 'landscape', // Exportar en orientación horizontal
-                    pageSize: 'A4', // Tamaño del papel
+                    pageSize: 'LEGAL', // Tamaño del papel
                     text: 'PDF',
                     title: 'Lista de Materiales',
                     exportOptions: {
                         columns: ':visible' // Exportar solo columnas visibles
                     },
                     customize: function (doc) {
+                        // Estilos de la tabla
                         doc.styles.tableHeader = {
                             fillColor: '#082E33',
                             color: '#FFFFFF',
@@ -160,6 +161,35 @@
                             fillColor: '#FFFFFF'
                         };
                         doc.content[1].table.widths = Array(doc.content[1].table.body[0].length).fill('*');
+
+                        // Espacio antes de las firmas
+                        doc.content.push({
+                            text: '\n\n\n', // Añadir espacio entre la tabla y las firmas
+                        });
+
+                        // Contenido de las firmas
+                        doc.content.push({
+                            alignment: 'center',
+                            columns: [
+                                {
+                                    text: '_______________________________\nAdministrador de Almacen',
+                                    margin: [0, 20, 0, 0],
+                                    style: 'signatureStyle'
+                                },
+                                {
+                                    text: '_______________________________\nProfesional II Encargda de Almacenes',
+                                    margin: [0, 20, 0, 0],
+                                    style: 'signatureStyle'
+                                }
+                            ]
+                        });
+
+                        // Estilo de las firmas
+                        doc.styles.signatureStyle = {
+                            fontSize: 10,
+                            bold: true,
+                            alignment: 'center'
+                        };
                     }
                 },
                 'print'
