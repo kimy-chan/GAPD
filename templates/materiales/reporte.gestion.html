@@ -88,16 +88,17 @@
                 <th style="font-size: 0.8em; text-align: center;">Código</th>
                 <th style="font-size: 0.8em; text-align: center;">Marca</th>
                 <th style="font-size: 0.8em; text-align: center;">Stock</th>
-                <th style="font-size: 0.8em; text-align: center;">Fecha de Creación</th>
+                <th style="font-size: 0.8em; text-align: center;">Creación</th>
                 <th style="font-size: 0.8em; text-align: center;">Tamaño</th>
                 <th style="font-size: 0.8em; text-align: center;">Color</th>
-                <th style="font-size: 0.8em; text-align: center;">Unidad de Medida</th>
-                <th style="font-size: 0.8em; text-align: center;">Unidad de Manejo</th>
+                <th style="font-size: 0.8em; text-align: center;">U. Medida</th>
+                <th style="font-size: 0.8em; text-align: center;">U. Manejo</th>
                 <th style="font-size: 0.8em; text-align: center;">Material</th>
                 <th style="font-size: 0.8em; text-align: center;">Factura</th>
-                <th style="font-size: 0.8em; text-align: center;">Código de Paquete</th>
+                <th style="font-size: 0.8em; text-align: center;">Cód. Paq.</th>
                 <th style="font-size: 0.8em; text-align: center;">Categoría</th>
                 <th style="font-size: 0.8em; text-align: center;">Proveedor</th>
+
             </tr>
         </thead>
         <tbody>
@@ -108,7 +109,7 @@
                 <td style="font-size: 0.8em; text-align: center;">{{ material.codigo }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.marca }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.stock }}</td>
-                <td style="font-size: 0.8em; text-align: center;">{{ material.fecha_creacion|date:"d-m-Y H:i:s" }}</td>
+                <td style="font-size: 0.8em; text-align: center;">{{ material.fecha_creacion|date:"d-m-Y" }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.tamaño }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.color }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.unidad_medida }}</td>
