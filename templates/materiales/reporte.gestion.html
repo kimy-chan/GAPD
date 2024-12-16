@@ -141,15 +141,15 @@
                 'excel',
                 {
                     extend: 'pdfHtml5',
-                    orientation: 'landscape', // Exportar en orientación horizontal
-                    pageSize: 'LEGAL', // Tamaño del papel
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
                     text: 'PDF',
                     title: 'Lista de Materiales',
                     exportOptions: {
-                        columns: ':visible' // Exportar solo columnas visibles
+                        columns: ':visible'
                     },
                     customize: function (doc) {
-                        // Estilos de la tabla
+
                         doc.styles.tableHeader = {
                             fillColor: '#082E33',
                             color: '#FFFFFF',
@@ -165,12 +165,12 @@
                         };
                         doc.content[1].table.widths = Array(doc.content[1].table.body[0].length).fill('*');
 
-                        // Espacio antes de las firmas
+
                         doc.content.push({
-                            text: '\n\n\n', // Añadir espacio entre la tabla y las firmas
+                            text: '\n\n\n',
                         });
 
-                        // Contenido de las firmas
+
                         doc.content.push({
                             alignment: 'center',
                             columns: [
@@ -180,7 +180,7 @@
                                     style: 'signatureStyle'
                                 },
                                 {
-                                    text: '_______________________________\nProfesional II Encargda de Almacenes',
+                                    text: '_______________________________\nProfesional II Encargada de Almacenes',
                                     margin: [0, 20, 0, 0],
                                     style: 'signatureStyle'
                                 }
@@ -195,7 +195,33 @@
                         };
                     }
                 },
-                'print'
+                {
+                    extend: 'print',
+                    text: 'Imprimir',
+                    title: 'Lista de Materiales',
+                    customize: function (win) {
+
+                        $(win.document.body).append(`
+                        <div style="margin-top: 50px; text-align: center;">
+                            <div style="display: inline-block; margin-right: 50px;">
+                                <p>_______________________________</p>
+                                <p>Administrador de Almacen</p>
+                            </div>
+                            <div style="display: inline-block;">
+                                <p>_______________________________</p>
+                                <p>Profesional II Encargada de Almacenes</p>
+                            </div>
+                        </div>
+                    `);
+
+
+                        $(win.document.body).find('table').css({
+                            'font-size': '12px',
+                            'border-collapse': 'collapse',
+                            'width': '100%'
+                        });
+                    }
+                }
             ],
             language: {
                 paginate: {
