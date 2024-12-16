@@ -31,21 +31,24 @@
             white-space: nowrap;
         }
     }
-    th{
+
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
         font-weight: bold;
     }
-    h2{
+
+    h2 {
         color: white;
-        
-       
-        font-weight: bold; 
+
+
+        font-weight: bold;
     }
-    .row{
+
+    .row {
         color: white;
-        
-       
+
+
         font-weight: bold;
     }
 </style>
@@ -111,7 +114,9 @@
                 <td style="font-size: 0.8em; text-align: center;">{{ material.unidad_medida }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.unidad_manejo }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.material }}</td>
+
                 <td style="font-size: 0.8em; text-align: center;">{{ material.factura}}</td>
+
                 <td style="font-size: 0.8em; text-align: center;">{{ material.codigo_paquete }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.categoria.nombre }}</td>
                 <td style="font-size: 0.8em; text-align: center;">{{ material.proveedor.persona.nombre }}
@@ -128,12 +133,68 @@
 
 {% block js %}
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
         $('#table_gestion').DataTable({
             dom: 'Bfrtip',
             buttons: [
-                'excel', 'pdf', 'print'
+                'excel',
+                {
+                    extend: 'pdfHtml5',
+                    orientation: 'landscape', // Exportar en orientación horizontal
+                    pageSize: 'LEGAL', // Tamaño del papel
+                    text: 'PDF',
+                    title: 'Lista de Materiales',
+                    exportOptions: {
+                        columns: ':visible' // Exportar solo columnas visibles
+                    },
+                    customize: function (doc) {
+                        // Estilos de la tabla
+                        doc.styles.tableHeader = {
+                            fillColor: '#082E33',
+                            color: '#FFFFFF',
+                            alignment: 'center',
+                            fontSize: 8,
+                            bold: true
+                        };
+                        doc.styles.tableBodyOdd = {
+                            fillColor: '#F2F2F2'
+                        };
+                        doc.styles.tableBodyEven = {
+                            fillColor: '#FFFFFF'
+                        };
+                        doc.content[1].table.widths = Array(doc.content[1].table.body[0].length).fill('*');
+
+                        // Espacio antes de las firmas
+                        doc.content.push({
+                            text: '\n\n\n', // Añadir espacio entre la tabla y las firmas
+                        });
+
+                        // Contenido de las firmas
+                        doc.content.push({
+                            alignment: 'center',
+                            columns: [
+                                {
+                                    text: '_______________________________\nAdministrador de Almacen',
+                                    margin: [0, 20, 0, 0],
+                                    style: 'signatureStyle'
+                                },
+                                {
+                                    text: '_______________________________\nProfesional II Encargda de Almacenes',
+                                    margin: [0, 20, 0, 0],
+                                    style: 'signatureStyle'
+                                }
+                            ]
+                        });
+
+                        // Estilo de las firmas
+                        doc.styles.signatureStyle = {
+                            fontSize: 10,
+                            bold: true,
+                            alignment: 'center'
+                        };
+                    }
+                },
+                'print'
             ],
             language: {
                 paginate: {
@@ -159,4 +220,5 @@
         fechaFin.value = formattedDate;
     }
 </script>
+
 {% endblock js %}
