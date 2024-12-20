@@ -229,6 +229,40 @@
                         </li>
 
 
+                        <li>
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo" aria-expanded="true"
+                                            aria-controls="collapseTwo">
+                                            <i class="bi bi-file-earmark-text"></i> Material compras
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse show"
+                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <ul class="collapse show nav flex-column ms-1" id="submenu2"
+                                                data-bs-parent="#menu">
+                                                <li>
+                                                    <a href="{% url 'crear' %}" class="nav-link px-0 align-middle">
+                                                        <i class="bi bi-cart"></i> <span
+                                                            class="ms-1 d-none d-sm-inline">crear</span></a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="{% url 'listar' %}" class="nav-link px-0 align-middle">
+                                                        <i class="bi bi-cart"></i> <span
+                                                            class="ms-1 d-none d-sm-inline">listar</span></a>
+                                                </li>
+
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
 
 
                         {% endif %}

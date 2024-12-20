@@ -1,0 +1,26 @@
+{% extends '../base.html' %}
+
+{% block index %}
+
+<div class="container">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <form action="{% url 'crear' %}" method="POST">
+        {% csrf_token %}
+        {{form_compras}}
+        {{form_stock}}
+
+
+
+        <div class="text-center mt-3">
+            <button type="submit " class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+
+</div>
+{% endblock index %}

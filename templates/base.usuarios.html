@@ -16,8 +16,8 @@
             font-family: 'Arial', sans-serif;
             background-color: #0C6D73;
             display: flex;
-        flex-direction: column;
-        min-height: 100vh;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .navbar-brand {
@@ -35,7 +35,7 @@
 
         footer {
             background-color: #2A4F62;
-            color: rgb(182, 42, 42  );
+            color: rgb(182, 42, 42);
             text-align: center;
             padding: 5px;
             position: fixed;
@@ -66,58 +66,74 @@
             background-color: rgb(20, 163, 151);
 
         }
+
         .container {
-        position: relative;
-        
+            position: relative;
+
         }
-     
-
- 
-
-/* Lista de elementos en la barra de navegación */
-.navbar-nav {
-    list-style: none; /* Sin viñetas */
-    display: flex; /* Flexbox para alinear horizontalmente */
-    margin: 0; /* Elimina márgenes */
-    padding: 0; /* Elimina relleno */
-    gap: 15px; /* Espaciado entre elementos */
-}
-
-/* Elementos de la lista */
-.nav-item {
-    margin: 0;
-}
 
 
-.nav-link {
-    color: #0f0f0f; /* Color del texto */
-    text-decoration: none; /* Sin subrayado */
-    padding: 8px 15px; /* Espaciado interno */
-    border-radius: 3px; /* Bordes suaves */
-    transition: background-color 0.3s ease; /* Efecto al pasar el mouse */
-    font-weight: bold; /* Negrita */
-}
 
-/* Cambios al pasar el mouse */
-.nav-link:hover {
-    background-color: #495057; /* Fondo más claro */
-    color: #ffffff; /* Asegura que el texto siga siendo visible */
-}
 
-/* Estilo para enlaces activos (opcional) */
-.nav-link.active {
-    background-color: #007bff; /* Azul para enlaces activos */
-    color: #ffffff;
-}
+        /* Lista de elementos en la barra de navegación */
+        .navbar-nav {
+            list-style: none;
+            /* Sin viñetas */
+            display: flex;
+            /* Flexbox para alinear horizontalmente */
+            margin: 0;
+            /* Elimina márgenes */
+            padding: 0;
+            /* Elimina relleno */
+            gap: 15px;
+            /* Espaciado entre elementos */
+        }
 
-/* Ajuste en pantallas pequeñas (opcional) */
-@media (max-width: 768px) {
-    .navbar-nav {
-        flex-direction: column; /* Apila los elementos verticalmente */
-        gap: 10px; /* Ajusta el espaciado */
-    }
-}
+        /* Elementos de la lista */
+        .nav-item {
+            margin: 0;
+        }
 
+
+        .nav-link {
+            color: #0f0f0f;
+            /* Color del texto */
+            text-decoration: none;
+            /* Sin subrayado */
+            padding: 8px 15px;
+            /* Espaciado interno */
+            border-radius: 3px;
+            /* Bordes suaves */
+            transition: background-color 0.3s ease;
+            /* Efecto al pasar el mouse */
+            font-weight: bold;
+            /* Negrita */
+        }
+
+        /* Cambios al pasar el mouse */
+        .nav-link:hover {
+            background-color: #495057;
+            /* Fondo más claro */
+            color: #ffffff;
+            /* Asegura que el texto siga siendo visible */
+        }
+
+        /* Estilo para enlaces activos (opcional) */
+        .nav-link.active {
+            background-color: #007bff;
+            /* Azul para enlaces activos */
+            color: #ffffff;
+        }
+
+        /* Ajuste en pantallas pequeñas (opcional) */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column;
+                /* Apila los elementos verticalmente */
+                gap: 10px;
+                /* Ajusta el espaciado */
+            }
+        }
     </style>
 </head>
 
@@ -139,6 +155,10 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'mis_pedidos' %}" style="font-weight: bold;">Mis pedidos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'secreatria_material' %}" style="font-weight: bold;">Material
+                            Secretaria</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}" style="font-weight: bold;">Material en general</a>
@@ -216,7 +236,7 @@
     <!-- Scripts adicionales específicos -->
     {% endblock js %}
 
-  
+
 </body>
 
 

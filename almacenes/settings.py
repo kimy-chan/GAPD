@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'pedidos',
     'usuarios',
     'administracion',
+    'material_compras',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
