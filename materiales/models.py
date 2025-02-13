@@ -39,6 +39,8 @@ class Materiales(models.Model):
     es_habilitado=models.BooleanField(default=True)
     gestion=  models.IntegerField(blank=True ,null=True) 
     cierre_gestion=  models.IntegerField(default=False) 
+    precio_paquete=models.IntegerField(blank=True, null=True)
+    precio_unidad=models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
   
@@ -51,7 +53,7 @@ class Materiales(models.Model):
  
     def __str__(self) -> str:
         return f"""{self.nombre},{self.codigo},{self.marca},{self.fecha_creacion},
-        {self.tamaño},{self.unidad_medida},{self.material},{self.codigo_paquete},{self.categoria}"""
+        {self.tamaño},{self.unidad_medida},{self.material},{self.codigo_paquete},{self.precio_paquete},{self.precio_unidad},{self.categoria}"""
 
    
 class  Informacion_material(models.Model):

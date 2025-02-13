@@ -279,6 +279,8 @@ def cerrar_gestion(request):
                     unidad_medida=m.unidad_medida,
                     unidad_manejo=m.unidad_manejo,
                     material=m.material,
+                    precio_unidad=m.precio_paquete,
+                    precio_paquete=m.precio_paquete,
                     factura=m.factura,
                     codigo_paquete=f"{m.codigo_paquete}{gestionNueva}",
                     categoria=m.categoria,
@@ -286,6 +288,7 @@ def cerrar_gestion(request):
                     es_habilitado=m.es_habilitado,
                     gestion=gestionNueva,
                     cierre_gestion=False
+                   
                 )
                 materiales_a_crear.append(nuevos_material)
 
