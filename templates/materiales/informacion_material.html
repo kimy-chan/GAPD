@@ -46,6 +46,19 @@
                         <td>{{ material.unidad_medida }}</td>
                     </tr>
                     {% endif %}
+                    {% if material.precio_unidad %}
+                    <tr>
+                        <th>Precio Unidad</th>
+                        <td>{{ material.precio_unidad }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if material.precio_paquete %}
+                    <tr>
+                        <th>Precio Paquete</th>
+                        <td>{{ material.precio_paquete  }}</td>
+                    </tr>
+                    
+                    {% endif %}
                     {% if material.material %}
                     <tr>
                         <th>Material</th>
