@@ -70,3 +70,6 @@ class  Informacion_material(models.Model):
         self.total_precio= self.precio_paquete * self.precio_unidad
         self.save()
 
+    def __str__(self):
+        return f"{self.precio_unidad},{self.cantidad_paquete_unidad}"
+

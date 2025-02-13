@@ -6,7 +6,7 @@ from logs.views import crear_log_sistema
 from utils.paginador import paginador_general
 from .forms import Formulario_categoria,Formulario_materiales,Form_infomacion_material
 from django.http import JsonResponse
-
+from pedidos.models import Pedido
 
 from datetime import datetime
 
@@ -329,3 +329,27 @@ def reporte_gestion(request):
 
     return render(request, 'materiales/reporte.gestion.html')
     
+
+def inventario_fisico (request):
+    data=[]
+    pedidos = Pedido.objects.filter(aprobado_almacen= True)
+
+    for p in pedidos:
+
+        cantidad= Informacion_material.objects.get(material_id=p.material.id)
+        info = {
+            'codigo':p.material.codigo,
+            'nombre':p.material.nombre,
+            'unidad_manejo':p.material.unidad_manejo,
+            'compra':cantidad.cantidad_paquete_unidad,
+            'stock':p.material.stock,
+            'entrega':p.cantidad_entrega,
+            'cantidad2': p.material.stock +  cantidad.cantidad_paquete_unidad - p.cantidad_entrega
+
+        }
+        data.append(info)
+    print(data)
+    context = {
+        'data':data
+    }
+    return render(request, 'materiales/inventarioFisico.html', context)
