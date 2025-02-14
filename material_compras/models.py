@@ -32,3 +32,12 @@ class Matarial_compras(models.Model):
     estado_compra=models.CharField(default='PENDIENTE')
     numero_registro= models.ForeignKey(Numero_registro, blank=True , null=True,on_delete=models.RESTRICT,)
 
+
+
+class Pedido_compras(models.Model):
+    item = models.AutoField(primary_key=True) 
+    material_compras = models.ForeignKey(Matarial_compras,null=True,on_delete=models.RESTRICT )
+    cantidad_entrega =  models.IntegerField(default=0)
+    estado_cardista = models.BooleanField( null= True, blank=True)
+    fecha_cardista= models.DateTimeField(null= True, blank=True)
+    fecha_creacion= models.DateTimeField(auto_now_add=True)

@@ -156,10 +156,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'mis_pedidos' %}" style="font-weight: bold;">Mis pedidos</a>
                     </li>
+
+                    {% if usuario.cargo == "Cardista" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'secreatria_material' %}" style="font-weight: bold;">Material
-                            Secretaria</a>
+                        <a class="nav-link" href="{% url 'secreatria_material' %}" style="font-weight: bold;">
+                            Compras menores</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}" style="font-weight: bold;">Material en general</a>
                     </li>
