@@ -42,6 +42,8 @@
                 <th>Proveedor</th>
                 <th>Stock</th>
                 <th>Fecha</th>
+
+                <th>Accion</th>
             </tr>
         </thead>
         <tbody>
@@ -56,14 +58,43 @@
                 <td>{{ material.oficina|default:"" }}</td>
                 <td>{{ material.proveedor.empresa}} -{{ material.proveedor.persona.nombre }}
                     {{material.proveedor.persona.apellidos}}</td>
-                <td>{{ material.stock|default_if_none:0 }}</td>
+                <td>{{ material.cantidad|default_if_none:0 }}</td>
                 <td>{{ material.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                <td> <button class="btn btn-success entregar-btn" data-id="{{ material.item }}"
+                        data-descripcion="{{ material.descripcion }}">
+                        Entregar
+                    </button> </td>
 
             </tr>
 
             {% endfor %}
         </tbody>
     </table>
+
+
+    <!-- Modal para Entrega -->
+    <div class="modal fade" id="entregaModal" tabindex="-1" aria-labelledby="entregaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark"> <!-- Aplica texto negro a todo el modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="entregaModalLabel">Realizar Entrega</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="entregaForm">
+                        <input type="hidden" id="material_id">
+                        <div class="mb-3">
+                            <label for="cantidad_entrega" class="form-label text-dark">Cantidad a Entregar</label>
+                            <input type="number" class="form-control" id="cantidad_entrega" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Confirmar Entrega</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 {% endblock index %}
@@ -101,6 +132,53 @@
                     previous: 'Anterior'
                 }
             }
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const entregaModal = new bootstrap.Modal(document.getElementById('entregaModal'));
+        let selectedMaterialId = null;
+
+        // Capturar clic en botón "Entregar"
+        document.querySelectorAll(".entregar-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                selectedMaterialId = this.getAttribute("data-id");
+                document.getElementById("material_id").value = selectedMaterialId;
+                entregaModal.show();
+            });
+        });
+
+        // Manejar el formulario de entrega
+        document.getElementById("entregaForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const cantidad = document.getElementById("cantidad_entrega").value;
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            if (cantidad <= 0) {
+                alert("Ingrese una cantidad válida.");
+                return;
+            }
+            const data = new FormData()
+            data.append('cantidad_entrega', cantidad)
+            data.append('id', selectedMaterialId)
+            axios.post("{% url 'realizar_entrega' %} ", data,
+                {
+                    headers: {
+                        "X-CSRFToken": csrftoken // Agregar el token en los headers
+                    }
+                }
+            )
+                .then((result) => {
+                    console.log(result);
+
+                }).catch((err) => {
+                    console.log(err);
+
+                });
+            console.log("Entregando material ID:", selectedMaterialId, "Cantidad:", cantidad);
+            // Aquí puedes hacer una petición AJAX para enviar los datos al backend
+
+            entregaModal.hide();
         });
     });
 </script>

@@ -2,9 +2,10 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
-from material_compras.forms import  Form_material_compras
-from material_compras.models import Matarial_compras, Numero_registro
+from material_compras.forms import  Form_material_compras 
+from material_compras.models import Matarial_compras, Numero_registro ,Pedido_compras
 from usuarios.models import Oficinas, Unidad
+from datetime import datetime
 
 def crear_material_compras(request):
 
@@ -78,12 +79,9 @@ def listar_material_compras_user(request):
         fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
         fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
         fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
-        print(fecha_inicio_dt,fecha_fin_dt)
-        material = Matarial_compras.objects.filter(flag=True,            
+        material = Pedido_compras.objects.filter(           
                                                   fecha_creacion__gte=fecha_inicio_dt,
                               fecha_creacion__lte=fecha_fin_dt,
-                              secretaria_flag=True,
-                              secretaria=user.unidad.secretaria
                               
                               )
         context={
@@ -116,3 +114,28 @@ def eliminar(request,id):
     material= get_object_or_404(Matarial_compras, pk=id)
     material.delete()
     return JsonResponse({'data':True})
+
+
+def verificar(request,id):
+    pedido_compras= get_object_or_404(Pedido_compras, pk=id)
+    fecha = datetime.now()
+    pedido_compras.fecha_cardista= fecha
+    pedido_compras.estado_cardista= True
+    pedido_compras.save()
+    return redirect('secreatria_material')
+    
+
+
+def realizar_entrega(request):
+        
+        if request.method =='POST':
+            cantidad_entrega = request.POST['cantidad_entrega']
+            id = request.POST['id']
+            material_compras = get_object_or_404(Matarial_compras, pk= id)
+            nueva_cantidad = int(material_compras.cantidad) - int(cantidad_entrega)
+            material_compras.cantidad=nueva_cantidad
+         
+            Pedido_compras.objects.create(cantidad_entrega= cantidad_entrega , material_compras = material_compras)
+            material_compras.save()
+            return JsonResponse({'data':True})
+      

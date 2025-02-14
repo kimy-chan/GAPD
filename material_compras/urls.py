@@ -9,4 +9,9 @@ urlpatterns = [
     path('cargar-oficinas/', cargar_oficinas, name='cargar_oficinas'),
         path('eliminar/compra/<int:id>', eliminar, name='eliminar'),
    
+     path('realizar/entrega',realizar_entrega  , name='realizar_entrega'),
+     
+     path('verificar/<int:id>',verificar  , name='verificar'),
+   
+   
 ]
