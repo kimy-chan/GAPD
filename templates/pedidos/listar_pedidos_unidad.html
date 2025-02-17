@@ -5,14 +5,15 @@
 
 
 <style>
-    th{
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
     }
-    h1{
+
+    h1 {
         color: white;
-        
-       
+
+
         font-weight: bold;
     }
 </style>
@@ -51,7 +52,7 @@
 
 
 <div class="container-fluid">
-    <h1>unidad</h1>
+    <h1>Director administrativo</h1>
     <div class="text-center">
         <h2>{{ usuario.unidad.nombre }}</h2>
     </div>
@@ -63,7 +64,7 @@
                 <th>Oficina</th>
                 <th>Material</th>
                 <th>Cantidad de pedido</th>
-                <th>Cantidad de pedido 2</th>
+                <!--   <th>Cantidad de pedido 2</th> -->
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -77,15 +78,15 @@
 
                 <td>{{ pedido.cantidad_pedida }} {{ pedido.unidad_manejo }}</td>
 
-                {% if pedido.aprobado_unidad == false %}
-                <td>
+                <!--   {% if pedido.aprobado_unidad == false %}
+               <td>
                     {{ pedido.sub_cantidad_pedida }}
                     <div class="form-container">
                         <form id="form_sub_pedido_{{ pedido.id }}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="input-group">
-                                    <!-- Campos ocultos -->
+                                  
                                     <input type="number" name="pedido" value="{{ pedido.id }}"
                                         class="form-control d-none" id="pedido_{{ pedido.id }}">
                                     <input type="number" name="material" value="{{ pedido.material.id }}"
@@ -102,11 +103,11 @@
                             </div>
                         </form>
 
-                    </div>
+                    </div> 
                 </td>
                 {% else %}
                 <td>{{ pedido.sub_cantidad_pedida }} </td>
-                {% endif %}
+                {% endif %}-->
                 <td>
                     {% if pedido.aprobado_unidad == None %}
                     <div class="row">

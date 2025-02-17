@@ -90,6 +90,8 @@ def listar_material_compras_user(request):
         return render(request, 'material_compras/secretaria.html', context)
     return render(request, 'material_compras/secretaria.html')
 
+
+
 def cargar_unidades(request):
     secretaria_id = request.GET.get('secretaria')
     unidades = Unidad.objects.filter(secretaria_id=secretaria_id).values('id', 'nombre')
@@ -138,4 +140,24 @@ def realizar_entrega(request):
             Pedido_compras.objects.create(cantidad_entrega= cantidad_entrega , material_compras = material_compras)
             material_compras.save()
             return JsonResponse({'data':True})
-      
+
+def listar_material_compras_entregadas(request):
+    if request.method =='POST':
+        fecha_inicio = request.POST['fecha_inicio']
+        fecha_fin = request.POST['fecha_fin']
+        fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin_dt = datetime.strptime(fecha_fin, '%Y-%m-%d')
+        fecha_fin_dt = fecha_fin_dt.replace(hour=23, minute=59, second=59)
+
+        pedidos = Pedido_compras.objects.filter(            
+                                                  fecha_cardista__gte=fecha_inicio_dt,
+                              fecha_cardista__lte=fecha_fin_dt,
+                            
+                              )
+        for pedido in pedidos:
+            pedido.costo_total = pedido.material_compras.costo_unitario * pedido.cantidad_entrega
+        context={
+            'data':pedidos
+        }
+        return render(request, 'material_compras/entregados.html', context)
+    return render(request, 'material_compras/entregados.html')

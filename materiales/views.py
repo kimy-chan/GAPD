@@ -330,26 +330,27 @@ def reporte_gestion(request):
     return render(request, 'materiales/reporte.gestion.html')
     
 
-def inventario_fisico (request):
-    data=[]
-    pedidos = Pedido.objects.filter(aprobado_almacen= True)
+def inventario_fisico(request):
+    data = []
+    pedidos = Pedido.objects.filter(aprobado_almacen=True)
 
     for p in pedidos:
-
-        cantidad= Informacion_material.objects.get(material_id=p.material.id)
+        # Use filter() to retrieve all matching records for the given material_id
+        cantidades = Informacion_material.objects.filter(material_id=p.material.id)
+        cantidad = cantidades.first()  # This will return the first record or None if empty
         info = {
-            'codigo':p.material.codigo,
-            'nombre':p.material.nombre,
-            'unidad_manejo':p.material.unidad_manejo,
-            'compra':cantidad.cantidad_paquete_unidad,
-            'stock':p.material.stock,
-            'entrega':p.cantidad_entrega,
-            'cantidad2': p.material.stock +  cantidad.cantidad_paquete_unidad - p.cantidad_entrega
-
+            'codigo': p.material.codigo,
+            'nombre': p.material.nombre,
+            'unidad_manejo': p.material.unidad_manejo,
+            'compra': cantidad.cantidad if cantidad.cantidad else 0,  # If cantidad is None, default to 0
+            'stock': p.material.stock,
+            'entrega': p.cantidad_entrega,
+            'cantidad2': p.material.stock + (cantidad.cantidad_paquete_unidad if cantidad else 0) - p.cantidad_entrega
         }
         data.append(info)
-    print(data)
+
+  
     context = {
-        'data':data
+        'data': data
     }
     return render(request, 'materiales/inventarioFisico.html', context)
