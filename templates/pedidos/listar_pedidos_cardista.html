@@ -3,14 +3,15 @@
 {% block usuario %}
 
 <style>
-     th{
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
     }
-    h1{
+
+    h1 {
         color: white;
-        
-       
+
+
         font-weight: bold;
     }
 </style>
@@ -18,89 +19,88 @@
 
 
 <div class="container-fluid">
-    <h1>Cardista</h1>
+    <h1>Kardista</h1>
 
 
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Codigo</th>
-                    <th>Nombre completo</th>
-                    <th>Oficina</th>
-                    <th>Material</th>
-                    <th>Cantidad de pedido</th>
-                    <th>Cantidad de pedido 2</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pedido in data %}
-                <tr>
-                    <td>{{ pedido.material.codigo }}</td>
-                    <td>{{ pedido.usuario.persona.nombre }} {{ pedido.usuario.persona.apellidos }}</td>
-                    <td>{{ pedido.usuario.oficina.nombre }}</td>
-                    <td>{{ pedido.material.nombre }}</td>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre completo</th>
+                <th>Oficina</th>
+                <th>Material</th>
+                <th>Cantidad de pedido</th>
+                <!-- <th>Cantidad de pedido 2</th>-->
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in data %}
+            <tr>
+                <td>{{ pedido.material.codigo }}</td>
+                <td>{{ pedido.usuario.persona.nombre }} {{ pedido.usuario.persona.apellidos }}</td>
+                <td>{{ pedido.usuario.oficina.nombre }}</td>
+                <td>{{ pedido.material.nombre }}</td>
 
-                    <td>{{ pedido.cantidad_pedida }} {{ pedido.unidad_manejo }}</td>
+                <td>{{ pedido.cantidad_pedida }} {{ pedido.unidad_manejo }}</td>
 
-                    {% if pedido.aprobado_cardista == false %}
-                    <td>
-                        {{ pedido.sub_cantidad_pedida }}
-                        <div class="form-container">
-                            <form id="form_sub_pedido_{{ pedido.id }}" method="POST">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <!-- Campos ocultos -->
-                                        <input type="number" name="pedido" value="{{ pedido.id }}"
-                                            class="form-control d-none" id="pedido_{{ pedido.id }}">
-                                        <input type="number" name="material" value="{{ pedido.material.id }}"
-                                            class="form-control d-none" id="material_{{ pedido.id }}">
-                                        <input name="sub_pedido" required type="number" class="form-control"
-                                            id="sub_pedido_{{ pedido.id }}" placeholder="Ingrese un valor">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-secondary btn-sm" type="submit"
-                                                data-form-id="{{ pedido.id }}">
-                                                <i class="fas fa-floppy-disk"></i>
-                                            </button>
-                                        </div>
+                <!--   {% if pedido.aprobado_cardista == false %}
+                <td>
+                    {{ pedido.sub_cantidad_pedida }}
+                    <div class="form-container">
+                        <form id="form_sub_pedido_{{ pedido.id }}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="input-group">
+                                  
+                                    <input type="number" name="pedido" value="{{ pedido.id }}"
+                                        class="form-control d-none" id="pedido_{{ pedido.id }}">
+                                    <input type="number" name="material" value="{{ pedido.material.id }}"
+                                        class="form-control d-none" id="material_{{ pedido.id }}">
+                                    <input name="sub_pedido" required type="number" class="form-control"
+                                        id="sub_pedido_{{ pedido.id }}" placeholder="Ingrese un valor">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary btn-sm" type="submit"
+                                            data-form-id="{{ pedido.id }}">
+                                            <i class="fas fa-floppy-disk"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
+                        </form>
 
+                    </div>
+
+                </td>
+                {% else %}
+                <td>{{ pedido.sub_cantidad_pedida }} </td> 
+                {% endif %}-->
+                <td>
+                    {% if pedido.aprobado_cardista == None %}
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{% url 'autorizar_pedidos_cardista' pedido.id %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-check"></i>
+                            </a>
                         </div>
-
-                    </td>
-                    {% else %}
-                    <td>{{ pedido.sub_cantidad_pedida }} </td>
+                        <div class="col-6">
+                            <a href="{% url 'rechazar_pedido_cardista' pedido.id %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% elif pedido.aprobado_cardista == False %}
+                    <button class="btn btn-danger btn-sm" disabled>
+                        <i class="fas fa-times"></i> Rechazado
+                    </button>
                     {% endif %}
-                    <td>
-                        {% if pedido.aprobado_cardista == None %}
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="{% url 'autorizar_pedidos_cardista' pedido.id %}"
-                                    class="btn btn-success btn-sm">
-                                    <i class="fas fa-check"></i>
-                                </a>
-                            </div>
-                            <div class="col-6">
-                                <a href="{% url 'rechazar_pedido_cardista' pedido.id %}" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </div>
-                        </div>
-                        {% elif pedido.aprobado_cardista == False %}
-                        <button class="btn btn-danger btn-sm" disabled>
-                            <i class="fas fa-times"></i> Rechazado
-                        </button>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% include 'paginador/paginador.html' %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'paginador/paginador.html' %}
 </div>
 
 

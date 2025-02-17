@@ -3,14 +3,15 @@
 {% block usuario %}
 
 <style>
-    th{
+    th {
         background-color: #082E33 !important;
         color: rgb(241, 238, 238) !important;
     }
-    h1{
+
+    h1 {
         color: white;
-        
-    
+
+
         font-weight: bold;
     }
 </style>
@@ -28,7 +29,7 @@
                 <th>Oficina</th>
                 <th>Material</th>
                 <th>Cantidad de pedido</th>
-                <th>Cantidad de pedido 2</th>
+                <!-- <th>Cantidad de pedido 2</th>-->
                 <th>Presupuestada</th>
                 <th>Acciones</th>
             </tr>
@@ -43,7 +44,7 @@
 
                 <td>{{ pedido.cantidad_pedida }} {{ pedido.unidad_manejo }}</td>
 
-                {% if pedido.aprobado_presupuestos == false %}
+                <!--  {% if pedido.aprobado_presupuestos == false %}
                 <td>
                     {{ pedido.sub_cantidad_pedida }}
                     <div class="form-container">
@@ -51,7 +52,7 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="input-group">
-                                    <!-- Campos ocultos -->
+                                    
                                     <input type="number" name="pedido" value="{{ pedido.id }}"
                                         class="form-control d-none" id="pedido_{{ pedido.id }}">
                                     <input type="number" name="material" value="{{ pedido.material.id }}"
@@ -73,7 +74,7 @@
 
                 {% else %}
                 <td>{{ pedido.sub_cantidad_pedida }} </td>
-                {% endif %}
+                {% endif %}-->
                 {% if pedido.aprobado_presupuestos == false %}
                 <td>
                     {{ pedido.partida_presupuestada }}

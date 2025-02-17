@@ -3,8 +3,8 @@
 {% block index %}
 
 <div class="container">
-    <h1 class="text-center">Lista de Materiales</h1>
-    <form action="{% url 'listar' %}" method="POST">
+    <h1 class="text-center">Material entregados</h1>
+    <form action="{% url 'listar_material_compras_entregadas' %}" method="POST">
         {% csrf_token %}
         <div class="row">
             <div class="col-6">
@@ -35,35 +35,30 @@
                 <th>Item</th>
                 <th>Descripción</th>
                 <th>Unidad Manejo</th>
+                <th>Cantidad pedida</th>
 
-                <th>Secretaria</th>
-                <th>Unidad</th>
-                <th>Oficina</th>
-                <th>Proveedor</th>
-                <th>Stock</th>
+                <th>Cantidad entregada</th>
+                <th>costo unidad</th>
+                <th>costo total</th>
                 <th>Fecha</th>
 
-                <th>Accion</th>
+
             </tr>
         </thead>
         <tbody>
             {% for material in data %}
             <tr>
-                <td>{{ material.item }}</td>
-                <td>{{ material.descripcion|default:"" }}</td>
-                <td>{{ material.unidad_manejo|default:"" }}</td>
+                <td>{{ material.material_compras.item }}</td>
+                <td>{{ material.material_compras.descripcion|default:"" }}</td>
+                <td>{{ material.material_compras.unidad_manejo|default:"" }}</td>
 
-                <td>{{ material.secretaria|default:"" }}</td>
-                <td>{{ material.unidad|default:"" }}</td>
-                <td>{{ material.oficina|default:"" }}</td>
-                <td>{{ material.proveedor.empresa}} -{{ material.proveedor.persona.nombre }}
-                    {{material.proveedor.persona.apellidos}}</td>
-                <td>{{ material.cantidad|default_if_none:0 }}</td>
-                <td>{{ material.fecha_creacion|date:"d/m/Y H:i" }}</td>
-                <td> <button class="btn btn-success entregar-btn" data-id="{{ material.item }}"
-                        data-descripcion="{{ material.descripcion }}">
-                        Entregar
-                    </button> </td>
+
+                <td>{{ material.cantidad_entrega|default_if_none:0 }}</td>
+                <td>{{ material.cantidad_entrega|default_if_none:0 }}</td>
+                <td>{{ material.material_compras.costo_unitario|default_if_none:0 }}</td>
+                <td>{{material.costo_total}}</td>
+                <td>{{ material.fecha_cardista|date:"d/m/Y H:i" }}</td>
+
 
             </tr>
 

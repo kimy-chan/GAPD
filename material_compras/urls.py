@@ -9,9 +9,10 @@ urlpatterns = [
     path('cargar-oficinas/', cargar_oficinas, name='cargar_oficinas'),
         path('eliminar/compra/<int:id>', eliminar, name='eliminar'),
    
-     path('realizar/entrega',realizar_entrega  , name='realizar_entrega'),
+     path('realizar/entrega/menor',realizar_entrega  , name='realizar_entrega_menor'),
      
      path('verificar/<int:id>',verificar  , name='verificar'),
+      path('entregados/material/costos',listar_material_compras_entregadas  , name='listar_material_compras_entregadas'),
    
    
 ]
